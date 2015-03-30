@@ -33,7 +33,7 @@ body {
     line-height: 1.25;
 }
 
-.jumbotron .btn {
+.jumbotron .btn .btn-default{
     font-size: 21px;
     padding: 14px 24px;
 }
@@ -71,7 +71,7 @@ body {
 }
 
 /* Downsize the brand/project name a bit */
-.navbar .brand {
+.navbar-brand {
     padding: 14px 20px 16px; /* Increase vertical padding to match navbar links */
     font-size: 16px;
     font-weight: bold;
@@ -80,12 +80,12 @@ body {
 }
 
 /* Navbar links: increase padding for taller navbar */
-.navbar .nav > li > a {
+.navbar-nav > li > a {
     padding: 15px 20px;
 }
 
 /* Offset the responsive button for proper vertical alignment */
-.navbar .btn-navbar {
+.navbar-btn {
     margin-top: 10px;
 }
 
@@ -142,7 +142,6 @@ body {
     height: 50%;
     overflow: auto;
     margin: auto;
-    position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
@@ -182,27 +181,10 @@ body {
     width: 15%;
 }
 
-.insertAndUpdateDialogs {
-    width: 450px;
-    height: 300px;
-}
-
 .displayInLine {
     display: inline;
 }
 
 .dialogErrorMessage {
     margin-left: 10px;
-}
-
-#deleteContactsModal {
-    width: 500px;
-    height: 220px;
-    overflow: hidden;
-}
-
-#searchContactsModal {
-    width: 500px;
-    height: 180px;
-    overflow: hidden;
 }
