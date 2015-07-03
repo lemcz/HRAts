@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-						   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <mvc:annotation-driven/>
     <mvc:default-servlet-handler/>
@@ -11,16 +12,8 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/protected/**"/>
-            <bean class="HRWAATS.interceptor.LoginInterceptor"/>
+            <bean class="HRAts.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
-        <!-- workaround to fix IE8 problem -->
-        <bean id="webContentInterceptor"
-              class="org.springframework.web.servlet.mvc.WebContentInterceptor">
-            <property name="cacheSeconds" value="0"/>
-            <property name="useExpiresHeader" value="true"/>
-            <property name="useCacheControlHeader" value="true"/>
-            <property name="useCacheControlNoStore" value="true"/>
-        </bean>
     </mvc:interceptors>
 
     <!-- TILES -->
@@ -46,7 +39,9 @@
 
     <!-- View Handler -->
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="favorPathExtension" value="true"/>
+
+        <!--v DEPRECATED HERE v-->
+        <!--<property name="favorPathExtension" value="true"/>
         <property name="mediaTypes">
             <map>
                 <entry key="xml" value="text/xml"/>
@@ -54,7 +49,7 @@
                 <entry key="html" value="text/html"/>
                 <entry key="less" value="text/html"/>
             </map>
-        </property>
+        </property>-->
         <property name="viewResolvers">
             <list>
                 <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -66,11 +61,11 @@
             </list>
         </property>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
         <property name="messageConverters">
             <list>
-                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
                 <bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
             </list>
         </property>
     </bean>

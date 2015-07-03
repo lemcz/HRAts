@@ -1,29 +1,62 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<div class="row-fluid">
-    <div class="jumbotron">
-        <h1><spring:message code='project.name'/></h1>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-4 col-md-offset-4 well" ng-controller="loginController">
-        <legend><spring:message code="login.header" /></legend>
-        <div class="alert alert-danger" ng-class="{'': displayLoginError == true, 'none': displayLoginError == false}">
-            <spring:message code="login.error" />
-        </div>
-        <form method="post" action="j_spring_security_check">
-            <div>
-                <input name="j_username" id="j_username" type="text" class="col-md-12 form-control" placeholder="<spring:message code='sample.email' /> " required autofocus><br/>
-                <input name="j_password" id="j_password" type="password" class="col-md-12 form-control" placeholder="Password" required><br/>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="remember-me"> Remember me
-                    </label>
-                </div>
-                <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block"><spring:message code="login.signIn" /></button>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+
+<!DOCTYPE html>
+<html lang="en-EN">
+    <head>
+        <tiles:insertAttribute name="scriptBundle"/>
+    </head>
+    <body ng-app="HRAts">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="jumbotron">
+                <h1><spring:message code='project.name'/></h1>
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4 well" ng-controller="LoginController" id="login">
+                <legend><spring:message code="login.header" /></legend>
+                <div class="alert alert-danger" ng-show="displayLoginError">
+                    <spring:message code="login.error" />
+                </div>
+                <form name="loginForm"
+                      role="form"
+                      method="POST"
+                      action="j_spring_security_check"
+                      novalidate
+                      autocomplete="off">
+                    <div class="form-group">
+                        <label for="j_username" class="sr-only">Username</label>
+                        <input name="j_username"
+                               id="j_username"
+                               type="text"
+                               class="form-control" placeholder="<spring:message code='sample.email'/>"
+                               ng-model="user.username"
+                               required
+                               autofocus/>
+                    </div>
+                    <div class="form-group">
+                        <label for="j_password" class="sr-only">Password</label>
+                            <input name="j_password"
+                                   id="j_password"
+                                   type="password"
+                                   class="form-control"
+                                   ng-model="user.password"
+                                   placeholder="Password"
+                                   required/>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me"/><spring:message code="login.remember"/>
+                        </label>
+                    </div>
+                    <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="loginForm.$invalid"><spring:message code="login.signIn" /></button>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
-<script src="<c:url value='/resources/js/pages/login.js' />"></script>
+        <script src="<c:url value='/resources/js/pages/login.js' />"></script>
+    </body>
+</html>

@@ -1,280 +1,203 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<div id="addContactsModal"
-     class="modal fade"
-     role="dialog"
-     aria-labelledby="addContactsModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title" id="addContactsModalLabel">
-                    <spring:message code="create"/>&nbsp;<spring:message code="contact"/>
-                </h4>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<script type="text/ng-template" id="addContactModal">
+    <div class="modal-header">
+        <button type="button" class="close"
+                data-dismiss="modal"
+                ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="addContactModalLabel">
+            <spring:message code="create"/>&nbsp;<spring:message code="contact"/>
+        </h4>
+    </div>
+    <form name="newContactForm" role="form" novalidate ng-submit="createContact();">
+        <div class="modal-body">
+            <div class="form-group">
+                <label>* <spring:message code="contacts.name"/>:</label>
+                <input type="text"
+                       class="form-control"
+                       required
+                       autofocus
+                       ng-model="newContact.name"
+                       name="name"
+                       placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/>"/>
+                <label>
+                    <span class="alert alert-danger"
+                          ng-show="displayValidationError && newContactForm.name.$error.required">
+                            <spring:message code="required"/>
+                    </span>
+                </label>
             </div>
-            <div class="modal-body">
-                <form name="newContactForm" role="form" novalidate>
-                        <div class="form-group">
-                            <label>* <spring:message code="contacts.name"/>:</label>
-                            <input type="text"
-                                   class="form-control"
-                                   required
-                                   autofocus
-                                   ng-model="contact.name"
-                                   name="name"
-                                   placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/>"/>
-                            <label>
-                                <span class="alert alert-danger"
-                                      ng-show="displayValidationError && newContactForm.name.$error.required">
-                                        <spring:message code="required"/>
-                                </span>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>* <spring:message code="contacts.email"/>:</label>
-                            <input type="text"
-                                   class="form-control"
-                                   required
-                                   ng-model="contact.email"
-                                   name="email"
-                                   placeholder="<spring:message code='sample.email'/> "/>
-                            <label>
-                                    <span class="alert alert-danger"
-                                          ng-show="displayValidationError && newContactForm.email.$error.required">
-                                        <spring:message code="required"/>
-                                    </span>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>* <spring:message code="contacts.phone"/>:</label>
-                            <input type="text"
-                                   class="form-control"
-                                   required
-                                   ng-model="contact.phoneNumber"
-                                   name="phoneNumber"
-                                   placeholder="<spring:message code='sample.phone'/> "/>
-                            <label>
-                                <span class="alert alert-danger"
-                                      ng-show="displayValidationError && newContactForm.phoneNumber.$error.required">
-                                    <spring:message code="required"/>
-                                </span>
-                            </label>
-                        </div>
-                </form>
+            <div class="form-group">
+                <label>* <spring:message code="contacts.note"/>:</label>
+                <input type="text"
+                       class="form-control"
+                       required
+                       ng-model="newContact.note"
+                       name="note"
+                       placeholder="<spring:message code='sample.description'/> "/>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-default"
-                        data-dismiss="modal"
-                        ng-click="exit('#addContactsModal');"
-                        aria-hidden="true">
-                    <spring:message code="cancel"/>
-                </button>
-                <input type="submit"
-                       class="btn btn-primary"
-                       ng-click="createContact(newContactForm);"
-                       value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger dialogErrorMessage"
-                  ng-show="errorOnSubmit">
-                <spring:message code="request.error"/>
-            </span>
+            <div class="form-group">
+                <p>Selected: {{newContact.company}}</p>
+                <ui-select ng-model="newContact.company"
+                           on-select="fetchRelatedDepartments(newContact.company)"
+                           theme="bootstrap"
+                           ng-disabled="disabled"
+                           reset-search-input="false"
+                           style="width: 300px;">
+                    <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
+                        <div ng-bind-html="company.name | highlight: $select.search"></div>
+                        <small>
+                            id: <span ng-bind-html="''+company.id | highlight: $select.search"></span>
+                            name: {{company.name}}
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+
+                <p>Selected: {{newContact.department}}</p>
+                <ui-select ng-model="newContact.department"
+                           on-select="fetchRelatedDepartments(newContact.company)"
+                           theme="bootstrap"
+                           ng-disabled="disabled"
+                           reset-search-input="false"
+                           tagging="departmentTransform"
+                           style="width: 300px;">
+                    <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="department in newContact.departments | propsFilter: {id: $select.search, name: $select.search}">
+                        <div ng-bind-html="department.name | highlight: $select.search"></div>
+                        <small>
+                            id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>
+                            name: {{department.name}}
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+
             </div>
         </div>
-    </div>
-</div>
-
-<div id="updateContactsModal"
-     class="modal fade"
-     aria-labelledby="updateContactsModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title" id="updateContactsModalLabel">
-                    <spring:message code="update"/>&nbsp;<spring:message code="contact"/>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <form name="updateContactForm" novalidate>
-                    <div class="form-group">
-                        <input type="hidden"
-                               required
-                               ng-model="contact.id"
-                               name="id"
-                               value="{{contact.id}}"/>
-                        <label>* <spring:message code="contacts.name"/>:</label>
-                        <input type="text"
-                               class="form-control"
-                               autofocus
-                               required
-                               ng-model="contact.name"
-                               name="name"
-                               placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/> "/>
-                        <label>
-                            <span class="alert alert-danger"
-                                  ng-show="displayValidationError && updateContactForm.name.$error.required">
-                                <spring:message code="required"/>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>* <spring:message code="contacts.email"/>:</label>
-                        <input type="email"
-                               class="form-control"
-                               required
-                               ng-model="contact.email"
-                               name="email"
-                               placeholder="<spring:message code='sample.email'/> "/>
-                        <label>
-                            <span class="alert alert-danger"
-                                  ng-show="displayValidationError && updateContactForm.email.$error.required">
-                                <spring:message code="required"/>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>* <spring:message code="contacts.phone"/>:</label>
-                        <input type="text"
-                               class="form-control"
-                               required
-                               ng-model="contact.phoneNumber"
-                               name="phoneNumber"
-                               placeholder="<spring:message code='sample.phone'/> "/>
-                        <label>
-                            <span class="alert alert-danger"
-                                  ng-show="displayValidationError && updateContactForm.phoneNumber.$error.required">
-                                <spring:message code="required"/>
-                            </span>
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default"
-                        data-dismiss="modal"
-                        ng-click="exit('#updateContactsModal');"
-                        aria-hidden="true">
-                    <spring:message code="cancel"/></button>
-                <input type="submit"
+        <div class="modal-footer">
+            <button class="btn btn-default"
+                    type="button"
+                    data-dismiss="modal"
+                    ng-click="cancel()"
+                    aria-hidden="true">
+                <spring:message code="cancel"/>
+            </button>
+            <input type="submit"
                    class="btn btn-primary"
-                   ng-click="updateContact(updateContactForm);"
-                   value='<spring:message code="update"/>'/>
-                <span class="alert alert-danger dialogErrorMessage"
-                      ng-show="errorOnSubmit">
-                    <spring:message code="request.error"/>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="deleteContactsModal"
-     class="modal fade"
-     aria-labelledby="searchContactsModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 id="deleteContactsModalLabel" class="modal-title">
-                    <spring:message code="delete"/>&nbsp;<spring:message code="contact"/>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <form name="deleteContactForm" novalidate>
-                    <p><spring:message code="delete.confirm"/>:&nbsp;{{contact.name}}?</p>
-                    <button class="btn btn-default"
-                            data-dismiss="modal"
-                            ng-click="exit('#deleteContactsModal');"
-                            aria-hidden="true">
-                        <spring:message code="cancel"/>
-                    </button>
-                    <input type="submit"
-                           class="btn btn-danger"
-                           ng-click="deleteContact();"
-                           value='<spring:message code="delete"/>'/>
-                </form>
-            </div>
-            <span class="alert alert-danger dialogErrorMessage"
-                  ng-show="errorOnSubmit">
+                   ng-disabled="newContactForm.$invalid"
+                   value='<spring:message code="create"/>'/>
+            <span class="alert alert-danger" ng-show="!createContactSuccess">
                 <spring:message code="request.error"/>
             </span>
-            <span class="alert alert-danger dialogErrorMessage"
-                  ng-show="errorIllegalAccess">
-                <spring:message code="request.illegal.access"/>
-            </span>
         </div>
-    </div>
-</div>
+    </form>
+</script>
 
-<div id="searchContactsModal"
-     class="modal fade"
-     aria-labelledby="searchContactsModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title" id="searchContactsModalLabel">
-                    <spring:message code="search"/>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <form name="searchContactForm" novalidate>
-                    <label><spring:message code="search.for"/></label>
-                    <div class="form-group">
-                            <input type="text"
-                                   class="form-control"
-                                   autofocus
-                                   required
-                                   ng-model="searchFor"
-                                   name="searchFor"
-                                   placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/> "/>
-                        <div class="displayInLine">
-                            <label class="displayInLine">
-                                <span class="alert alert-danger"
-                                      ng-show="displayValidationError && searchContactForm.searchFor.$error.required">
-                                    <spring:message code="required"/>
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default"
-                        data-dismiss="modal"
-                        ng-click="exit('#searchContactsModal');"
-                        aria-hidden="true">
-                    <spring:message code="cancel"/>
-                </button>
-                <input type="submit"
-                       class="btn btn-primary"
-                       ng-click="searchContact(searchContactForm, false);"
-                       value='<spring:message code="search"/>'
-                        />
-                <span class="alert alert-danger dialogErrorMessage"
-                      ng-show="errorOnSubmit">
-                    <spring:message code="request.error"/>
-                </span>
-            </div>
-        </div>
+<script type="text/ng-template" id="updateContactModal">
+    <div class="modal-header">
+        <button type="button"
+                class="close"
+                ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="updateContactModalLabel">
+            <spring:message code="update"/>&nbsp;<spring:message code="contact"/>
+        </h4>
     </div>
-</div>
+    <form name="updateContactForm" novalidate ng-submit="updateContact(newContact);">
+    <div class="modal-body">
+            <div class="form-group">
+                <input type="hidden"
+                       required
+                       ng-model="contact.id"
+                       name="id"/>
+                <label>* <spring:message code="contacts.name"/>:</label>
+                <input type="text"
+                       class="form-control"
+                       autofocus
+                       required
+                       ng-model="newContact.name"
+                       name="name"
+                       placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/> "/>
+                <label>
+                    <span class="alert alert-danger"
+                          ng-show="displayValidationError && updateContactForm.name.$error.required">
+                        <spring:message code="required"/>
+                    </span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>* <spring:message code="contacts.note"/>:</label>
+                <input type="text"
+                       class="form-control"
+                       required
+                       ng-model="newContact.note"
+                       name="note"
+                       placeholder="<spring:message code='sample.description'/> "/>
+                <label>
+                    <span class="alert alert-danger"
+                          ng-show="displayValidationError && updateContactForm.email.$error.required">
+                        <spring:message code="required"/>
+                    </span>
+                </label>
+            </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default"
+                type="button"
+                ng-click="cancel();"
+                aria-hidden="true">
+            <spring:message code="cancel"/></button>
+        <input type="submit"
+           class="btn btn-primary"
+           value='<spring:message code="update"/>'/>
+        <span class="alert alert-danger dialogErrorMessage"
+              ng-show="errorOnSubmit">
+            <spring:message code="request.error"/>
+        </span>
+    </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="deleteContactModal">
+    <div class="modal-header">
+        <button type="button" class="close"
+                ng-click="cancel()"
+                data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 id="deleteContactModalLabel" class="modal-title">
+            <spring:message code="delete"/>&nbsp;<spring:message code="contact"/>
+        </h4>
+    </div>
+    <div class="modal-body">
+        <form name="deleteContactForm" novalidate ng-submit="removeRow(contact)">
+            <p><spring:message code="delete.confirm"/>:&nbsp;{{contact.name}}?</p>
+            <button class="btn btn-default"
+                    type="button"
+                    data-dismiss="modal"
+                    ng-click="cancel()"
+                    aria-hidden="true">
+                <spring:message code="cancel"/>
+            </button>
+            <input type="submit"
+                   class="btn btn-danger"
+                   value='<spring:message code="delete"/>'/>
+        </form>
+    </div>
+    <span class="alert alert-danger dialogErrorMessage"
+          ng-show="errorOnSubmit">
+        <spring:message code="request.error"/>
+    </span>
+    <span class="alert alert-danger dialogErrorMessage"
+          ng-show="errorIllegalAccess">
+        <spring:message code="request.illegal.access"/>
+    </span>
+</script>

@@ -3,16 +3,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+                           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
     <security:global-method-security secured-annotations="enabled" />
 
-    <security:http auto-config="true" use-expressions="true" access-denied-page="/login?error=403">
+    <security:http pattern="public/**" security="none"/>
+    <security:http pattern="WEB-INF/tiles.xml" security="none"/>
 
-        <security:intercept-url pattern="/" access="permitAll" />
+    <security:http auto-config="true" use-expressions="true">
+        <security:access-denied-handler error-page="/login?error=403" />
+        <security:intercept-url pattern="/login" access="permitAll" />
         <security:intercept-url pattern="/protected/**" access="isAuthenticated()" />
-
-        <security:form-login login-page="/login" authentication-failure-url="/login?error=403" default-target-url="/protected/home" />
+        
+        <security:form-login login-page="/login"
+                             login-processing-url="/j_spring_security_check"
+                             username-parameter="j_username"
+                             password-parameter="j_password"
+                             authentication-failure-url="/login?error=403" default-target-url="/protected/home" />
 
         <security:logout invalidate-session="true" logout-success-url="/login" logout-url="/logout" />
     </security:http>
@@ -20,9 +27,9 @@
     <security:authentication-manager>
         <security:authentication-provider>
             <security:jdbc-user-service
-                    data-source-ref="myContactDataSource"
-                    users-by-username-query="select email, password, enabled from system_user where email = ?"
-                    authorities-by-username-query="select u.email as login, u.user_role as role from system_user u where u.email = ?" />
+                    data-source-ref="dataSource"
+                    users-by-username-query="select email, password, enabled from user_account where email = ?"
+                    authorities-by-username-query="select u.email as login, u.user_role as role from user_account u where u.email = ?" />
         </security:authentication-provider>
     </security:authentication-manager>
 </beans>

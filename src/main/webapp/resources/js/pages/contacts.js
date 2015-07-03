@@ -1,253 +1,203 @@
-function contactsController($scope, $http) {
-    $scope.pageToGet = 0;
+(function(angular){
 
-    $scope.state = 'busy';
+    var hratsApp = angular.module('HRAts');
 
-    $scope.lastAction = '';
+    hratsApp.filter('propsFilter', function() {
+        return function(items, props) {
+            var out = [];
 
-    $scope.url = "/HRWAATS/protected/contacts/";
+            if (angular.isArray(items)) {
+                items.forEach(function(item) {
+                    var itemMatches = false;
 
-    $scope.errorOnSubmit = false;
-    $scope.errorIllegalAccess = false;
-    $scope.displayMessageToUser = false;
-    $scope.displayValidationError = false;
-    $scope.displaySearchMessage = false;
-    $scope.displaySearchButton = false;
-    $scope.displayCreateContactButton = false;
+                    var keys = Object.keys(props);
+                    for (var i = 0; i < keys.length; i++) {
+                        var prop = keys[i];
+                        var text = props[prop].toLowerCase();
+                        if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                            itemMatches = true;
+                            break;
+                        }
+                    }
 
-    $scope.contact = {}
-
-    $scope.searchFor = ""
-
-    $scope.getContactList = function () {
-        var url = $scope.url;
-        $scope.lastAction = 'list';
-
-        $scope.startDialogAjaxRequest();
-
-        var config = {params: {page: $scope.pageToGet}};
-
-        $http.get(url, config)
-            .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, null, false);
-            })
-            .error(function () {
-                $scope.state = 'error';
-                $scope.displayCreateContactButton = false;
-            });
-    }
-
-    $scope.populateTable = function (data) {
-        if (data.pagesCount > 0) {
-            $scope.state = 'list';
-
-            $scope.page = {source: data.contacts, currentPage: $scope.pageToGet, pagesCount: data.pagesCount, totalContacts : data.totalContacts};
-
-            if($scope.page.pagesCount <= $scope.page.currentPage){
-                $scope.pageToGet = $scope.page.pagesCount - 1;
-                $scope.page.currentPage = $scope.page.pagesCount - 1;
+                    if (itemMatches) {
+                        out.push(item);
+                    }
+                });
+            } else {
+                // Let the output be the input untouched
+                out = items;
             }
 
-            $scope.displayCreateContactButton = true;
-            $scope.displaySearchButton = true;
-        } else {
-            $scope.state = 'noresult';
-            $scope.displayCreateContactButton = true;
-
-            if(!$scope.searchFor){
-                $scope.displaySearchButton = false;
-            }
+            return out;
         }
+    });
 
-        if (data.actionMessage || data.searchMessage) {
-            $scope.displayMessageToUser = $scope.lastAction != 'search';
+    hratsApp.service('ContactService', function ($http){
 
-            $scope.page.actionMessage = data.actionMessage;
-            $scope.page.searchMessage = data.searchMessage;
-        } else {
-            $scope.displayMessageToUser = false;
+        var baseUrl = 'http://localhost:8080/HRAts/protected/contacts/';
+
+        this.paginationOptions = function(){
+            return [10, 15, 25, 50, 100];
+        };
+
+        this.fetchAll = function () {
+            return $http.get(baseUrl);
+        };
+
+        this.fetchById = function(contactId) {
+            return $http.get(baseUrl + contactId)
+        };
+
+        this.createRow = function(contactData){
+            return $http.post(baseUrl, contactData);
+        };
+
+        this.updateRow = function(contactData) {
+            return $http.put(baseUrl+contactData.id, contactData);
+        };
+
+        this.removeRow = function(contactId){
+            return $http.delete(contactId);
+        };
+    });
+
+    //todo find a better place for this
+    hratsApp.service('DepartmentService', function ($http){
+
+        var baseUrl = 'http://localhost:8080/HRAts/protected/departments';
+        this.fetchAll = function() {
+            return $http.get(baseUrl);
+        };
+
+        this.fetchAllByName = function() {
+            return $http.get(baseUrl+'/byName');
+        };
+
+        this.fetchAllByCompany = function(companyId) {
+            return $http.get(baseUrl+'/?companyId='+companyId);
         }
-    }
+    });
 
-    $scope.changePage = function (page) {
-        $scope.pageToGet = page;
+    hratsApp.controller('ContactController', function($scope, $modal, ContactService){
 
-        if($scope.searchFor){
-            $scope.searchContact($scope.searchFor, true);
-        } else{
-            $scope.getContactList();
-        }
-    };
+        $scope.contactsCollection = [];
 
-    $scope.exit = function (modalId) {
-        $(modalId).modal('hide');
+        $scope.paginationOptions = ContactService.paginationOptions();
 
-        $scope.contact = {};
-        $scope.errorOnSubmit = false;
-        $scope.errorIllegalAccess = false;
-        $scope.displayValidationError = false;
-    }
-
-    $scope.finishAjaxCallOnSuccess = function (data, modalId, isPagination) {
-        $scope.populateTable(data);
-        $("#loadingModal").modal('hide');
-
-        if(!isPagination){
-            if(modalId){
-                $scope.exit(modalId);
-            }
-        }
-
-        $scope.lastAction = '';
-    }
-
-    $scope.startDialogAjaxRequest = function () {
-        $scope.displayValidationError = false;
-        $("#loadingModal").modal('show');
-        $scope.previousState = $scope.state;
-        $scope.state = 'busy';
-    }
-
-    $scope.handleErrorInDialogs = function (status) {
-        $("#loadingModal").modal('hide');
-        $scope.state = $scope.previousState;
-
-        // illegal access
-        if(status == 403){
-            $scope.errorIllegalAccess = true;
-            return;
-        }
-
-        $scope.errorOnSubmit = true;
-        $scope.lastAction = '';
-    }
-
-    $scope.addSearchParametersIfNeeded = function(config, isPagination) {
-        if(!config.params){
-            config.params = {};
-        }
-
-        config.params.page = $scope.pageToGet;
-
-        if($scope.searchFor){
-            config.params.searchFor = $scope.searchFor;
-        }
-    }
-
-    $scope.resetContact = function(){
-        $scope.contact = {};
-    };
-
-    $scope.createContact = function (newContactForm) {
-        if (!newContactForm.$valid) {
-            $scope.displayValidationError = true;
-            return;
-        }
-
-        $scope.lastAction = 'create';
-
-        var url = $scope.url;
-
-        var config = {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}};
-
-        $scope.addSearchParametersIfNeeded(config, false);
-
-        $scope.startDialogAjaxRequest();
-
-        $http.post(url, $.param($scope.contact), config)
+        ContactService.fetchAll()
             .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, "#addContactsModal", false);
+                $scope.contactsCollection = data;
+                $scope.displayedCollection = [].concat($scope.contactsCollection);
             })
-            .error(function(data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
+            .error(function (status, data) {
+                alert("Unable to fetch data ("+status+").");
             });
-    };
 
-    $scope.selectedContact = function (contact) {
-        var selectedContact = angular.copy(contact);
-        $scope.contact = selectedContact;
-    }
+        $scope.openModal = function(modalTemplate, contact){
 
-    $scope.updateContact = function (updateContactForm) {
-        if (!updateContactForm.$valid) {
-            $scope.displayValidationError = true;
-            return;
-        }
-
-        $scope.lastAction = 'update';
-
-        var url = $scope.url + $scope.contact.id;
-
-        $scope.startDialogAjaxRequest();
-
-        var config = {}
-
-        $scope.addSearchParametersIfNeeded(config, false);
-
-        $http.put(url, $scope.contact, config)
-            .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, "#updateContactsModal", false);
-            })
-            .error(function(data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: modalTemplate,
+                controller: 'ModalInstanceController',
+                size: 'lg',
+                backdrop: true,
+                scope: $scope,
+                resolve: {
+                    contact: function(){
+                        return contact;
+                    }
+                }
             });
-    };
+        };
+    });
 
-    $scope.searchContact = function (searchContactForm, isPagination) {
-        if (!($scope.searchFor) && (!searchContactForm.$valid)) {
-            $scope.displayValidationError = true;
-            return;
-        }
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, ContactService, contact, CompanyService, DepartmentService){
 
-        $scope.lastAction = 'search';
+        $scope.companiesCollection = [];
 
-        var url = $scope.url +  $scope.searchFor;
+        CompanyService.fetchAll()
+                .success(function (data){
+                    console.log(data);
+                    $scope.companiesCollection = data;
+                })
+                .error(function (status, data){
+                    alert("Unable to fetch data ("+status+").");
+                });
 
-        $scope.startDialogAjaxRequest();
+        //Add contact variables
+        $scope.createContactSuccess = true;
+        $scope.newContact = angular.copy(contact) || {};
 
-        var config = {};
+        $scope.departmentTransform = function(newDepartment) {
+            var department = {
+                    name: newDepartment,
+                    company: {id: $scope.newContact.company.id}
+            };
 
-        if($scope.searchFor){
-            $scope.addSearchParametersIfNeeded(config, isPagination);
-        }
+            return department;
+        };
 
-        $http.get(url, config)
-            .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, "#searchContactsModal", isPagination);
-                $scope.displaySearchMessage = true;
-            })
-            .error(function(data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
-            });
-    };
+        $scope.newContact.owner = {};
+        $scope.newContact.owner.id = $('#userId').attr('value');
 
-    $scope.deleteContact = function () {
-        $scope.lastAction = 'delete';
+        $scope.fetchRelatedDepartments = function(company) {
+            DepartmentService.fetchAllByCompany(company.id)
+                .success(function(data){
+                    $scope.newContact.departments = data;
+                })
+                .error(function(data, status){
+                    alert("Unable to fetch departments ("+status+").");
+                });
+            return $scope.newContact.departments;
+        };
 
-        var url = $scope.url + $scope.contact.id;
+        //Edit/delete contact variables
+        $scope.contact = contact;
 
-        $scope.startDialogAjaxRequest();
+        $scope.createContact = function(){
+            $scope.newContact.role = "ROLE_MANAGER";
+            console.log($scope.newContact);
+            ContactService.createRow($scope.newContact)
+                .success(function(data){
+                    console.log(data);
+                    $scope.contactsCollection.push(data);
+                })
+                .error(function(data,status){
+                    $scope.createContactSuccess = false;
+                    alert("Unable to create record ("+status+").");
+                });
 
-        var params = {searchFor: $scope.searchFor, page: $scope.pageToGet};
+            $modalInstance.close();
+        };
 
-        $http({
-            method: 'DELETE',
-            url: url,
-            params: params
-        }).success(function (data) {
-                $scope.resetContact();
-                $scope.finishAjaxCallOnSuccess(data, "#deleteContactsModal", false);
-            }).error(function(data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
-            });
-    };
+        $scope.updateContact = function(contact) {
+            ContactService.updateRow(contact)
+                .success(function(data){
+                    angular.copy(data, $scope.contact);
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to update record ("+status+").");
+                })
+        };
 
-    $scope.resetSearch = function(){
-        $scope.searchFor = "";
-        $scope.pageToGet = 0;
-        $scope.getContactList();
-        $scope.displaySearchMessage = false;
-    }
+        $scope.removeRow = function(contact) {
+            ContactService.removeRow(contact.id)
+                .success(function(){
+                    var index = $scope.contactsCollection.indexOf(contact);
+                    if(index !== -1){
+                        $scope.contactsCollection.splice(index, 1);
+                    }
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to remove record ("+status+").");
+                })
+        };
 
-    $scope.getContactList();
-}
+        $scope.cancel = function(){
+            $modalInstance.dismiss('cancel');
+        };
+    });
+})(angular);
