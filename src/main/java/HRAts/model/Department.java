@@ -1,5 +1,7 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -26,9 +28,11 @@ public class Department implements Serializable {
     @Column(name="date_modified", nullable = false)
     private Date dateModified;
 
-    @OneToMany(mappedBy="department", targetEntity=Vacancy.class, fetch=FetchType.EAGER)
+    @JsonManagedReference("department-vacancy")
+    @OneToMany(mappedBy="department", targetEntity=Vacancy.class, fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Vacancy> vacancies;
 
+    @JsonBackReference("user-department")
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
@@ -37,6 +41,7 @@ public class Department implements Serializable {
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private User manager;
 
+    @JsonBackReference("company-department")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;

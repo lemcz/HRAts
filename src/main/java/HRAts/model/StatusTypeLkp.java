@@ -15,7 +15,7 @@ public class StatusTypeLkp implements Serializable{
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @Column
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     public StatusTypeLkp(){}

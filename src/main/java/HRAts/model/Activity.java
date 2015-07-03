@@ -17,8 +17,8 @@ public class Activity {
     @Column(name="date_entered", nullable = false)
     private Date dateEntered;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "activity_type_id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "activity_type_id", nullable = false, updatable = false)
     private ActivityTypeLkp activityType;
 
     public Activity(){}

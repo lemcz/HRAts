@@ -1,6 +1,7 @@
 package HRAts.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -38,11 +39,14 @@ public class User implements Serializable{
     private CandidateInformation candidateInformation;
 
     @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER)
+    @JsonManagedReference("candidate-vacancy_user")
     private List<VacancyUser> vacancyUserCandidateList;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    @JsonManagedReference("owner-vacancy_user")
     private List<VacancyUser> vacancyUserOwnerList;
 
+    @JsonManagedReference("user-department")
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> departmentList;
 

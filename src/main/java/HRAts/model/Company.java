@@ -1,5 +1,7 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -23,6 +25,7 @@ public class Company implements Serializable{
     @Column(name="date_modified", nullable = false)
     private Date dateModified;
 
+    @JsonManagedReference("company-department")
     @OneToMany(mappedBy = "company", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> department;
 

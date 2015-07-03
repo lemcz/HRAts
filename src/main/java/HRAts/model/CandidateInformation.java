@@ -23,8 +23,8 @@ public class CandidateInformation implements Serializable{
     private Date datePrevJobTermination;
     private Date startDate;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "contract_type_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "contract_type_id", nullable = false, updatable = false, unique = false)
     private ContractTypeLkp contractType;
 
     @ManyToMany(fetch = FetchType.EAGER)

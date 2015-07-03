@@ -1,5 +1,8 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +18,7 @@ public class Vacancy implements Serializable {
     private int id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "numberofvacancies", nullable = false)
+    @Column(name = "number_of_vacancies", nullable = false)
     private int numberOfVacancies;
     @Column(name = "description", nullable = false)
     private String description;
@@ -27,11 +30,13 @@ public class Vacancy implements Serializable {
     @Column(name = "date_modified")
     private Date dateModified;
 
+    @JsonManagedReference("vacancy-vacancy_user")
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<VacancyUser> vacancyUserList;
 
     //TODO add nullable = true, optional = false where needed (omitted to make it easier to develop front-end)
-    @ManyToOne(optional = true)
+    @JsonBackReference("department-vacancy")
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 

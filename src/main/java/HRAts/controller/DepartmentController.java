@@ -41,17 +41,7 @@ public class DepartmentController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Department createDepartment(@RequestBody final Department department, Principal principal){
-       /* org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        User owner = new User();
-        owner.setName(user.getUsername());
-        
-        department.setOwner(owner);
-*/
-
-        System.out.println("PRINCIPAL NAME: : :" + principal.getName());
-
-        return departmentService.save(department);
+          return departmentService.save(department);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")

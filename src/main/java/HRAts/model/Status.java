@@ -1,5 +1,7 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,22 +23,23 @@ public class Status implements Serializable{
     @Column(name = "date_entered")
     private Date dateEntered;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "status_type_id", nullable = false, insertable = false, updatable = false)
-    private StatusTypeLkp statusTypeId;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "status_type_id", nullable = false, updatable = false, unique = false)
+    private StatusTypeLkp statusType;
 
     @ManyToOne(optional = true)
+    @JsonBackReference("vacancy_user-status")
     @JoinColumn(name = "vacancy_user_id", referencedColumnName = "id")
     private VacancyUser vacancyUser;
 
     public Status(){}
 
-    public Status(boolean isActive, String note, Date dateEntered, StatusTypeLkp statusTypeId, VacancyUser vacancyUser){
+    public Status(boolean isActive, String note, Date dateEntered, StatusTypeLkp statusType, VacancyUser vacancyUser){
         super();
         this.isActive = isActive;
         this.note = note;
         this.dateEntered = dateEntered;
-        this.statusTypeId = statusTypeId;
+        this.statusType = statusType;
         this.vacancyUser = vacancyUser;
     }
 
@@ -78,12 +81,12 @@ public class Status implements Serializable{
         this.isActive = isActive;
     }
 
-    public StatusTypeLkp getStatusTypeId() {
-        return statusTypeId;
+    public StatusTypeLkp getStatusType() {
+        return statusType;
     }
 
-    public void setStatusTypeId(StatusTypeLkp statusTypeId) {
-        this.statusTypeId = statusTypeId;
+    public void setStatusType(StatusTypeLkp statusType) {
+        this.statusType = statusType;
     }
 
     public VacancyUser getVacancyUser() {

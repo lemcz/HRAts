@@ -1,11 +1,14 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "vacancy_user")
 public class VacancyUser implements Serializable{
 
     @Id
@@ -14,18 +17,22 @@ public class VacancyUser implements Serializable{
     private int id;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn(name="vacancy_id", referencedColumnName="id")
+    @JsonBackReference("vacancy-vacancy_user")
+    @JoinColumn(name="vacancy_id", referencedColumnName="id")
     private Vacancy vacancy;
 
     @ManyToOne
+    @JsonBackReference("candidate-vacancy_user")
     @JoinColumn(name = "candidate_id", referencedColumnName = "id")
     private User candidate;
 
     @ManyToOne
+    @JsonBackReference("owner-vacancy_user")
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
-    @OneToMany(mappedBy = "vacancyUser", fetch = FetchType.EAGER)
+    @JsonManagedReference("vacancy_user-status")
+    @OneToMany(mappedBy = "vacancyUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Status> statusList;
 
     public VacancyUser() {}
