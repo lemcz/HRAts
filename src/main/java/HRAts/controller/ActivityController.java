@@ -1,7 +1,7 @@
 package HRAts.controller;
 
-import HRAts.model.Vacancy;
-import HRAts.service.VacancyService;
+import HRAts.model.Activity;
+import HRAts.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,45 +9,45 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = "/protected/vacancies")
-public class VacancyController {
+@RequestMapping(value = "/protected/activities")
+public class ActivityController {
 
     @Autowired
-    private VacancyService vacancyService;
+    private ActivityService activityService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
-        return new ModelAndView("vacanciesList");
+        return new ModelAndView("activitiesList");
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Iterable<Vacancy> listVacancies(){
-        return vacancyService.findAll();
+    public Iterable<Activity> listActivities(){
+        return activityService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public Vacancy getVacancyById(@PathVariable int id){
-        return vacancyService.findById(id);
+    public Activity getActivityById(@PathVariable int id){
+        return activityService.findById(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Vacancy createVacancy(@RequestBody Vacancy vacancy){
-        return vacancyService.save(vacancy);
+    public @ResponseBody Activity createActivity(@RequestBody final Activity activity){
+        return activityService.save(activity);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> updateVacancy(@PathVariable("id") int vacancyId,
-                                           @RequestBody Vacancy vacancy) {
-        if (vacancyId != vacancy.getId()){
+    public ResponseEntity<?> updateActivity(@PathVariable("id") int activityId,
+                                           @RequestBody Activity activity) {
+        if (activityId != activity.getId()){
             return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Vacancy>(vacancyService.save(vacancy), HttpStatus.OK);
+        return new ResponseEntity<Activity>(activityService.save(activity), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody void deleteVacancy(@PathVariable("id") int vacancyId) {
-        vacancyService.delete(vacancyId);
+    public @ResponseBody void deleteActivity(@PathVariable("id") int activityId) {
+        activityService.delete(activityId);
     }
 }

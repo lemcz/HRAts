@@ -40,16 +40,6 @@
     <!-- View Handler -->
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 
-        <!--v DEPRECATED HERE v-->
-        <!--<property name="favorPathExtension" value="true"/>
-        <property name="mediaTypes">
-            <map>
-                <entry key="xml" value="text/xml"/>
-                <entry key="json" value="application/json"/>
-                <entry key="html" value="text/html"/>
-                <entry key="less" value="text/html"/>
-            </map>
-        </property>-->
         <property name="viewResolvers">
             <list>
                 <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
@@ -68,5 +58,10 @@
                 <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
             </list>
         </property>
+    </bean>
+
+    <bean id = "multipartResolver" class = "org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- Maximum upload file size -->
+        <property name="maxUploadSize" value="100000"/>
     </bean>
 </beans>

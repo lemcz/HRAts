@@ -13,6 +13,8 @@
             $scope.activeURL = 'contacts';
         } else if($location.$$absUrl.lastIndexOf('/candidates') > 0){
             $scope.activeURL = 'candidates';
+        } else if($location.$$absUrl.lastIndexOf('/activities') > 0){
+            $scope.activeURL = 'activities';
         }
         else{
             $scope.activeURL = 'home';

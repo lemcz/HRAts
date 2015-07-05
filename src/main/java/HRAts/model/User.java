@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,10 @@ public class User implements Serializable{
     private String enabled;
     @JsonIgnore
     private String password;
+    @Column(name="date_entered", nullable = false)
+    private Date dateEntered;
+    @Column(name="date_modified", nullable = false)
+    private Date dateModified;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role")
@@ -60,7 +65,7 @@ public class User implements Serializable{
     public User () {}
 
     public User(String email, String name, String middleName, String lastName, String phoneNumber,
-                String note, String enabled, String password, Role role,
+                String note, String enabled, String password, Date dateEntered, Date dateModified, Role role,
                 CandidateInformation candidateInformation, List<VacancyUser> vacancyUserCandidateList,
                 List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, User owner, List<User> contactList) {
         this.email = email;
@@ -71,6 +76,8 @@ public class User implements Serializable{
         this.note = note;
         this.enabled = enabled;
         this.password = password;
+        this.dateEntered = dateEntered;
+        this.dateModified = dateModified;
         this.role = role;
         this.candidateInformation = candidateInformation;
         this.vacancyUserCandidateList = vacancyUserCandidateList;
@@ -78,6 +85,18 @@ public class User implements Serializable{
         this.departmentList = departmentList;
         this.owner = owner;
         this.contactList = contactList;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        Date currentDate = new Date();
+        setDateEntered(currentDate);
+        setDateModified(currentDate);
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        setDateModified(new Date());
     }
 
     public int getId() {
@@ -206,5 +225,21 @@ public class User implements Serializable{
 
     public void setVacancyUserOwnerList(List<VacancyUser> vacancyUserOwnerList) {
         this.vacancyUserOwnerList = vacancyUserOwnerList;
+    }
+
+    public Date getDateEntered() {
+        return dateEntered;
+    }
+
+    public void setDateEntered(Date dateEntered) {
+        this.dateEntered = dateEntered;
+    }
+
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
     }
 }

@@ -30,7 +30,6 @@ public class CompanyController {
     public Company getCompanyById(@PathVariable int id){
         return companyService.findById(id);
     }
-    //w przypadku wielu(listy) trzeba stworzyc obiekt Iterable<Company>
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

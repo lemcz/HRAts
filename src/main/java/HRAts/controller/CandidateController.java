@@ -1,8 +1,7 @@
 package HRAts.controller;
 
-import HRAts.model.Department;
-import HRAts.model.Role;
-import HRAts.model.User;
+import HRAts.model.*;
+import HRAts.service.ActivityService;
 import HRAts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,8 @@ public class CandidateController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ActivityService activityService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -46,6 +47,21 @@ public class CandidateController {
         candidate.setRole(role);
         candidate.setContactList(contactList);
         candidate.setDepartmentList(departmentList);
+
+        if(candidate.getVacancyUserCandidateList() != null) {
+            User owner = candidate.getOwner();
+            Activity insertCandidateActivity = new Activity();
+            insertCandidateActivity.setOwner(owner);
+            insertCandidateActivity.setNote("New candidate added to the repository");
+            insertCandidateActivity.setActivityType(new ActivityTypeLkp(4, "Other"));
+
+            User savedUser = userService.save(candidate);
+            if(savedUser != null) {
+                activityService.save(insertCandidateActivity);
+            }
+            return savedUser;
+
+        }
         return userService.save(candidate);
     }
 

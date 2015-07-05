@@ -26,7 +26,7 @@ public class CandidatesController {
     private DeprecatedCandidateService deprecatedCandidateService;
 
     @Autowired
-    private MessageSource messageSource;
+        private MessageSource messageSource;
 
     @Value("100")
     private int maxResults;

@@ -34,7 +34,6 @@ public class SectorController {
     public Sector getSectorById(@PathVariable int id){
         return sectorService.findById(id);
     }
-    //w przypadku wielu(listy) trzeba stworzyc obiekt Iterable<Sector>
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
