@@ -40,10 +40,14 @@ public class Vacancy implements Serializable {
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
+    @JsonManagedReference("attachment-vacancy")
+    @OneToMany(mappedBy = "vacancy")
+    private List<Attachment> attachmentList;
+
     public Vacancy(){}
 
     public Vacancy(String name, int numberOfVacancies, String description, String note, Date dateEntered,
-                   Date dateModified, List<VacancyUser> vacancyUserList, Department department){
+                   Date dateModified, List<VacancyUser> vacancyUserList, Department department, List<Attachment> attachmentList){
         super();
         this.name = name;
         this.numberOfVacancies = numberOfVacancies;
@@ -53,6 +57,7 @@ public class Vacancy implements Serializable {
         this.dateModified = dateModified;
         this.vacancyUserList = vacancyUserList;
         this.department = department;
+        this.attachmentList = attachmentList;
     }
 
     @PrePersist
@@ -138,5 +143,13 @@ public class Vacancy implements Serializable {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public List<Attachment> getAttachmentList() {
+        return attachmentList;
+    }
+
+    public void setAttachmentList(List<Attachment> attachmentList) {
+        this.attachmentList = attachmentList;
     }
 }

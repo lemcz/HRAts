@@ -16,4 +16,7 @@ public interface AttachmentRepository extends CrudRepository<Attachment, Integer
     Attachment findByCompany_Id(@Param("id") int id);
 
     Attachment findByVacancy_Id(@Param("id") int id);
+
+    Attachment findByContact_IdAndName(@Param("id") int id,
+                                       @Param("fileName") String filePath);
 }

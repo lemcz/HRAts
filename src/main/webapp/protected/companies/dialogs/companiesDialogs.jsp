@@ -48,9 +48,8 @@
                     <auto-complete source="loadSectors($query)"></auto-complete>
                 </tags-input>
                 <label>Departments: </label>
-                <tags-input ng-model="newCompany.department"
+                <tags-input ng-model="newCompany.departmentList"
                             display-property="name">
-
                 </tags-input>
             </div>
         </div>

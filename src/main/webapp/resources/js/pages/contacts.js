@@ -49,8 +49,14 @@
             return $http.get(baseUrl + contactId)
         };
 
+        this.sendCustomRequest = function(endPoint, requestData) {
+            requestData.url = baseUrl + endPoint;
+            return $http(requestData);
+        };
+
         this.createRow = function(contactData){
-            return $http.post(baseUrl, contactData);
+            var temporaryAppend = "uploadContactAndFiles";
+            return $http.post(baseUrl + temporaryAppend, contactData);
         };
 
         this.updateRow = function(contactData) {
@@ -112,22 +118,31 @@
         };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, ContactService, contact, CompanyService, DepartmentService){
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, $timeout, Upload, ContactService, contact, CompanyService, DepartmentService){
 
         $scope.companiesCollection = [];
 
+        $scope.log = "";
+
         CompanyService.fetchAll()
-                .success(function (data){
-                    console.log(data);
-                    $scope.companiesCollection = data;
-                })
-                .error(function (status, data){
-                    alert("Unable to fetch data ("+status+").");
-                });
+            .success(function (data){
+                console.log(data);
+                $scope.companiesCollection = data;
+            })
+            .error(function (status, data){
+                alert("Unable to fetch data ("+status+").");
+            });
 
         //Add contact variables
         $scope.createContactSuccess = true;
         $scope.newContact = angular.copy(contact) || {};
+        $scope.newContact.departmentList = $scope.newContact.departmentList || [];
+
+        $scope.newContact.owner = {};
+        $scope.newContact.owner.id = $('#userId').attr('value');
+
+        //Edit/delete contact variables
+        $scope.contact = contact;
 
         $scope.departmentTransform = function(newDepartment) {
             var department = {
@@ -138,37 +153,51 @@
             return department;
         };
 
-        $scope.newContact.owner = {};
-        $scope.newContact.owner.id = $('#userId').attr('value');
-
         $scope.fetchRelatedDepartments = function(company) {
+            console.log(company);
+            $scope.newContact.departmentList = {};
             DepartmentService.fetchAllByCompany(company.id)
                 .success(function(data){
-                    $scope.newContact.departments = data;
+                    company.departmentList = data;
                 })
                 .error(function(data, status){
                     alert("Unable to fetch departments ("+status+").");
                 });
-            return $scope.newContact.departments;
+            console.log(company);
+            return company.departmentList;
         };
 
-        //Edit/delete contact variables
-        $scope.contact = contact;
-
-        $scope.createContact = function(){
+        $scope.createContact = function (files) {
             $scope.newContact.role = "ROLE_MANAGER";
-            console.log($scope.newContact);
-            ContactService.createRow($scope.newContact)
-                .success(function(data){
-                    console.log(data);
-                    $scope.contactsCollection.push(data);
-                })
-                .error(function(data,status){
-                    $scope.createContactSuccess = false;
-                    alert("Unable to create record ("+status+").");
-                });
+            var formData = new FormData();
+            formData.append('data', new Blob([JSON.stringify($scope.newContact)], { type: "application/json" }));
 
-            $modalInstance.close();
+            if (files && files.length) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    formData.append("file", file);
+                }
+            }
+
+            var req = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': undefined
+                },
+                data: formData
+            };
+
+            ContactService.sendCustomRequest('', req)
+                .success(function (data) {
+                    $timeout(function() {
+                        $scope.log = 'file: ' + file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                    });
+                    $scope.contactsCollection.push(data);
+                    $modalInstance.close();
+                })
+                .error(function (data, status) {
+                    alert("Unable to fetch data: "+ data + " status: " + status);
+                });
         };
 
         $scope.updateContact = function(contact) {

@@ -1,6 +1,6 @@
 (function(angular) {
 
-    var hratsApp = angular.module('HRAts', ['ui.bootstrap', 'smart-table', 'ngTagsInput', 'ui.select', 'ngSanitize']);
+    var hratsApp = angular.module('HRAts', ['ui.bootstrap', 'smart-table', 'ngTagsInput', 'ui.select', 'ngSanitize', 'ngFileUpload']);
 
     hratsApp.controller('LocationController', function($scope, $location){
         if($location.$$absUrl.lastIndexOf('/candidates') > 0){

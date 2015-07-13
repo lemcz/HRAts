@@ -53,7 +53,11 @@ public class CandidateController {
             Activity insertCandidateActivity = new Activity();
             insertCandidateActivity.setOwner(owner);
             insertCandidateActivity.setNote("New candidate added to the repository");
-            insertCandidateActivity.setActivityType(new ActivityTypeLkp(4, "Other"));
+
+            ActivityTypeLkp insertCandidateActivityType = new ActivityTypeLkp();
+            insertCandidateActivityType.setName("Other");
+                    
+            insertCandidateActivity.setActivityType(insertCandidateActivityType);
 
             User savedUser = userService.save(candidate);
             if(savedUser != null) {

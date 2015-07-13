@@ -83,6 +83,8 @@
         //Add company variables
         $scope.createCompanySuccess = true;
         $scope.newCompany = angular.copy(company) || {};
+        $scope.newCompany.owner = {};
+        $scope.newCompany.owner.id = $('#userId').attr('value');
 
         $scope.loadSectors = function(query) {
             return SectorService.fetchAllByName();
@@ -92,10 +94,12 @@
         $scope.company = company;
 
         $scope.createCompany = function(){
+            for (var i = 0; i < $scope.newCompany.departmentList.length; i++) {
+                $scope.newCompany.departmentList[i].owner = {id: $scope.newCompany.owner.id};
+            }
             console.log($scope.newCompany);
-
             CompanyService.createRow($scope.newCompany)
-                .success(function(data){
+            .success(function(data){
                     console.log(data);
                     $scope.companiesCollection.push(data);
                 })

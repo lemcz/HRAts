@@ -1,7 +1,10 @@
 package HRAts.controller;
 
 import HRAts.model.Company;
+import HRAts.model.Department;
 import HRAts.service.CompanyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,9 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/protected/companies")
 public class CompanyController {
+
+    private static final Logger logger = LoggerFactory
+            .getLogger(CompanyController.class);
 
     @Autowired
     private CompanyService companyService;
@@ -48,7 +56,19 @@ public class CompanyController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody void deleteCompany(@PathVariable("id") int companyId) {
+    public @ResponseBody ResponseEntity<?> deleteCompany(@PathVariable("id") int companyId) {
+
+        Company company = companyService.findById(companyId);
+
+        List<Department> departmentList = company.getDepartmentList();
+        for (Department department : departmentList) {
+            if (department.getManager() != null) {
+                logger.info("Cannot DELETE requested company with id : " + companyId);
+                return new ResponseEntity<String>("Other objects depend on this company, cannot delete", HttpStatus.BAD_REQUEST);
+            }
+        }
+        logger.info("Will delete company with ID : " + companyId);
         companyService.delete(companyId);
+        return new ResponseEntity<String>("Delete successful", HttpStatus.OK);
     }
 }

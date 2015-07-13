@@ -19,7 +19,7 @@ public class User implements Serializable{
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     @Column
     private String name;
@@ -43,7 +43,7 @@ public class User implements Serializable{
     @OneToOne(optional = true, cascade = CascadeType.ALL, targetEntity=CandidateInformation.class)
     private CandidateInformation candidateInformation;
 
-    @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference("candidate-vacancy_user")
     private List<VacancyUser> vacancyUserCandidateList;
 
@@ -51,9 +51,22 @@ public class User implements Serializable{
     @JsonManagedReference("owner-vacancy_user")
     private List<VacancyUser> vacancyUserOwnerList;
 
-    @JsonManagedReference("user-department")
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference("user-department")
+    @JsonIgnore
     private List<Department> departmentList;
+
+    @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference("attachment-candidate")
+    private List<Attachment> candidateAttachmentList;
+
+    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference("attachment-contact")
+    private List<Attachment> contactAttachmentList;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference("attachment-owner")
+    private List<Attachment> ownerAttachmentList;
 
     @ManyToOne
     private User owner;
@@ -67,7 +80,7 @@ public class User implements Serializable{
     public User(String email, String name, String middleName, String lastName, String phoneNumber,
                 String note, String enabled, String password, Date dateEntered, Date dateModified, Role role,
                 CandidateInformation candidateInformation, List<VacancyUser> vacancyUserCandidateList,
-                List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, User owner, List<User> contactList) {
+                List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, List<Attachment> candidateAttachmentList, List<Attachment> contactAttachmentList, List<Attachment> ownerAttachmentList, User owner, List<User> contactList) {
         this.email = email;
         this.name = name;
         this.middleName = middleName;
@@ -83,6 +96,9 @@ public class User implements Serializable{
         this.vacancyUserCandidateList = vacancyUserCandidateList;
         this.vacancyUserOwnerList = vacancyUserOwnerList;
         this.departmentList = departmentList;
+        this.candidateAttachmentList = candidateAttachmentList;
+        this.contactAttachmentList = contactAttachmentList;
+        this.ownerAttachmentList = ownerAttachmentList;
         this.owner = owner;
         this.contactList = contactList;
     }
@@ -241,5 +257,29 @@ public class User implements Serializable{
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public List<Attachment> getOwnerAttachmentList() {
+        return ownerAttachmentList;
+    }
+
+    public void setOwnerAttachmentList(List<Attachment> ownerAttachmentList) {
+        this.ownerAttachmentList = ownerAttachmentList;
+    }
+
+    public List<Attachment> getCandidateAttachmentList() {
+        return candidateAttachmentList;
+    }
+
+    public void setCandidateAttachmentList(List<Attachment> candidateAttachmentList) {
+        this.candidateAttachmentList = candidateAttachmentList;
+    }
+
+    public List<Attachment> getContactAttachmentList() {
+        return contactAttachmentList;
+    }
+
+    public void setContactAttachmentList(List<Attachment> contactAttachmentList) {
+        this.contactAttachmentList = contactAttachmentList;
     }
 }

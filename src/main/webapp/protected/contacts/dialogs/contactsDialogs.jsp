@@ -14,7 +14,7 @@
             <spring:message code="create"/>&nbsp;<spring:message code="contact"/>
         </h4>
     </div>
-    <form name="newContactForm" role="form" novalidate ng-submit="createContact();">
+    <form name="newContactForm" role="form" novalidate ng-submit="createContact(files);">
         <div class="modal-body">
             <div class="form-group">
                 <label>* <spring:message code="contacts.name"/>:</label>
@@ -40,6 +40,13 @@
                        ng-model="newContact.note"
                        name="note"
                        placeholder="<spring:message code='sample.description'/> "/>
+                <input type="email"
+                       class="form-control"
+                       required
+                       autofocus
+                       ng-model="newContact.email"
+                       name="email"
+                       placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='candidates.email'/>"/>
             </div>
             <div class="form-group">
                 <p>Selected: {{newContact.company}}</p>
@@ -59,16 +66,16 @@
                     </ui-select-choices>
                 </ui-select>
 
-                <p>Selected: {{newContact.department}}</p>
-                <ui-select ng-model="newContact.department"
-                           on-select="fetchRelatedDepartments(newContact.company)"
+                <p>Selected: {{newContact.departmentList[0]}}</p>
+                <ui-select ng-model="newContact.departmentList[0]"
+                           <%--on-select="fetchRelatedDepartments(newContact.company)"--%>
                            theme="bootstrap"
                            ng-disabled="disabled"
                            reset-search-input="false"
                            tagging="departmentTransform"
                            style="width: 300px;">
                     <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
-                    <ui-select-choices repeat="department in newContact.departments | propsFilter: {id: $select.search, name: $select.search}">
+                    <ui-select-choices repeat="department in newContact.company.departmentList | propsFilter: {id: $select.search, name: $select.search}">
                         <div ng-bind-html="department.name | highlight: $select.search"></div>
                         <small>
                             id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>
@@ -78,6 +85,15 @@
                 </ui-select>
 
             </div>
+
+            <div class = "form-group">
+                <button class="button" ngf-select ng-model="files" ngf-multiple="true">Select File</button>
+            </div>
+            Files:
+            <ul>
+                <li ng-repeat="f in files" >{{f.name}}</li>
+            </ul>
+
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"

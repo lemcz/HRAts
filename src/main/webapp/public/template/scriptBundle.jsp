@@ -23,3 +23,4 @@
 <script src="<c:url value='/resources/js/ui-bootstrap-tpls-0.12.1.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/resources/js/ng-tags-input.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/resources/js/select.min.js'/>" type="text/javascript"></script>
+<script src="<c:url value='/resources/js/ng-file-upload.min.js'/>" type="text/javascript"></script>

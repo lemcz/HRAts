@@ -27,7 +27,11 @@ public class Company implements Serializable{
 
     @JsonManagedReference("company-department")
     @OneToMany(mappedBy = "company", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Department> department;
+    private List<Department> departmentList;
+
+    @JsonManagedReference("attachment-company")
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    private List<Attachment> attachmentList;
 
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name="sector_company",
@@ -37,13 +41,14 @@ public class Company implements Serializable{
 
     public Company() {}
 
-    public Company(String name, String note, Date dateEntered, Date dateModified, List<Department> department, List<Sector> sectorList) {
+    public Company(String name, String note, Date dateEntered, Date dateModified, List<Department> departmentList, List<Attachment> attachmentList, List<Sector> sectorList) {
         super();
         this.name = name;
         this.note = note;
         this.dateEntered = dateEntered;
         this.dateModified = dateModified;
-        this.department = department;
+        this.departmentList = departmentList;
+        this.attachmentList = attachmentList;
         this.sectorList = sectorList;
     }
 
@@ -107,11 +112,19 @@ public class Company implements Serializable{
         this.sectorList = sectorList;
     }
 
-    public List<Department> getDepartment() {
-        return department;
+    public List<Department> getDepartmentList() {
+        return departmentList;
     }
 
-    public void setDepartment(List<Department> department) {
-        this.department = department;
+    public void setDepartmentList(List<Department> departmentList) {
+        this.departmentList = departmentList;
+    }
+
+    public List<Attachment> getAttachmentList() {
+        return attachmentList;
+    }
+
+    public void setAttachmentList(List<Attachment> attachmentList) {
+        this.attachmentList = attachmentList;
     }
 }

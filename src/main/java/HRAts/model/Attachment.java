@@ -1,8 +1,13 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -15,36 +20,50 @@ public class Attachment implements Serializable{
 
     @Column(nullable = false)
     private String name;
-    @Column
+
+    @JsonIgnore
+    @Column(nullable = false)
     private String filePath;
-    @Column(name="date_modified", nullable = false)
+
+    @JsonIgnore
+    @Transient
+    private List<MultipartFile> file;
+
+    @Column(name="date_entered", nullable = false)
     private Date dateEntered;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JsonBackReference("attachment-candidate")
     @JoinColumn(name = "candidate_id", nullable = true, updatable = false)
     private User candidate;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JsonBackReference("attachment-company")
     @JoinColumn(name = "company_id", nullable = true, updatable = false)
     private Company company;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JsonBackReference("attachment-vacancy")
     @JoinColumn(name = "vacancy_id", nullable = true, updatable = false)
     private Vacancy vacancy;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JsonBackReference("attachment-contact")
     @JoinColumn(name = "contact_id", nullable = true, updatable = false)
     private User contact;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonBackReference("attachment-owner")
     @JoinColumn(name = "owner_id", nullable = false, updatable = false)
     private User owner;
 
     public Attachment(){}
 
-    public Attachment(String name, Date dateEntered, User candidate, Company company, Vacancy vacancy, User contact, User owner){
+    public Attachment(String name, String filePath, List<MultipartFile> file, Date dateEntered, User candidate, Company company, Vacancy vacancy, User contact, User owner){
         super();
         this.name = name;
+        this.filePath = filePath;
+        this.file = file;
         this.dateEntered = dateEntered;
         this.candidate = candidate;
         this.company = company;
@@ -120,5 +139,21 @@ public class Attachment implements Serializable{
 
     public void setCandidate(User candidate) {
         this.candidate = candidate;
+    }
+
+    public List<MultipartFile> getFile() {
+        return file;
+    }
+
+    public void setFile(List<MultipartFile> file) {
+        this.file = file;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

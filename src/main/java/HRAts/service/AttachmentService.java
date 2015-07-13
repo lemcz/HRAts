@@ -49,6 +49,12 @@ public class AttachmentService {
         return attachmentRepository.findByCompany_Id(companyId);
     }
 
+    @Transactional(readOnly = true)
+    @Secured("ROLE_USER")
+    public Attachment findByContactIdAndName(int contactId, String fileName) {
+        return attachmentRepository.findByContact_IdAndName(contactId, fileName);
+    }
+
     @Transactional
     public Attachment save(Attachment attachment) {
         return attachmentRepository.save(attachment);

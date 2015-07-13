@@ -1,7 +1,11 @@
 package HRAts.controller;
 
+import HRAts.model.Attachment;
+import HRAts.model.Department;
 import HRAts.model.Role;
 import HRAts.model.User;
+import HRAts.service.AttachmentService;
+import HRAts.service.DepartmentService;
 import HRAts.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +16,25 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/protected/contacts")
 public class ContactController {
 
+    private static final Logger logger = LoggerFactory
+            .getLogger(ContactController.class);
+
     @Autowired
     private UserService userService;
+    @Autowired
+    private AttachmentService attachmentService;
+    @Autowired
+    private DepartmentService departmentService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -47,88 +60,76 @@ public class ContactController {
         return userService.save(contact);
     }
 
-
-    private static final Logger logger = LoggerFactory
-            .getLogger(ContactController.class);
-
-    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    @Transactional
+    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json","multipart/mixed","multipart/form-data"}, produces = "application/json")
     public @ResponseBody
-    String uploadFileHandler(@RequestParam("name") String name,
-                             @RequestParam("file") MultipartFile file) {
+    ResponseEntity<?> uploadContactWithFiles(@RequestPart("data") User contact,
+                                             @RequestPart(value = "file", required = false) MultipartFile[] files) throws IOException  {
 
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
+        List<Attachment> contactAttachmentList = new ArrayList<>();
 
-                // Creating the directory to store file
-                String rootPath = System.getProperty("catalina.home");
-                File dir = new File(rootPath + File.separator + "storedFiles");
-                if (!dir.exists())
-                    dir.mkdirs();
-
-                // Create the file on server
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + name);
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
-
-                logger.info("Server File Location="
-                        + serverFile.getAbsolutePath());
-
-                return "You successfully uploaded file=" + name;
-            } catch (Exception e) {
-                return "You failed to upload " + name + " => " + e.getMessage();
-            }
-        } else {
-            return "You failed to upload " + name
-                    + " because the file was empty.";
-        }
-    }
-
-    /**
-     * Upload multiple file using Spring Controller
-     */
-    @RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.POST)
-    public @ResponseBody
-    String uploadMultipleFileHandler(@RequestParam("name") String[] names,
-                                     @RequestParam("file") MultipartFile[] files) {
-
-        if (files.length != names.length)
-            return "Mandatory information missing";
+        Role role = Role.ROLE_MANAGER;
+        contact.setRole(role);
 
         String message = "";
         for (int i = 0; i < files.length; i++) {
             MultipartFile file = files[i];
-            String name = names[i];
+            String name = file.getOriginalFilename();
             try {
-                byte[] bytes = file.getBytes();
-
                 // Creating the directory to store file
-                String rootPath = System.getProperty("catalina.home");
-                File dir = new File(rootPath + File.separator + "storedFiles");
-                if (!dir.exists())
-                    dir.mkdirs();
+                File usersDirectory = createUsersDirectory("ContactsFiles", contact.getEmail());
 
                 // Create the file on server
-                File serverFile = new File(dir.getAbsolutePath()
-                        + File.separator + name);
-                BufferedOutputStream stream = new BufferedOutputStream(
-                        new FileOutputStream(serverFile));
-                stream.write(bytes);
-                stream.close();
+                File serverFile = createFileOnServer(file, usersDirectory, name);
 
-                logger.info("Server File Location="
-                        + serverFile.getAbsolutePath());
+                message = message + "You successfully uploaded file = "  + name + "</br>";
 
-                message = message + "You successfully uploaded file=" + name
-                        + "<br />";
+                Attachment currentFile = new Attachment();
+                currentFile.setName(name);
+                currentFile.setFilePath(serverFile.getAbsolutePath());
+                currentFile.setOwner(contact.getOwner());
+                currentFile.setContact(contact);
+
+                contactAttachmentList.add(currentFile);
             } catch (Exception e) {
-                return "You failed to upload " + name + " => " + e.getMessage();
+                return new ResponseEntity<String>("You failed to upload " + name + " => " + e.getMessage(), HttpStatus.BAD_REQUEST);
             }
+            contact.setContactAttachmentList(contactAttachmentList);
         }
-        return message;
+
+        List<Department> departmentList = new ArrayList<>();
+
+        for (Department department : contact.getDepartmentList()) {
+            Department updatedDepartment = departmentService.findById(department.getId());
+            updatedDepartment.setManager(contact);
+            departmentList.add(updatedDepartment);
+        }
+
+        contact.setDepartmentList(departmentList);
+
+        return new ResponseEntity<User>(userService.save(contact), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}/{file_name:.+}", method = RequestMethod.GET)
+    public void getFile(
+            @PathVariable("id") int contactId,
+            @PathVariable("file_name") String fileName,
+            HttpServletResponse response) throws IOException {
+
+        Attachment candidatesAttachment = attachmentService.findByContactIdAndName(contactId, fileName);
+
+        try {
+            // get your file as InputStream
+            FileInputStream storedFile = new FileInputStream(candidatesAttachment.getFilePath());
+
+            InputStream is = storedFile;
+            // copy it to response's OutputStream
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            logger.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
+            throw new RuntimeException("IOError writing file to output stream");
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -146,11 +147,24 @@ public class ContactController {
         userService.delete(contactId);
     }
 
-    private String createStoredFileRootPath()  {
+    private File createFileOnServer(MultipartFile file, File usersDirectory, String name) throws IOException {
+        byte[] bytes = file.getBytes();
+        File serverFile = new File(usersDirectory.getAbsolutePath() + File.separator + name);
+        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+        stream.write(bytes);
+        stream.close();
+
+        logger.info("Server File Location = " + serverFile.getAbsolutePath());
+        return serverFile;
+    }
+
+    private File createUsersDirectory(String attachmentCategory, String usersIdDirectory) {
+
         String rootPath = System.getProperty("catalina.home");
-        File dir = new File(rootPath + File.separator + "storedFiles");
+        File dir = new File(rootPath + File.separator + "UploadedFiles" + File.separator + attachmentCategory + File.separator + usersIdDirectory);
         if (!dir.exists())
             dir.mkdirs();
-        return rootPath;
+
+        return dir;
     }
 }
