@@ -30,6 +30,11 @@ public class ActivityController {
         return activityService.findById(id);
     }
 
+    @RequestMapping(value = "/candidate/{id}", method = RequestMethod.GET, produces = "application/json")
+    public Activity getActivityByCandidateId(@PathVariable int id){
+        return activityService.findByCandidateId(id);
+    }
+
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Activity createActivity(@RequestBody final Activity activity){
@@ -40,7 +45,7 @@ public class ActivityController {
     public ResponseEntity<?> updateActivity(@PathVariable("id") int activityId,
                                            @RequestBody Activity activity) {
         if (activityId != activity.getId()){
-            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("[\"Bad request\"]", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Activity>(activityService.save(activity), HttpStatus.OK);
     }

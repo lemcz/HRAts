@@ -18,21 +18,22 @@ public class VacancyUser implements Serializable{
 
     @ManyToOne
     @JsonBackReference("vacancy-vacancy_user")
-    @JoinColumn(name="vacancy_id", referencedColumnName="id")
+    @JoinColumn(name="vacancy_id", referencedColumnName="id", nullable = false)
     private Vacancy vacancy;
 
     @ManyToOne
     @JsonBackReference("candidate-vacancy_user")
-    @JoinColumn(name = "candidate_id", referencedColumnName = "id")
+    @JoinColumn(name = "candidate_id", referencedColumnName = "id", nullable = false)
     private User candidate;
 
     @ManyToOne
     @JsonBackReference("owner-vacancy_user")
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
 
     @JsonManagedReference("vacancy_user-status")
     @OneToMany(mappedBy = "vacancyUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(nullable = false)
     private List<Status> statusList;
 
     public VacancyUser() {}

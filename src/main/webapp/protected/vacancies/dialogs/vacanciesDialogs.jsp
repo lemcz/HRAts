@@ -51,6 +51,43 @@
                        name="numberOfVacancies"
                        placeholder="<spring:message code='sample.number'/> "/>
             </div>
+
+            <div class="form-group">
+                <p>Selected: {{newVacancy.company}}</p>
+                <ui-select ng-model="newVacancy.company"
+                           on-select="fetchRelatedDepartments(newVacancy.company)"
+                           theme="bootstrap"
+                           ng-disabled="disabled"
+                           reset-search-input="false"
+                           style="width: 300px;">
+                    <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
+                        <div ng-bind-html="company.name | highlight: $select.search"></div>
+                        <small>
+                            id: <span ng-bind-html="''+company.id | highlight: $select.search"></span>
+                            name: {{company.name}}
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+
+                <p>Selected: {{newVacancy.departmentList[0]}}</p>
+                <ui-select ng-model="newVacancy.department"
+                           theme="bootstrap"
+                           ng-disabled="disabled"
+                           reset-search-input="false"
+                           tagging="departmentTransform"
+                           style="width: 300px;">
+                    <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="department in newVacancy.company.departmentList | propsFilter: {id: $select.search, name: $select.search}">
+                        <div ng-bind-html="department.name | highlight: $select.search"></div>
+                        <small>
+                            id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>
+                            name: {{department.name}}
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"

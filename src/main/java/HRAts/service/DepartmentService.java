@@ -39,6 +39,12 @@ public class DepartmentService {
         return departmentRepository.findByCompany_IdAndManagerIsNull(companyId);
     }
 
+
+    @Transactional(readOnly = true)
+    public Iterable<Department> findByCompany_IdAndVacancyListIsNull(int companyId) {
+        return departmentRepository.findByCompany_IdAndVacancyListIsNull(companyId);
+    }
+
     @Transactional
     public Department save(Department department) {
         return departmentRepository.save(department);

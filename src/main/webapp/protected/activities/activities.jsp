@@ -44,4 +44,5 @@
     </div>
 </div>
 
+<script src="<c:url value="/resources/js/services/activityService.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/activities.js"/>"></script>

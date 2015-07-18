@@ -31,20 +31,6 @@
         };
     });
 
-    //todo find a place for this service
-    hratsApp.service('SectorService', function ($http){
-
-        var baseUrl = 'http://localhost:8080/HRAts/protected/sectors';
-        this.fetchAll = function() {
-            return $http.get(baseUrl);
-        };
-
-        this.fetchAllByName = function() {
-            return $http.get(baseUrl+'/byName');
-        };
-    });
-
-
     hratsApp.controller('CompanyController', function($scope, $modal, CompanyService){
 
         $scope.companiesCollection = [];

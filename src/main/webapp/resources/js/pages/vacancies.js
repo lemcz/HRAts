@@ -65,17 +65,48 @@
         };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, VacancyService, vacancy){
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, VacancyService, vacancy, CompanyService, DepartmentService){
 
         //Add vacancy variables
         $scope.createVacancySuccess = true;
         $scope.newVacancy = angular.copy(vacancy) || {};
+        $scope.newVacancy.department = $scope.newVacancy.department || {};
         if (angular.equals({}, $scope.newVacancy)) {
             $scope.newVacancy.numberOfVacancies = 1;
         };
 
+        CompanyService.fetchAll()
+            .success(function (data){
+                $scope.companiesCollection = data || [];
+            })
+            .error(function (status, data){
+                alert("Unable to fetch data ("+status+").");
+            });
+
         //Edit/delete vacancy variables
         $scope.vacancy = vacancy;
+
+        $scope.departmentTransform = function(newDepartment) {
+            var department = {
+                name: newDepartment,
+                company: {id: $scope.newVacancy.company.id}
+            };
+
+            return department;
+        };
+
+        $scope.fetchRelatedDepartments = function(company) {
+            $scope.newVacancy.departmentList = [];
+            DepartmentService.fetchAllByCompany(company.id)
+                .success(function(data){
+                    company.departmentList = data;
+                })
+                .error(function(data, status){
+                    alert("Unable to fetch departments ("+status+").");
+                });
+            console.log(company);
+            return company.departmentList;
+        };
 
         $scope.createVacancy = function(){
             VacancyService.createRow($scope.newVacancy)

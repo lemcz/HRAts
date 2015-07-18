@@ -30,7 +30,7 @@ public class Department implements Serializable {
 
     @JsonManagedReference("department-vacancy")
     @OneToMany(mappedBy="department", targetEntity=Vacancy.class, fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Vacancy> vacancies;
+    private List<Vacancy> vacancyList;
 
     @JsonBackReference("user-department")
     @ManyToOne
@@ -48,13 +48,13 @@ public class Department implements Serializable {
 
     public Department() {}
 
-    public Department(String name, String note, Date dateEntered, Date dateModified, List<Vacancy> vacancies, User owner, User manager, Company company){
+    public Department(String name, String note, Date dateEntered, Date dateModified, List<Vacancy> vacancyList, User owner, User manager, Company company){
         super();
         this.name = name;
         this.note = note;
         this.dateEntered = dateEntered;
         this.dateModified = dateModified;
-        this.vacancies = vacancies;
+        this.vacancyList = vacancyList;
         this.owner = owner;
         this.manager = manager;
         this.company = company;
@@ -112,12 +112,12 @@ public class Department implements Serializable {
         this.dateModified = dateModified;
     }
 
-    public List<Vacancy> getVacancies() {
-        return vacancies;
+    public List<Vacancy> getVacancyList() {
+        return vacancyList;
     }
 
-    public void setVacancies(List<Vacancy> vacancies) {
-        this.vacancies = vacancies;
+    public void setVacancyList(List<Vacancy> vacancies) {
+        this.vacancyList = vacancies;
     }
 
     public User getOwner() {

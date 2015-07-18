@@ -2,37 +2,6 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.filter('propsFilter', function() {
-        return function(items, props) {
-            var out = [];
-
-            if (angular.isArray(items)) {
-                items.forEach(function(item) {
-                    var itemMatches = false;
-
-                    var keys = Object.keys(props);
-                    for (var i = 0; i < keys.length; i++) {
-                        var prop = keys[i];
-                        var text = props[prop].toLowerCase();
-                        if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
-                            itemMatches = true;
-                            break;
-                        }
-                    }
-
-                    if (itemMatches) {
-                        out.push(item);
-                    }
-                });
-            } else {
-                // Let the output be the input untouched
-                out = items;
-            }
-
-            return out;
-        }
-    });
-
     hratsApp.service('ContactService', function ($http){
 
         var baseUrl = 'http://localhost:8080/HRAts/protected/contacts/';
@@ -66,23 +35,6 @@
         this.removeRow = function(contactId){
             return $http.delete(contactId);
         };
-    });
-
-    //todo find a better place for this
-    hratsApp.service('DepartmentService', function ($http){
-
-        var baseUrl = 'http://localhost:8080/HRAts/protected/departments';
-        this.fetchAll = function() {
-            return $http.get(baseUrl);
-        };
-
-        this.fetchAllByName = function() {
-            return $http.get(baseUrl+'/byName');
-        };
-
-        this.fetchAllByCompany = function(companyId) {
-            return $http.get(baseUrl+'/?companyId='+companyId);
-        }
     });
 
     hratsApp.controller('ContactController', function($scope, $modal, ContactService){
@@ -155,7 +107,7 @@
 
         $scope.fetchRelatedDepartments = function(company) {
             console.log(company);
-            $scope.newContact.departmentList = {};
+            $scope.newContact.departmentList = [];
             DepartmentService.fetchAllByCompany(company.id)
                 .success(function(data){
                     company.departmentList = data;

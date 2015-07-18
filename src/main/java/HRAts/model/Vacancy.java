@@ -34,14 +34,13 @@ public class Vacancy implements Serializable {
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<VacancyUser> vacancyUserList;
 
-    //TODO add nullable = true, optional = false where needed (omitted to make it easier to develop front-end)
     @JsonBackReference("department-vacancy")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    @JoinColumn(name = "department_id", referencedColumnName = "id", unique = true)
     private Department department;
 
     @JsonManagedReference("attachment-vacancy")
-    @OneToMany(mappedBy = "vacancy")
+    @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Attachment> attachmentList;
 
     public Vacancy(){}

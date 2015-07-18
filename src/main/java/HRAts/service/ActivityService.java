@@ -24,6 +24,11 @@ public class ActivityService {
         return activityRepository.findById(activityId);
     }
 
+    @Transactional(readOnly = true)
+    public Activity findByCandidateId(int candidateId) {
+        return activityRepository.findByCandidate_Id(candidateId);
+    }
+
     @Transactional
     public Activity save(Activity activity) {
         return activityRepository.save(activity);

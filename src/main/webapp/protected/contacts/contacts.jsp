@@ -80,4 +80,5 @@
 </div>
 
 <script src="<c:url value="/resources/js/pages/companies.js"/>"></script>
+<script src="<c:url value="/resources/js/services/departmentService.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/contacts.js"/>"></script>

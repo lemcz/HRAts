@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping(value = "/protected/departments")
 public class DepartmentController {
@@ -40,11 +38,11 @@ public class DepartmentController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Department createDepartment(@RequestBody final Department department, Principal principal){
+    public @ResponseBody Department createDepartment(@RequestBody final Department department){
           return departmentService.save(department);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateCompany(@PathVariable("id") int departmentId,
                                            @RequestBody Department department) {
         if (departmentId != department.getId()){
@@ -53,7 +51,7 @@ public class DepartmentController {
         return new ResponseEntity<Department>(departmentService.save(department), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void deleteCompany(@PathVariable("id") int departmentId) {
         departmentService.delete(departmentId);

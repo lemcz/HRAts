@@ -68,7 +68,6 @@
 
                 <p>Selected: {{newContact.departmentList[0]}}</p>
                 <ui-select ng-model="newContact.departmentList[0]"
-                           <%--on-select="fetchRelatedDepartments(newContact.company)"--%>
                            theme="bootstrap"
                            ng-disabled="disabled"
                            reset-search-input="false"

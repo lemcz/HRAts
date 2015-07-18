@@ -2,6 +2,7 @@ package HRAts.controller;
 
 import HRAts.model.*;
 import HRAts.service.ActivityService;
+import HRAts.service.ActivityTypeService;
 import HRAts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,12 @@ public class CandidateController {
     private UserService userService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private ActivityTypeService activityTypeService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
-        return new ModelAndView("candidatesList");
+        return new ModelAndView("candidateList");
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
@@ -54,13 +57,13 @@ public class CandidateController {
             insertCandidateActivity.setOwner(owner);
             insertCandidateActivity.setNote("New candidate added to the repository");
 
-            ActivityTypeLkp insertCandidateActivityType = new ActivityTypeLkp();
-            insertCandidateActivityType.setName("Other");
+            ActivityTypeLkp insertCandidateActivityType = activityTypeService.findById(4);
                     
             insertCandidateActivity.setActivityType(insertCandidateActivityType);
 
             User savedUser = userService.save(candidate);
             if(savedUser != null) {
+                insertCandidateActivity.setCandidate(savedUser);
                 activityService.save(insertCandidateActivity);
             }
             return savedUser;

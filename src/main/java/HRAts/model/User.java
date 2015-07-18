@@ -112,6 +112,7 @@ public class User implements Serializable{
 
     @PreUpdate
     protected void onUpdate() {
+        setDateEntered(this.getDateEntered());
         setDateModified(new Date());
     }
 

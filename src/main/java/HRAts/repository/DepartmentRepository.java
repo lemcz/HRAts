@@ -12,4 +12,6 @@ public interface DepartmentRepository extends CrudRepository<Department, Integer
     Iterable<Department> findByCompany_Id(int id);
 
     Iterable<Department> findByCompany_IdAndManagerIsNull(@Param("id") int id);
+
+    Iterable<Department> findByCompany_IdAndVacancyListIsNull(@Param("id") int id);
 }

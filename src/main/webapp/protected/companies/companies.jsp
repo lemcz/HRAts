@@ -78,4 +78,5 @@
     </div>
 </div>
 
+<script src="<c:url value="/resources/js/services/sectorService.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/companies.js"/>"></script>
