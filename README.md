@@ -20,12 +20,7 @@ actually, it requires none
 * Dependencies
 requires java jdk1.7 and tomcat7. additionaly PostgreSQL database
 
-* Database configuration:
-database provider - PostgreSQL,
-hostname: localhost
-port: 5432
-login: postgres
-pwd: admin
+* Database configuration can be found in \HRApp\src\main\tomcat\conf\context.xml
 
 * Deployment instructions
 mvn clean install tomcat7:run
