@@ -193,18 +193,19 @@
                        ng-model="candidate.id"
                        name="id"
                        value="{{candidate.id}}"/>
-                <label>* <spring:message code="candidates.activityType"/>: </label>
-                <ui-select ng-model="candidate.vacancyUserCandidateList[0].activityType"
+                <label>* <spring:message code="candidates.vacancy"/>: </label>
+                <ui-select ng-model="candidate.vacancyUserCandidateList[0].vacancy"
                            theme="bootstrap"
                            ng-disabled="disabled"
                            reset-search-input="false"
                            style="width: 300px;">
-                    <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
-                    <ui-select-choices repeat="activity in activityTypeCollection | propsFilter: {id: $select.search, name: $select.search}">
-                        <div ng-bind-html="activity.name | highlight: $select.search"></div>
+                    <ui-select-match placeholder="Select a vacancy">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="vacancy in vacancyCollection | propsFilter: {id: $select.search, name: $select.search}">
+                        <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
                         <small>
-                            id: <span ng-bind-html="''+activity.id | highlight: $select.search"></span>
-                            name: {{activity.name}}
+                            id: <span ng-bind-html="''+vacancy.id | highlight: $select.search"></span>
+                            name: {{ vacancy.name }}
+                            description: {{ vacancy.description }}
                         </small>
                     </ui-select-choices>
                 </ui-select>

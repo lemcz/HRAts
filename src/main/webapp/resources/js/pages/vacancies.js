@@ -16,7 +16,7 @@
 
         this.fetchById = function(vacancyId) {
             return $http.get(baseUrl + vacancyId)
-        }
+        };
 
         this.createRow = function(vacancyData){
             return $http.post(baseUrl, vacancyData);
@@ -73,8 +73,7 @@
         $scope.newVacancy.department = $scope.newVacancy.department || {};
         if (angular.equals({}, $scope.newVacancy)) {
             $scope.newVacancy.numberOfVacancies = 1;
-        };
-
+        }
         CompanyService.fetchAll()
             .success(function (data){
                 $scope.companiesCollection = data || [];

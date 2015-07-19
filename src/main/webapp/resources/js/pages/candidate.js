@@ -115,14 +115,23 @@
         };
     });
 
-    hratsApp.controller('addToVacancyModalController', function($scope, $modalInstance, CandidateService, candidate, ActivityTypeService) {
+    hratsApp.controller('addToVacancyModalController', function($scope, $modalInstance, CandidateService, candidate, VacancyService) {
 
         $scope.candidate = candidate;
 
-        $scope.candidate.vacancyUserCandidateList[0] = { owner: {id: $scope.candidate.owner.id} };
+        $scope.candidate.vacancyUserCandidateList = [{ owner: {id: $scope.candidate.owner.id} }];
         $scope.createCandidateSuccess = true;
 
+        VacancyService.fetchAll()
+            .success(function(data) {
+               $scope.vacancyCollection = data || {};
+            })
+            .error(function(data,status){
+                alert("Unable to fetch vacancies ("+status+").");
+            });
+
         $scope.addToVacancy = function(candidate) {
+
             CandidateService.updateRow(candidate)
                 .success(function(data){
                     angular.copy(data, $scope.candidate);

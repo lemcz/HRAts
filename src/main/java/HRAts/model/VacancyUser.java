@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "vacancy_user")
+@Table(name = "vacancy_user",
+        uniqueConstraints = @UniqueConstraint
+                            (columnNames = {"vacancy_id", "candidate_id"}))
 public class VacancyUser implements Serializable{
 
     @Id

@@ -42,8 +42,7 @@
         $scope.newActivity = angular.copy(activity) || {};
         if (angular.equals({}, $scope.newActivity)) {
             $scope.newActivity.numberOfActivities = 1;
-        };
-
+        }
         //Edit/delete activity variables
         $scope.activity = activity;
 

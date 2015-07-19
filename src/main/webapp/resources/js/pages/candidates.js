@@ -20,9 +20,9 @@
     $scope.displaySearchButton = false;
     $scope.displayCreateCandidateButton = false;
 
-    $scope.candidate = {}
+    $scope.candidate = {};
 
-    $scope.searchFor = ""
+    $scope.searchFor = "";
 
     $scope.getCandidateList = function () {
         var url = $scope.url;
@@ -40,7 +40,7 @@
                 $scope.state = 'error';
                 $scope.displayCreateCandidateButton = false;
             });
-    }
+    };
 
     $scope.populateTable = function (data) {
         if (data.pagesCount > 0) {
@@ -77,7 +77,7 @@
         } else {
             $scope.displayMessageToUser = false;
         }
-    }
+    };
 
     $scope.changePage = function (page) {
         $scope.pageToGet = page;
@@ -96,7 +96,7 @@
         $scope.errorOnSubmit = false;
         $scope.errorIllegalAccess = false;
         $scope.displayValidationError = false;
-    }
+    };
 
     $scope.finishAjaxCallOnSuccess = function (data, modalId, isPagination) {
         $scope.populateTable(data);
@@ -107,13 +107,13 @@
             }
         }
         $scope.lastAction = '';
-    }
+    };
 
     $scope.startDialogAjaxRequest = function () {
         $scope.displayValidationError = false;
         $scope.previousState = $scope.state;
         $scope.state = 'busy';
-    }
+    };
 
     $scope.handleErrorInDialogs = function (status) {
         $scope.state = $scope.previousState;
@@ -126,7 +126,7 @@
 
         $scope.errorOnSubmit = true;
         $scope.lastAction = '';
-    }
+    };
 
     $scope.addSearchParametersIfNeeded = function (config, isPagination) {
         if (!config.params) {
@@ -138,7 +138,7 @@
         if ($scope.searchFor) {
             config.params.searchFor = $scope.searchFor;
         }
-    }
+    };
 
     $scope.resetCandidate = function () {
         $scope.candidate = {};
@@ -172,7 +172,7 @@
     $scope.selectedCandidate = function (candidate) {
         var selectedCandidate = angular.copy(candidate);
         $scope.candidate = selectedCandidate;
-    }
+    };
 
     $scope.updateCandidate = function (updateCandidateForm) {
         if (!updateCandidateForm.$valid) {
@@ -253,7 +253,7 @@
         $scope.pageToGet = 0;
         $scope.getCandidateList();
         $scope.displaySearchMessage = false;
-    }
+    };
 
     $scope.getCandidateList();
 }]);

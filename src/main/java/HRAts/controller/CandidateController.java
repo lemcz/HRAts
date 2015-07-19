@@ -31,8 +31,7 @@ public class CandidateController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public Iterable<User> listCandidates(){
-        Role role = Role.ROLE_USER;
-        return userService.findByRole(role);
+        return userService.findByRole(Role.ROLE_CANDIDATE);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -43,11 +42,11 @@ public class CandidateController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody User createCandidate(@RequestBody final User candidate){
-        Role role = Role.ROLE_USER;
+
         List<Department> departmentList= new ArrayList<>();
         List<User> contactList = new ArrayList<>();
 
-        candidate.setRole(role);
+        candidate.setRole(Role.ROLE_CANDIDATE);
         candidate.setContactList(contactList);
         candidate.setDepartmentList(departmentList);
 
