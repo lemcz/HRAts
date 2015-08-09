@@ -95,7 +95,6 @@
 
         //TODO reorganize controller, setup owner
         //Add candidate variables
-        $scope.createCandidateSuccess = true;
         console.log(row);
         var modalType = row.modalName;
         $scope.candidate = row.data;
@@ -203,7 +202,6 @@
                     $scope.candidatesCollection.push(data);
                 })
                 .error(function(data,status){
-                    $scope.createCandidateSuccess = false;
                     alert("Unable to create record ("+status+").");
                 });
 

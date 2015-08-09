@@ -18,7 +18,7 @@
         <div class="modal-body">
             <fieldset class="form">
                 <div class="form-group col-md-12">
-                    <label><spring:message code="vacancies.name"/>:</label>
+                    <label><spring:message code="vacancies.name"/></label>
                     <input type="text"
                            class="form-control"
                            required
@@ -26,22 +26,10 @@
                            ng-model="newVacancy.name"
                            name="name"
                            placeholder="<spring:message code='vacancy'/>&nbsp;<spring:message code='vacancies.name'/>"/>
-                    <label>
-                        <span class="alert alert-danger"
-                              ng-show="displayValidationError && newVacancyForm.name.$error.required">
-                                <spring:message code="required"/>
-                        </span>
-                    </label>
                 </div>
                 <div class="form-group col-md-12">
-                    <label><spring:message code="vacancies.description"/>:</label>
-                    <textarea rows="4"
-                              cols="50"
-                              class="form-control"
-                              required
-                              ng-model="newVacancy.description"
-                              name="description"
-                              placeholder="<spring:message code='sample.description'/>"></textarea>
+                    <label><spring:message code="vacancies.description"/></label>
+                    <div text-angular ng-model="newVacancy.description"></div>
                 </div>
                 <div class="form-group col-md-12">
                     <label class="control-label"><spring:message code="note"/></label>
@@ -53,15 +41,8 @@
                               name="note"
                               placeholder="<spring:message code='note'/>"></textarea>
                 </div>
-                <div class="form-group col-md-12">
-                    <label><spring:message code="vacancies.numberOfVacancies"/>:</label>
-                    <input type="number"
-                           class="form-control"
-                           required
-                           ng-model="newVacancy.numberOfVacancies"
-                           ng-pattern="/^[1-9][0-9]*$/"
-                           name="numberOfVacancies"
-                           placeholder="<spring:message code='sample.number'/> "/>
+                <div class="col-md-12">
+                    <label>Assign relations</label>
                 </div>
                 <div class="form-group col-md-6">
                     <ui-select ng-model="newVacancy.company"
@@ -74,7 +55,6 @@
                             <div ng-bind-html="company.name | highlight: $select.search"></div>
                             <small>
                                 id: <span ng-bind-html="''+company.id | highlight: $select.search"></span>
-                                name: {{company.name}}
                             </small>
                         </ui-select-choices>
                     </ui-select>
@@ -89,17 +69,38 @@
                             <div ng-bind-html="department.name | highlight: $select.search"></div>
                             <small>
                                 id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>
-                                name: {{department.name}}
+                                manager: {{department.manager.name}}
                             </small>
                         </ui-select-choices>
                     </ui-select>
+                </div>
+                <div class="form-group">
+                    <div class=" col-md-6">
+                        <label><spring:message code="vacancies.numberOfVacancies"/></label>
+                        <input type="number"
+                               class="form-control"
+                               required
+                               ng-model="newVacancy.numberOfVacancies"
+                               ng-pattern="/^[1-9][0-9]*$/"
+                               name="numberOfVacancies"
+                               placeholder="<spring:message code='sample.number'/> "/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label"><spring:message code="sample.startDate"/></label>
+                    <input type="date"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newVacancy.startDate"
+                           name="startDate"
+                           placeholder="<spring:message code='sample.startDate'/>"/>
                 </div>
                 <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
                 <div class = "form-group col-md-6">
                     <div class="well well-lg text-center" ngf-drop ngf-select ng-model="files" ngf-multiple="true" ngf-keep="true" ngf-keep-distinct="true">Select Files Or Drop Them Here</div>
                 </div>
                 <div class="col-md-6">
-                    Files:
                     <ul>
                         <li ng-repeat="f in files" >{{f.name}}
                     <span class="glyphicon glyphicon-minus"

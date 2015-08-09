@@ -161,9 +161,6 @@
                    class="btn btn-primary"
                    ng-disabled="newContactForm.$invalid"
                    value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger" ng-show="!createContactSuccess">
-                <spring:message code="request.error"/>
-            </span>
         </div>
     </form>
 </script>

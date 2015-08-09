@@ -87,27 +87,43 @@
                     <label class="control-label"><spring:message code="note"/></label>
                     <textarea rows="4"
                               cols="50"
-                              type="text"
                               class="form-control"
                               required
                               ng-model="newContact.note"
                               name="note"
-                              placeholder="<spring:message code='note'/> "/>
+                              placeholder="<spring:message code='note'/> "></textarea>
                 </div>
             <div class="form-group col-md-6">
-                <label>Sectors </label>
+                <label>Sectors</label>
                 <tags-input ng-model="newCompany.sectorList"
                             display-property="name">
                     <auto-complete source="loadSectors($query)"></auto-complete>
                 </tags-input>
             </div>
             <div class="form-group col-md-6">
-                <label>Departments </label>
+                <label>Departments</label>
                 <tags-input ng-model="newCompany.departmentList"
                             display-property="name">
                 </tags-input>
             </div>
-            </div>
+                <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
+                <div class = "form-group col-md-6">
+                    <div class="well well-lg text-center" ngf-drop ngf-select ng-model="files" ngf-multiple="true" ngf-keep="true" ngf-keep-distinct="true">Select Files Or Drop Them Here</div>
+                </div>
+                <div class="col-md-6">
+                    <ul>
+                        <li ng-repeat="f in files" >{{f.name}}
+                    <span class="glyphicon glyphicon-minus"
+                          ng-click="removeFromArray(files, f)"
+                          role="button"
+                          title="<spring:message code="delete"/>&nbsp;<spring:message code="contact"/>"
+                          class="btn btn-default"
+                          data-toggle="modal">
+                   </span>
+                        </li>
+                    </ul>
+                </div>
+            </fieldset>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"
@@ -121,9 +137,6 @@
                    class="btn btn-primary"
                    ng-disabled="newCompanyForm.$invalid"
                    value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger" ng-show="!createCompanySuccess">
-                <spring:message code="request.error"/>
-            </span>
         </div>
     </form>
 </script>

@@ -11,10 +11,7 @@
             </p>
         </h1>
         <div ng-controller="UiGridController" ng-cloak>
-            <div class="table" id="grid1" ui-grid="gridOptions" ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping class="grid"></div>
-            <div class="row col-md-3">Selected:<br>
-                {{row | json}}
-            </div>
+            <div class="table" id="grid1" ui-grid="gridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping class="grid"></div>
         </div>
     </div>
 </div>

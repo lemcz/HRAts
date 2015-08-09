@@ -52,6 +52,7 @@ public class User implements Serializable{
     private List<VacancyUser> vacancyUserOwnerList;
 
     @OneToMany(mappedBy = "manager", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference("manager-department")
     private List<Department> departmentList;
 
     @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

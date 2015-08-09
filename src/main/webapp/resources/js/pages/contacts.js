@@ -104,7 +104,6 @@
             });
 
         //Add contact variables
-        $scope.createContactSuccess = true;
         $scope.newContact = angular.copy(row.data) || {};
         $scope.newContact.departmentList = $scope.newContact.departmentList || [];
 

@@ -24,6 +24,10 @@ public class Vacancy implements Serializable {
     private String description;
     @Column(name = "note")
     private String note;
+    @Column(name = "salary")
+    private int salary;
+    @Column(name = "start_date")
+    private Date startDate;
 
     @Column(name = "date_entered")
     private Date dateEntered;
@@ -45,13 +49,14 @@ public class Vacancy implements Serializable {
 
     public Vacancy(){}
 
-    public Vacancy(String name, int numberOfVacancies, String description, String note, Date dateEntered,
+    public Vacancy(String name, int numberOfVacancies, String description, String note, int salary, Date dateEntered,
                    Date dateModified, List<VacancyUser> vacancyUserList, Department department, List<Attachment> attachmentList){
         super();
         this.name = name;
         this.numberOfVacancies = numberOfVacancies;
         this.description = description;
         this.note = note;
+        this.salary = salary;
         this.dateEntered = dateEntered;
         this.dateModified = dateModified;
         this.vacancyUserList = vacancyUserList;
@@ -150,5 +155,21 @@ public class Vacancy implements Serializable {
 
     public void setAttachmentList(List<Attachment> attachmentList) {
         this.attachmentList = attachmentList;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 }

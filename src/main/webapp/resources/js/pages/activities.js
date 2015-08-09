@@ -24,7 +24,6 @@
     hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, ActivityService, row){
 
         //Add activity variables
-        $scope.createActivitySuccess = true;
         $scope.newActivity = angular.copy(row.data) || {};
         if (angular.equals({}, $scope.newActivity)) {
             $scope.newActivity.numberOfActivities = 1;
@@ -38,7 +37,6 @@
                     $scope.activitiesCollection.push(data);
                 })
                 .error(function(data,status){
-                    $scope.createActivitySuccess = false;
                     alert("Unable to create record ("+status+").");
                 });
 

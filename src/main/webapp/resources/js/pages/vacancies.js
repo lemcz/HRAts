@@ -24,9 +24,8 @@
         //Add vacancy variables
         $scope.newVacancy = angular.copy(row.data) || {};
 
-        if (angular.equals({}, $scope.newVacancy)) {
-            $scope.newVacancy.numberOfVacancies = 1;
-        }
+        $scope.newVacancy.startDate = new Date();
+        $scope.newVacancy.numberOfVacancies = 1;
 
         CompanyService.fetchAll()
             .success(function (data){
@@ -40,10 +39,10 @@
         $scope.vacancy = row.data;
 
         $scope.fetchRelatedDepartments = function(company) {
-            $scope.newVacancy.department = {};
             DepartmentService.fetchAllByCompany(company.id)
                 .success(function(data){
                     company.departmentList = data;
+                    $scope.newVacancy.department = null;
                 })
                 .error(function(data, status){
                     alert("Unable to fetch departments ("+status+").");
@@ -59,7 +58,6 @@
                     $scope.vacanciesCollection.push(data);
                 })
                 .error(function(data,status){
-                    $scope.createVacancySuccess = false;
                     alert("Unable to create record ("+status+").");
                 });
 

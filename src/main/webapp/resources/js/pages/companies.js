@@ -21,7 +21,6 @@
     hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CompanyService, row, SectorService){
 
         //Add company variables
-        $scope.createCompanySuccess = true;
         $scope.newCompany = angular.copy(row.data) || {};
         $scope.newCompany.owner = {};
         $scope.newCompany.owner.id = $('#userId').attr('value');
@@ -44,7 +43,6 @@
                     $scope.companiesCollection.push(data);
                 })
                 .error(function(data,status){
-                    $scope.createCompanySuccess = false;
                     alert("Unable to create record ("+status+").");
                 });
 

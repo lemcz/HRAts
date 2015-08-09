@@ -67,7 +67,7 @@ public class CompanyController {
                 return new ResponseEntity<String>("Other objects depend on this company, cannot delete", HttpStatus.BAD_REQUEST);
             }
         }
-        logger.info("Will delete company with ID : " + companyId);
+        logger.info("Will delete company with ID: " + companyId);
         companyService.delete(companyId);
         return new ResponseEntity<String>("Delete successful", HttpStatus.OK);
     }

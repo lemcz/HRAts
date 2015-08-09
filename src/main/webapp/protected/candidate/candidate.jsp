@@ -55,7 +55,7 @@
                 <span class="glyphicon glyphicon-minus"></span>&nbsp;&nbsp;Log&nbsp;Activity
             </a>
             <br><br>
-            <div class="table" id="grid1" ui-grid="gridOptions" ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping class="grid"></div>
+            <div class="table" id="grid1" ui-grid="gridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping class="grid"></div>
         </div>
         <jsp:include page="dialogs/candidateDialogs.jsp"/>
     </div>

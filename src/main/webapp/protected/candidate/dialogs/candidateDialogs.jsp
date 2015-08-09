@@ -136,7 +136,7 @@
                            placeholder="<spring:message code='sample.financialReqBrutto'/>"/>
                 </div>
                 <div class="col-md-6">
-                    <label class="control-label sr-only">* <spring:message code="sample.startDate"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="sample.startDate"/></label>
                     <input type="date"
                            class="form-control"
                            required
@@ -239,9 +239,6 @@
                    class="btn btn-primary"
                    ng-disabled="newCandidateForm.$invalid"
                    value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger" ng-show="!createCandidateSuccess">
-                <spring:message code="request.error"/>
-            </span>
         </div>
     </form>
 </script>
@@ -365,34 +362,72 @@
     </div>
     <form name="addToVacancyForm" role="form" novalidate ng-submit="addToVacancy(candidate);">
         <div class="modal-body">
-            <div class="form-group">
-                <input type="hidden"
-                       required
-                       ng-model="candidate.id"
-                       name="id"
-                       value="{{candidate.id}}"/>
-                <label>* <spring:message code="candidates.vacancy"/>: </label>
-                <ui-select ng-model="candidate.vacancyUserCandidateList[0].vacancy"
-                           theme="bootstrap"
-                           ng-disabled="disabled"
-                           reset-search-input="false"
-                           style="width: 300px;">
-                    <ui-select-match placeholder="Select a vacancy">{{$select.selected.name}}</ui-select-match>
-                    <ui-select-choices repeat="vacancy in vacancyCollection | propsFilter: {id: $select.search, name: $select.search}">
-                        <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
-                        <small>
-                            id: <span ng-bind-html="''+vacancy.id | highlight: $select.search"></span>
-                            name: {{ vacancy.name }}
-                            description: {{ vacancy.description }}
-                        </small>
-                    </ui-select-choices>
-                </ui-select>
-                <label>* <spring:message code="candidates.activityType.note"/>: </label>
-                <input type="text",
-                       class="form-control",
-                       ng-model="candidate.vacancyUserCandidateList[0].note",
-                       name="note"/>
-            </div>
+            <fieldset class="form">
+                <div class="form-group">
+                    <input type="hidden"
+                           required
+                           ng-model="candidate.id"
+                           name="id"
+                           value="{{candidate.id}}"/>
+                    <label class="control-label col-md-12"><spring:message code="assign.relations"/></label>
+                    <div class="col-md-6">
+                        <ui-select multiple
+                                   on-select="fetchRelatedDepartments(querySelection.selectedCompanies)"
+                                   on-remove="fetchRelatedDepartments(querySelection.selectedCompanies)"
+                                   ng-model="querySelection.selectedCompanies"
+                                   theme="bootstrap" ng-disabled="disabled">
+                            <ui-select-match placeholder="Select companies">{{$item.name}}</ui-select-match>
+                            <ui-select-choices group-by="someGroupFn" repeat="company in companiesCollection | propsFilter: {name: $select.search, id: $select.search}">
+                                <div ng-bind-html="company.name | highlight: $select.search"></div>
+                                <small>
+                                    id: {{company.id}}
+                                    name: <span ng-bind-html="''+company.name | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-6">
+                        <ui-select multiple
+                                   on-select="fetchRelatedVacancies(querySelection.selectedDepartments)"
+                                   on-remove="fetchRelatedVacancies(querySelection.selectedDepartments)"
+                                   ng-model="querySelection.selectedDepartments"
+                                   theme="bootstrap" ng-disabled="disabled">
+                            <ui-select-match placeholder="Select departments">{{$item.name}}</ui-select-match>
+                            <ui-select-choices group-by="someGroupFn" repeat="department in departmentsCollection | propsFilter: {name: $select.search, id: $select.search}">
+                                <div ng-bind-html="department.name | highlight: $select.search"></div>
+                                <small>
+                                    id: {{department.id}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-12">
+                        <ui-select multiple
+                                   ng-model="querySelection.selectedVacancies"
+                                   ng-disabled="disabled">
+                            <ui-select-match placeholder="Select vacancies">{{$item.name}}</ui-select-match>
+                            <ui-select-choices group-by="someGroupFn" repeat="vacancy in vacancyCollection | propsFilter: {name: $select.search, id: $select.search}">
+                                <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
+                                <small>
+                                    id: {{vacancy.id}}
+                                    department: {{vacancy.name}}
+                                    company: {{vacancy.department.company.name}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-12">
+                        <label>* <spring:message code="candidates.activityType.note"/>: </label>
+                        <textarea rows="4"
+                                  cols="50"
+                                  class="form-control"
+                                  required
+                                  ng-model="newCandidate.note"
+                                  name="note"
+                                  placeholder="<spring:message code='note'/>"></textarea>
+                    </div>
+                </div>
+            </fieldset>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"
@@ -406,9 +441,6 @@
                    class="btn btn-primary"
                    ng-disabled="newCandidateForm.$invalid"
                    value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger" ng-show="!createCandidateSuccess">
-                <spring:message code="request.error"/>
-            </span>
         </div>
     </form>
 </script>
@@ -467,9 +499,6 @@
                    class="btn btn-primary"
                    ng-disabled="newCandidateForm.$invalid"
                    value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger" ng-show="!createCandidateSuccess">
-                <spring:message code="request.error"/>
-            </span>
         </div>
     </form>
 </script>
