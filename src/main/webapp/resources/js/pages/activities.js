@@ -4,6 +4,9 @@
 
     hratsApp.controller('ActivityController', function($scope, $modal, ActivityService){
 
+        $scope.pageConfiguration = { dataCollectionName: 'activitiesCollection' };
+        $scope.pageConfiguration.columnDefs = ActivityService.getColumnDefs();
+
         $scope.activitiesCollection = [];
 
         $scope.paginationOptions = ActivityService.paginationOptions();
@@ -16,35 +19,18 @@
             .error(function () {
                 alert("Unable to fetch data ("+status+").");
             });
-
-        $scope.openModal = function(modalTemplate, activity){
-
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: modalTemplate,
-                controller: 'ModalInstanceController',
-                size: 'lg',
-                backdrop: true,
-                scope: $scope,
-                resolve: {
-                    activity: function(){
-                        return activity;
-                    }
-                }
-            });
-        };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, ActivityService, activity){
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, ActivityService, row){
 
         //Add activity variables
         $scope.createActivitySuccess = true;
-        $scope.newActivity = angular.copy(activity) || {};
+        $scope.newActivity = angular.copy(row.data) || {};
         if (angular.equals({}, $scope.newActivity)) {
             $scope.newActivity.numberOfActivities = 1;
         }
         //Edit/delete activity variables
-        $scope.activity = activity;
+        $scope.activity = row.data;
 
         $scope.createActivity = function(){
             ActivityService.createRow($scope.newActivity)

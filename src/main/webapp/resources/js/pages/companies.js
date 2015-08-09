@@ -2,73 +2,27 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('CompanyService', function ($http){
-
-        var baseUrl = 'http://localhost:8080/HRAts/protected/companies/';
-
-        this.paginationOptions = function(){
-            return [10, 15, 25, 50, 100];
-        };
-
-        this.fetchAll = function () {
-            return $http.get(baseUrl);
-        };
-
-        this.fetchById = function(companyId) {
-            return $http.get(baseUrl + companyId)
-        };
-
-        this.createRow = function(companyData){
-            return $http.post(baseUrl, companyData);
-        };
-
-        this.updateRow = function(companyData) {
-            return $http.put(baseUrl+companyData.id, companyData);
-        };
-
-        this.removeRow = function(companyId){
-            return $http.delete(companyId);
-        };
-    });
-
     hratsApp.controller('CompanyController', function($scope, $modal, CompanyService){
 
-        $scope.companiesCollection = [];
+        $scope.pageConfiguration = { dataCollectionName: 'companiesCollection' };
+        $scope.pageConfiguration.columnDefs = CompanyService.getColumnDefs();
 
-        $scope.paginationOptions = CompanyService.paginationOptions();
+        $scope.companiesCollection = [];
 
         CompanyService.fetchAll()
             .success(function (data) {
                 $scope.companiesCollection = data;
-                $scope.displayedCollection = [].concat($scope.companiesCollection);
             })
             .error(function () {
                 alert("Unable to fetch data ("+status+").");
             });
-
-        $scope.openModal = function(modalTemplate, company){
-
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: modalTemplate,
-                controller: 'ModalInstanceController',
-                size: 'lg',
-                backdrop: true,
-                scope: $scope,
-                resolve: {
-                    company: function(){
-                        return company;
-                    }
-                }
-            });
-        };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CompanyService, company, SectorService){
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CompanyService, row, SectorService){
 
         //Add company variables
         $scope.createCompanySuccess = true;
-        $scope.newCompany = angular.copy(company) || {};
+        $scope.newCompany = angular.copy(row.data) || {};
         $scope.newCompany.owner = {};
         $scope.newCompany.owner.id = $('#userId').attr('value');
 
@@ -77,7 +31,7 @@
         };
 
         //Edit/delete company variables
-        $scope.company = company;
+        $scope.company = row.data;
 
         $scope.createCompany = function(){
             for (var i = 0; i < $scope.newCompany.departmentList.length; i++) {

@@ -16,41 +16,97 @@
     </div>
     <form name="newCompanyForm" role="form" novalidate ng-submit="createCompany();">
         <div class="modal-body">
-            <div class="form-group">
-                <label>* <spring:message code="companies.name"/>:</label>
-                <input type="text"
-                       class="form-control"
-                       required
-                       autofocus
-                       ng-model="newCompany.name"
-                       name="name"
-                       placeholder="<spring:message code='company'/>&nbsp;<spring:message code='companies.name'/>"/>
-                <label>
-                    <span class="alert alert-danger"
-                          ng-show="displayValidationError && newCompanyForm.name.$error.required">
-                            <spring:message code="required"/>
-                    </span>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>* <spring:message code="companies.note"/>:</label>
-                <input type="text"
-                       class="form-control"
-                       required
-                       ng-model="newCompany.note"
-                       name="note"
-                       placeholder="<spring:message code='sample.description'/> "/>
-            </div>
-            <div class="form-group">
-                <label>Sectors: </label>
+            <fieldset class="form">
+                <div class="form-group col-md-12">
+                    <label class="control-label"><spring:message code="companies.name"/></label>
+                    <label class="control-label sr-only">* <spring:message code="companies.name"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.name"
+                           name="name"
+                           placeholder="<spring:message code='companies.name'/>"/>
+                </div>
+                <div class="col-md-12">
+                    <label class="control-label"><spring:message code="contact"/></label>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label sr-only">* <spring:message code="address"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.address"
+                           name="name"
+                           placeholder="<spring:message code='address'/>"/>
+                    <label class="control-label sr-only">* <spring:message code="city"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.city"
+                           name="name"
+                           placeholder="<spring:message code='city'/>"/>
+                    <label class="control-label sr-only">* <spring:message code="country"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.country"
+                           name="name"
+                           placeholder="<spring:message code='country'/>"/>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label sr-only">* <spring:message code="zipCode"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.zipCode"
+                           name="name"
+                           placeholder="<spring:message code='zipCode'/>"/>
+                    <label class="control-label sr-only">* <spring:message code="phoneNumber"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.phoneNumber"
+                           name="name"
+                           placeholder="<spring:message code='phoneNumber'/>"/>
+                    <label class="control-label sr-only">* <spring:message code="companies.website"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCompany.website"
+                           name="name"
+                           placeholder="<spring:message code='companies.website'/>"/>
+                </div>
+                <div class="form-group col-sm-12 col-md-12">
+                    <label class="control-label"><spring:message code="note"/></label>
+                    <textarea rows="4"
+                              cols="50"
+                              type="text"
+                              class="form-control"
+                              required
+                              ng-model="newContact.note"
+                              name="note"
+                              placeholder="<spring:message code='note'/> "/>
+                </div>
+            <div class="form-group col-md-6">
+                <label>Sectors </label>
                 <tags-input ng-model="newCompany.sectorList"
                             display-property="name">
                     <auto-complete source="loadSectors($query)"></auto-complete>
                 </tags-input>
-                <label>Departments: </label>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Departments </label>
                 <tags-input ng-model="newCompany.departmentList"
                             display-property="name">
                 </tags-input>
+            </div>
             </div>
         </div>
         <div class="modal-footer">

@@ -17,7 +17,7 @@ public class CandidateInformation implements Serializable{
     private String address;
     private String city;
     private String country;
-    private String zipcode;
+    private String zipCode;
     private String financialReqNetto;
     private String financialReqBrutto;
     private Date datePrevJobTermination;
@@ -38,13 +38,13 @@ public class CandidateInformation implements Serializable{
 
     public CandidateInformation() {}
 
-    public CandidateInformation(String address, String city, String country, String zipcode, String financialReqNetto,
+    public CandidateInformation(String address, String city, String country, String zipCode, String financialReqNetto,
                                 String financialReqBrutto, Date datePrevJobTermination, Date startDate, ContractTypeLkp contractType, List<Skill> skillList/*, User userId*/) {
         super();
         this.address = address;
         this.city = city;
         this.country = country;
-        this.zipcode = zipcode;
+        this.zipCode = zipCode;
         this.financialReqNetto = financialReqNetto;
         this.financialReqBrutto = financialReqBrutto;
         this.datePrevJobTermination = datePrevJobTermination;
@@ -121,11 +121,11 @@ public class CandidateInformation implements Serializable{
     }
 
     public String getZipcode() {
-        return zipcode;
+        return zipCode;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setZipcode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     public ContractTypeLkp getContractType() {

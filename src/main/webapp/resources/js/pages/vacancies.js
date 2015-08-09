@@ -2,78 +2,32 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('VacancyService', function ($http){
-
-        var baseUrl = 'http://localhost:8080/HRAts/protected/vacancies/';
-
-        this.paginationOptions = function(){
-            return [10, 15, 25, 50, 100];
-        };
-
-        this.fetchAll = function () {
-            return $http.get(baseUrl);
-        };
-
-        this.fetchById = function(vacancyId) {
-            return $http.get(baseUrl + vacancyId)
-        };
-
-        this.createRow = function(vacancyData){
-            return $http.post(baseUrl, vacancyData);
-        };
-
-        this.updateRow = function(vacancyData) {
-            return $http.put(baseUrl+vacancyData.id, vacancyData);
-        };
-
-        this.removeRow = function(vacancyId){
-            return $http.delete(vacancyId);
-        };
-
-    });
-
     hratsApp.controller('VacancyController', function($scope, $modal, VacancyService){
 
-        $scope.vacanciesCollection = [];
+        $scope.pageConfiguration = { dataCollectionName: 'vacanciesCollection' };
+        $scope.pageConfiguration.columnDefs = VacancyService.getColumnDefs();
 
-        $scope.paginationOptions = VacancyService.paginationOptions();
+        $scope.vacanciesCollection = [];
 
         VacancyService.fetchAll()
             .success(function (data) {
                 $scope.vacanciesCollection = data;
-                $scope.displayedCollection = [].concat($scope.vacanciesCollection);
             })
-            .error(function () {
+            .error(function (status, data) {
                 alert("Unable to fetch data ("+status+").");
             });
-
-        $scope.openModal = function(modalTemplate, vacancy){
-
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: modalTemplate,
-                controller: 'ModalInstanceController',
-                size: 'lg',
-                backdrop: true,
-                scope: $scope,
-                resolve: {
-                    vacancy: function(){
-                        return vacancy;
-                    }
-                }
-            });
-        };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, VacancyService, vacancy, CompanyService, DepartmentService){
+    hratsApp.controller('ModalInstanceController', function($log, $scope, $modalInstance, row, VacancyService, CompanyService, DepartmentService){
 
+        //TODO organize vacancies modals - make them function properly
         //Add vacancy variables
-        $scope.createVacancySuccess = true;
-        $scope.newVacancy = angular.copy(vacancy) || {};
-        $scope.newVacancy.department = $scope.newVacancy.department || {};
+        $scope.newVacancy = angular.copy(row.data) || {};
+
         if (angular.equals({}, $scope.newVacancy)) {
             $scope.newVacancy.numberOfVacancies = 1;
         }
+
         CompanyService.fetchAll()
             .success(function (data){
                 $scope.companiesCollection = data || [];
@@ -83,19 +37,10 @@
             });
 
         //Edit/delete vacancy variables
-        $scope.vacancy = vacancy;
-
-        $scope.departmentTransform = function(newDepartment) {
-            var department = {
-                name: newDepartment,
-                company: {id: $scope.newVacancy.company.id}
-            };
-
-            return department;
-        };
+        $scope.vacancy = row.data;
 
         $scope.fetchRelatedDepartments = function(company) {
-            $scope.newVacancy.departmentList = [];
+            $scope.newVacancy.department = {};
             DepartmentService.fetchAllByCompany(company.id)
                 .success(function(data){
                     company.departmentList = data;
@@ -108,6 +53,7 @@
         };
 
         $scope.createVacancy = function(){
+            $log.info($scope.newVacancy);
             VacancyService.createRow($scope.newVacancy)
                 .success(function(data){
                     $scope.vacanciesCollection.push(data);

@@ -14,49 +14,94 @@
             <spring:message code="create"/>&nbsp;<spring:message code="contact"/>
         </h4>
     </div>
-    <form name="newContactForm" role="form" novalidate ng-submit="createContact(files);">
+    <form name="newContactForm" role="form" novalidate ng-submit="createContact(files);" class="form">
         <div class="modal-body">
-            <div class="form-group">
-                <label>* <spring:message code="contacts.name"/>:</label>
-                <input type="text"
-                       class="form-control"
-                       required
-                       autofocus
-                       ng-model="newContact.name"
-                       name="name"
-                       placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/>"/>
-                <label>
-                    <span class="alert alert-danger"
-                          ng-show="displayValidationError && newContactForm.name.$error.required">
-                            <spring:message code="required"/>
-                    </span>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>* <spring:message code="contacts.note"/>:</label>
-                <input type="text"
-                       class="form-control"
-                       required
-                       ng-model="newContact.note"
-                       name="note"
-                       placeholder="<spring:message code='sample.description'/> "/>
-                <input type="email"
-                       class="form-control"
-                       required
-                       autofocus
-                       ng-model="newContact.email"
-                       name="email"
-                       placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='candidates.email'/>"/>
-            </div>
-            <div class="form-group">
-                <p>Selected: {{newContact.company}}</p>
+            <fieldset class="form-inline">
+                <div class="col-md-12">
+                    <label class="control-label"><spring:message code="user.name"/></label>
+                </div>
+                <div class="col-md-12">
+                <div class="form-group">
+                        <label class="control-label sr-only">* <spring:message code="user.name"/>:</label>
+                        <input type="text"
+                               class="form-control"
+                               required
+                               autofocus
+                               ng-model="newContact.name"
+                               name="name"
+                               placeholder="<spring:message code='user.name'/>"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label sr-only">* <spring:message code="user.middleName"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                               required
+                               autofocus
+                               ng-model="newContact.middleName"
+                               name="name"
+                               placeholder="<spring:message code='user.middleName'/>"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label sr-only">* <spring:message code="user.lastName"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newContact.lastName"
+                           name="name"
+                           placeholder="<spring:message code='user.lastName'/>"/>
+                </div>
+                    </div>
+            </fieldset>
+            <fieldset class="form-inline">
+                    <div class="col-md-12">
+                        <label class="control-label"><spring:message code="contact"/></label>
+                    </div>
+                <div class="col-md-12">
+                <div class="form-group">
+                        <label class="control-label sr-only">* <spring:message code="phoneNumber"/>:</label>
+                        <input type="tel"
+                               class="form-control"
+                               required
+                               autofocus
+                               ng-model="newContact.phoneNumber"
+                               name="phoneNumber"
+                               placeholder="<spring:message code='sample.phone'/>"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label sr-only">* <spring:message code="email"/>:</label>
+                        <input type="email"
+                               class="form-control"
+                               required
+                               autofocus
+                               ng-model="newContact.email"
+                               name="email"
+                               placeholder="<spring:message code='sample.email'/>"/>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form">
+                <div class="form-group col-sm-12 col-md-12">
+                    <label class="control-label"><spring:message code="note"/></label>
+                    <textarea rows="4"
+                              cols="50"
+                              type="text"
+                              class="form-control"
+                              required
+                              ng-model="newContact.note"
+                              name="note"
+                              placeholder="<spring:message code='note'/> "/>
+                </div>
+            </fieldset>
+            <fieldset class="form">
+                <label class="control-label col-md-12"><spring:message code="assign.relations"/></label>
+                <div class="col-md-6">
                 <ui-select ng-model="newContact.company"
                            on-select="fetchRelatedDepartments(newContact.company)"
                            theme="bootstrap"
                            ng-disabled="disabled"
-                           reset-search-input="false"
-                           style="width: 300px;">
-                    <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
+                           reset-search-input="false">
+                    <ui-select-match placeholder="Assign company">{{$select.selected.name}}</ui-select-match>
                     <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
                         <div ng-bind-html="company.name | highlight: $select.search"></div>
                         <small>
@@ -65,15 +110,14 @@
                         </small>
                     </ui-select-choices>
                 </ui-select>
-
-                <p>Selected: {{newContact.departmentList[0]}}</p>
+                </div>
+                <div class="col-md-6">
                 <ui-select ng-model="newContact.departmentList[0]"
                            theme="bootstrap"
                            ng-disabled="disabled"
                            reset-search-input="false"
-                           tagging="departmentTransform"
-                           style="width: 300px;">
-                    <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
+                           tagging="departmentTransform">
+                    <ui-select-match placeholder="Assign department">{{$select.selected.name}}</ui-select-match>
                     <ui-select-choices repeat="department in newContact.company.departmentList | propsFilter: {id: $select.search, name: $select.search}">
                         <div ng-bind-html="department.name | highlight: $select.search"></div>
                         <small>
@@ -82,17 +126,28 @@
                         </small>
                     </ui-select-choices>
                 </ui-select>
-
+                </div>
+            </fieldset>
+            <fieldset class="form">
+                <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
+                <div class = "form-group col-md-6">
+                <div class="well well-lg text-center" ngf-drop ngf-select ng-model="files" ngf-multiple="true" ngf-keep="true" ngf-keep-distinct="true">Select Files Or Drop Them Here</div>
             </div>
-
-            <div class = "form-group">
-                <button class="button" ngf-select ng-model="files" ngf-multiple="true">Select File</button>
-            </div>
-            Files:
+            <div class="col-md-6">
+                Files:
             <ul>
-                <li ng-repeat="f in files" >{{f.name}}</li>
+                <li ng-repeat="f in files" >{{f.name}}
+                    <span class="glyphicon glyphicon-minus"
+                          ng-click="removeFromArray(files, f)"
+                          role="button"
+                          title="<spring:message code="delete"/>&nbsp;<spring:message code="contact"/>"
+                          class="btn btn-default"
+                          data-toggle="modal">
+                   </span>
+                </li>
             </ul>
-
+            </div>
+            </fieldset>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"
@@ -139,13 +194,7 @@
                        required
                        ng-model="newContact.name"
                        name="name"
-                       placeholder="<spring:message code='contact'/>&nbsp;<spring:message code='contacts.name'/> "/>
-                <label>
-                    <span class="alert alert-danger"
-                          ng-show="displayValidationError && updateContactForm.name.$error.required">
-                        <spring:message code="required"/>
-                    </span>
-                </label>
+                       placeholder="<spring:message code='contacts.name'/> "/>
             </div>
             <div class="form-group">
                 <label>* <spring:message code="contacts.note"/>:</label>
@@ -155,12 +204,6 @@
                        ng-model="newContact.note"
                        name="note"
                        placeholder="<spring:message code='sample.description'/> "/>
-                <label>
-                    <span class="alert alert-danger"
-                          ng-show="displayValidationError && updateContactForm.email.$error.required">
-                        <spring:message code="required"/>
-                    </span>
-                </label>
             </div>
     </div>
     <div class="modal-footer">

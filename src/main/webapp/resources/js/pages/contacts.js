@@ -2,84 +2,102 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('ContactService', function ($http){
+    hratsApp.service('ContactService', function ($http, uiGridConstants, uiGridGroupingConstants){
 
         var baseUrl = 'http://localhost:8080/HRAts/protected/contacts/';
 
-        this.paginationOptions = function(){
-            return [10, 15, 25, 50, 100];
-        };
+        return {
 
-        this.fetchAll = function () {
-            return $http.get(baseUrl);
-        };
+            fetchAllContacts: function() {
+                return $http.get(baseUrl);
+            },
 
-        this.fetchById = function(contactId) {
-            return $http.get(baseUrl + contactId)
-        };
+            fetchById: function(contactId) {
+                return $http.get(baseUrl + contactId);
+            },
 
-        this.sendCustomRequest = function(endPoint, requestData) {
-            requestData.url = baseUrl + endPoint;
-            return $http(requestData);
-        };
+            sendCustomRequest: function(endPoint, requestData) {
+                requestData.url = baseUrl + endPoint;
+                return $http(requestData);
+            },
+            createRow: function(contactData){
+                var temporaryAppend = "uploadContactAndFiles";
+                return $http.post(baseUrl + temporaryAppend, contactData);
+            },
 
-        this.createRow = function(contactData){
-            var temporaryAppend = "uploadContactAndFiles";
-            return $http.post(baseUrl + temporaryAppend, contactData);
-        };
+            updateRow: function(contactData) {
+                return $http.put(baseUrl+contactData.id, contactData);
+            },
 
-        this.updateRow = function(contactData) {
-            return $http.put(baseUrl+contactData.id, contactData);
-        };
+            removeRow: function(contactId){
+                return $http.delete(contactId);
+            },
 
-        this.removeRow = function(contactId){
-            return $http.delete(contactId);
+            getColumnDefs: function() {
+                return [
+                    { name:'id', width:50 },
+                    { name:'name', width:100 },
+                    { name:'middleName', width:100 },
+                    { name:'lastName', width:100 },
+                    { name:'departmentList[0].company.name', width:100},
+                    { name:'departmentList[0].name', width:100},
+                    { name:'email', width:100, cellTemplate: '<div class="text-center"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
+                    { name:'phoneNumber', displayName: 'Phone', width:200},
+                    { name:'note', width:300 },
+                    { name:'dateEntered', cellFilter:'date', width:150 },
+                    { name:'dateModified', cellFilter:'date', width:150 },
+                    { name:'owner.email', displayName:'Owner', width:150 }
+                ];
+            },
+
+            setupReqData: function(data, files) {
+                var formData = new FormData();
+                formData.append('data', new Blob([JSON.stringify(data)], { type: "application/json" }));
+
+                if (files && files.length) {
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        formData.append("file", file);
+                    }
+                }
+
+                var req = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': undefined
+                    },
+                    data: formData
+                };
+
+                return req;
+            }
         };
     });
 
     hratsApp.controller('ContactController', function($scope, $modal, ContactService){
 
+        $scope.pageConfiguration = { dataCollectionName: 'contactsCollection' };
+        $scope.pageConfiguration.columnDefs = ContactService.getColumnDefs();
+
         $scope.contactsCollection = [];
 
-        $scope.paginationOptions = ContactService.paginationOptions();
-
-        ContactService.fetchAll()
+        ContactService.fetchAllContacts()
             .success(function (data) {
                 $scope.contactsCollection = data;
-                $scope.displayedCollection = [].concat($scope.contactsCollection);
             })
             .error(function (status, data) {
                 alert("Unable to fetch data ("+status+").");
             });
-
-        $scope.openModal = function(modalTemplate, contact){
-
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: modalTemplate,
-                controller: 'ModalInstanceController',
-                size: 'lg',
-                backdrop: true,
-                scope: $scope,
-                resolve: {
-                    contact: function(){
-                        return contact;
-                    }
-                }
-            });
-        };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, $timeout, Upload, ContactService, contact, CompanyService, DepartmentService){
-
-        $scope.companiesCollection = [];
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, $timeout, row, Upload, ContactService, CompanyService, DepartmentService){
 
         $scope.log = "";
 
         CompanyService.fetchAll()
             .success(function (data){
                 console.log(data);
-                $scope.companiesCollection = data;
+                $scope.companiesCollection = data || [];
             })
             .error(function (status, data){
                 alert("Unable to fetch data ("+status+").");
@@ -87,14 +105,14 @@
 
         //Add contact variables
         $scope.createContactSuccess = true;
-        $scope.newContact = angular.copy(contact) || {};
+        $scope.newContact = angular.copy(row.data) || {};
         $scope.newContact.departmentList = $scope.newContact.departmentList || [];
 
         $scope.newContact.owner = {};
         $scope.newContact.owner.id = $('#userId').attr('value');
 
         //Edit/delete contact variables
-        $scope.contact = contact;
+        $scope.contact = row.data;
 
         $scope.departmentTransform = function(newDepartment) {
             var department = {
@@ -103,6 +121,14 @@
             };
 
             return department;
+        };
+
+        $scope.removeFromArray = function(array, value) {
+            var index = array.indexOf(value);
+            if(index !== -1){
+                array.splice(index, 1);
+            }
+            return array;
         };
 
         $scope.fetchRelatedDepartments = function(company) {
@@ -121,23 +147,8 @@
 
         $scope.createContact = function (files) {
             $scope.newContact.role = "ROLE_MANAGER";
-            var formData = new FormData();
-            formData.append('data', new Blob([JSON.stringify($scope.newContact)], { type: "application/json" }));
 
-            if (files && files.length) {
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    formData.append("file", file);
-                }
-            }
-
-            var req = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': undefined
-                },
-                data: formData
-            };
+            var req = ContactService.setupReqData($scope.newContact, files);
 
             ContactService.sendCustomRequest('', req)
                 .success(function (data) {
@@ -166,10 +177,9 @@
         $scope.removeRow = function(contact) {
             ContactService.removeRow(contact.id)
                 .success(function(){
-                    var index = $scope.contactsCollection.indexOf(contact);
-                    if(index !== -1){
-                        $scope.contactsCollection.splice(index, 1);
-                    }
+
+                    $scope.contactsCollection = removeFromArray($scope.contactsCollection, contact);
+
                     $modalInstance.close();
                 })
                 .error(function(data,status){

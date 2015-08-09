@@ -51,9 +51,7 @@ public class User implements Serializable{
     @JsonManagedReference("owner-vacancy_user")
     private List<VacancyUser> vacancyUserOwnerList;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference("user-department")
-    @JsonIgnore
+    @OneToMany(mappedBy = "manager", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> departmentList;
 
     @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

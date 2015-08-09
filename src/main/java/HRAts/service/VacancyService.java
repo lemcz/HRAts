@@ -7,6 +7,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class VacancyService {
@@ -22,6 +24,11 @@ public class VacancyService {
     @Transactional(readOnly = true)
     public Vacancy findById(int vacancyId) {
         return vacancyRepository.findById(vacancyId);
+    }
+
+    @Transactional(readOnly = true)
+    public Iterable<Vacancy> findByDepartmentIdIn(List<Integer> departmentsIds) {
+        return vacancyRepository.findByDepartment_IdIn(departmentsIds);
     }
 
     @Transactional

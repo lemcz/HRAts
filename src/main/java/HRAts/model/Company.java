@@ -1,7 +1,5 @@
 package HRAts.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -20,16 +18,22 @@ public class Company implements Serializable{
     private String name;
     @Column(name="note", nullable = true)
     private String note;
+
+    private String phoneNumber;
+    private String address;
+    private String city;
+    private String country;
+    private String zipCode;
+    private String website;
+
     @Column(name="date_entered", nullable = false)
     private Date dateEntered;
     @Column(name="date_modified", nullable = false)
     private Date dateModified;
 
-    @JsonManagedReference("company-department")
     @OneToMany(mappedBy = "company", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> departmentList;
 
-    @JsonManagedReference("attachment-company")
     @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
     private List<Attachment> attachmentList;
 
@@ -41,10 +45,18 @@ public class Company implements Serializable{
 
     public Company() {}
 
-    public Company(String name, String note, Date dateEntered, Date dateModified, List<Department> departmentList, List<Attachment> attachmentList, List<Sector> sectorList) {
+    public Company(String name, String note, String phoneNumber, String address, String zipCode,
+                   String city, String country, String website, Date dateEntered, Date dateModified,
+                   List<Department> departmentList, List<Attachment> attachmentList, List<Sector> sectorList) {
         super();
         this.name = name;
         this.note = note;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.country = country;
+        this.website = website;
         this.dateEntered = dateEntered;
         this.dateModified = dateModified;
         this.departmentList = departmentList;
@@ -126,5 +138,53 @@ public class Company implements Serializable{
 
     public void setAttachmentList(List<Attachment> attachmentList) {
         this.attachmentList = attachmentList;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 }

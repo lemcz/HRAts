@@ -16,78 +16,103 @@
     </div>
     <form name="newVacancyForm" role="form" novalidate ng-submit="createVacancy();">
         <div class="modal-body">
-            <div class="form-group">
-                <label>* <spring:message code="vacancies.name"/>:</label>
-                <input type="text"
-                       class="form-control"
-                       required
-                       autofocus
-                       ng-model="newVacancy.name"
-                       name="name"
-                       placeholder="<spring:message code='vacancy'/>&nbsp;<spring:message code='vacancies.name'/>"/>
-                <label>
-                    <span class="alert alert-danger"
-                          ng-show="displayValidationError && newVacancyForm.name.$error.required">
-                            <spring:message code="required"/>
-                    </span>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>* <spring:message code="vacancies.description"/>:</label>
-                <input type="text"
-                       class="form-control"
-                       required
-                       ng-model="newVacancy.description"
-                       name="description"
-                       placeholder="<spring:message code='sample.description'/> "/>
-            </div>
-            <div class="form-group">
-                <label>* <spring:message code="vacancies.numberOfVacancies"/>:</label>
-                <input type="number"
-                       class="form-control"
-                       required
-                       ng-model="newVacancy.numberOfVacancies"
-                       ng-pattern="/^[1-9][0-9]*$/"
-                       name="numberOfVacancies"
-                       placeholder="<spring:message code='sample.number'/> "/>
-            </div>
-
-            <div class="form-group">
-                <p>Selected: {{newVacancy.company}}</p>
-                <ui-select ng-model="newVacancy.company"
-                           on-select="fetchRelatedDepartments(newVacancy.company)"
-                           theme="bootstrap"
-                           ng-disabled="disabled"
-                           reset-search-input="false"
-                           style="width: 300px;">
-                    <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
-                    <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
-                        <div ng-bind-html="company.name | highlight: $select.search"></div>
-                        <small>
-                            id: <span ng-bind-html="''+company.id | highlight: $select.search"></span>
-                            name: {{company.name}}
-                        </small>
-                    </ui-select-choices>
-                </ui-select>
-
-                <p>Selected: {{newVacancy.departmentList[0]}}</p>
-                <ui-select ng-model="newVacancy.department"
-                           theme="bootstrap"
-                           ng-disabled="disabled"
-                           reset-search-input="false"
-                           tagging="departmentTransform"
-                           style="width: 300px;">
-                    <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
-                    <ui-select-choices repeat="department in newVacancy.company.departmentList | propsFilter: {id: $select.search, name: $select.search}">
-                        <div ng-bind-html="department.name | highlight: $select.search"></div>
-                        <small>
-                            id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>
-                            name: {{department.name}}
-                        </small>
-                    </ui-select-choices>
-                </ui-select>
-
-            </div>
+            <fieldset class="form">
+                <div class="form-group col-md-12">
+                    <label><spring:message code="vacancies.name"/>:</label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newVacancy.name"
+                           name="name"
+                           placeholder="<spring:message code='vacancy'/>&nbsp;<spring:message code='vacancies.name'/>"/>
+                    <label>
+                        <span class="alert alert-danger"
+                              ng-show="displayValidationError && newVacancyForm.name.$error.required">
+                                <spring:message code="required"/>
+                        </span>
+                    </label>
+                </div>
+                <div class="form-group col-md-12">
+                    <label><spring:message code="vacancies.description"/>:</label>
+                    <textarea rows="4"
+                              cols="50"
+                              class="form-control"
+                              required
+                              ng-model="newVacancy.description"
+                              name="description"
+                              placeholder="<spring:message code='sample.description'/>"></textarea>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="control-label"><spring:message code="note"/></label>
+                    <textarea rows="4"
+                              cols="50"
+                              class="form-control"
+                              required
+                              ng-model="newCandidate.note"
+                              name="note"
+                              placeholder="<spring:message code='note'/>"></textarea>
+                </div>
+                <div class="form-group col-md-12">
+                    <label><spring:message code="vacancies.numberOfVacancies"/>:</label>
+                    <input type="number"
+                           class="form-control"
+                           required
+                           ng-model="newVacancy.numberOfVacancies"
+                           ng-pattern="/^[1-9][0-9]*$/"
+                           name="numberOfVacancies"
+                           placeholder="<spring:message code='sample.number'/> "/>
+                </div>
+                <div class="form-group col-md-6">
+                    <ui-select ng-model="newVacancy.company"
+                               on-select="fetchRelatedDepartments(newVacancy.company)"
+                               theme="bootstrap"
+                               ng-disabled="disabled"
+                               reset-search-input="false">
+                        <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
+                            <div ng-bind-html="company.name | highlight: $select.search"></div>
+                            <small>
+                                id: <span ng-bind-html="''+company.id | highlight: $select.search"></span>
+                                name: {{company.name}}
+                            </small>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="form-group col-md-6">
+                    <ui-select ng-model="newVacancy.department"
+                               theme="bootstrap"
+                               ng-disabled="disabled"
+                               reset-search-input="false">
+                        <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="department in newVacancy.company.departmentList | propsFilter: {id: $select.search, name: $select.search}">
+                            <div ng-bind-html="department.name | highlight: $select.search"></div>
+                            <small>
+                                id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>
+                                name: {{department.name}}
+                            </small>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
+                <div class = "form-group col-md-6">
+                    <div class="well well-lg text-center" ngf-drop ngf-select ng-model="files" ngf-multiple="true" ngf-keep="true" ngf-keep-distinct="true">Select Files Or Drop Them Here</div>
+                </div>
+                <div class="col-md-6">
+                    Files:
+                    <ul>
+                        <li ng-repeat="f in files" >{{f.name}}
+                    <span class="glyphicon glyphicon-minus"
+                          ng-click="removeFromArray(files, f)"
+                          role="button"
+                          title="<spring:message code="delete"/>&nbsp;<spring:message code="contact"/>"
+                          class="btn btn-default"
+                          data-toggle="modal">
+                   </span>
+                        </li>
+                    </ul>
+                </div>
+            </fieldset>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"
@@ -101,9 +126,6 @@
                    class="btn btn-primary"
                    ng-disabled="newVacancyForm.$invalid"
                    value='<spring:message code="create"/>'/>
-            <span class="alert alert-danger" ng-show="!createVacancySuccess">
-                <spring:message code="request.error"/>
-            </span>
         </div>
     </form>
 </script>
@@ -127,7 +149,7 @@
                        required
                        ng-model="vacancy.id"
                        name="id"/>
-                <label>* <spring:message code="vacancies.name"/>:</label>
+                <label><spring:message code="vacancies.name"/>:</label>
                 <input type="text"
                        class="form-control"
                        autofocus
@@ -143,7 +165,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <label>* <spring:message code="vacancies.description"/>:</label>
+                <label><spring:message code="vacancies.description"/>:</label>
                 <input type="text"
                        class="form-control"
                        required
@@ -158,7 +180,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <label>* <spring:message code="vacancies.numberOfVacancies"/>:</label>
+                <label><spring:message code="vacancies.numberOfVacancies"/>:</label>
                 <input type="number"
                        class="form-control"
                        required

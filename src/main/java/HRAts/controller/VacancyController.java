@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/protected/vacancies")
 public class VacancyController {
@@ -25,12 +28,21 @@ public class VacancyController {
         return vacancyService.findAll();
     }
 
+    @RequestMapping(value = "/perDepartments", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Iterable<Vacancy> getVacanciesByDepartmentsIds(@RequestBody(required = false) List<Integer> departmentsIds){
+        if(departmentsIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return vacancyService.findByDepartmentIdIn(departmentsIds);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public Vacancy getVacancyById(@PathVariable int id){
         return vacancyService.findById(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Vacancy createVacancy(@RequestBody Vacancy vacancy){
         return vacancyService.save(vacancy);

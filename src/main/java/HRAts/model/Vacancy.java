@@ -36,7 +36,7 @@ public class Vacancy implements Serializable {
 
     @JsonBackReference("department-vacancy")
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "department_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
     @JsonManagedReference("attachment-vacancy")

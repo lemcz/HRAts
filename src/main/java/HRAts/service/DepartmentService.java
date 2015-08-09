@@ -7,6 +7,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class DepartmentService {
@@ -35,10 +37,14 @@ public class DepartmentService {
     }
 
     @Transactional(readOnly = true)
+        public Iterable<Department> findByCompanyIdIn(List<Integer> companiesIds) {
+        return departmentRepository.findByCompany_IdIn(companiesIds);
+    }
+
+    @Transactional(readOnly = true)
     public Iterable<Department> findByCompany_IdAndManagerIsNull(int companyId) {
         return departmentRepository.findByCompany_IdAndManagerIsNull(companyId);
     }
-
 
     @Transactional(readOnly = true)
     public Iterable<Department> findByCompany_IdAndVacancyListIsNull(int companyId) {

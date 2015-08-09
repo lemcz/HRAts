@@ -1,6 +1,6 @@
 package HRAts.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "department")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Department implements Serializable {
 
     @Id
@@ -18,13 +19,16 @@ public class Department implements Serializable {
     @GeneratedValue(generator="department_id_gen")
     @Column(name = "id", unique = true, nullable = false)
     private int id;
-
+    
     @Column(name="name", nullable = false)
     private String name;
+    
     @Column(name="note", nullable = true)
     private String note;
+    
     @Column(name="date_entered", nullable = false)
     private Date dateEntered;
+    
     @Column(name="date_modified", nullable = false)
     private Date dateModified;
 
@@ -32,19 +36,17 @@ public class Department implements Serializable {
     @OneToMany(mappedBy="department", targetEntity=Vacancy.class, fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Vacancy> vacancyList;
 
-    @JsonBackReference("user-department")
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private User owner;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private User manager;
 
-    @JsonBackReference("company-department")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", referencedColumnName = "id")
-    private Company company;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private User owner;
 
     public Department() {}
 

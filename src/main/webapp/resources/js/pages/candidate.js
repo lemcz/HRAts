@@ -2,82 +2,203 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('CandidateService', function ($http){
+    hratsApp.service('CandidateService', function ($http, uiGridConstants, uiGridGroupingConstants){
 
         var baseUrl = 'http://localhost:8080/HRAts/protected/candidate/';
 
-        this.paginationOptions = function(){
-            return [10, 15, 25, 50, 100];
-        };
+        return {
 
-        this.fetchAll = function () {
-            return $http.get(baseUrl);
-        };
+            fetchAll: function () {
+                return $http.get(baseUrl);
+            },
 
-        this.fetchById = function(candidateId) {
-            return $http.get(baseUrl + candidateId)
-        };
+            fetchById: function(candidateId) {
+                return $http.get(baseUrl + candidateId)
+            },
 
-        this.createRow = function(candidateData){
-            return $http.post(baseUrl, candidateData);
-        };
+            createRow: function(candidateData){
+                return $http.post(baseUrl, candidateData);
+            },
 
-        this.updateRow = function(candidateData) {
-            console.log(candidateData);
-            return $http.put(baseUrl+candidateData.id, candidateData);
-        };
+            updateRow: function(candidateData) {
+                console.log(candidateData);
+                return $http.put(baseUrl+candidateData.id, candidateData);
+            },
 
-        this.removeRow = function(candidateId){
-            return $http.delete(candidateId);
-        };
+            removeRow: function(candidateId){
+                return $http.delete(candidateId);
+            },
+
+            getColumnDefs: function() {
+                return [
+                    { name:'id', width:50 },
+                    { name:'name', width:100 },
+                    { name:'middleName', width:100 },
+                    { name:'lastName', width:100 },
+                    { name:'candidateInformation.address', displayName: "Address", width:150},
+                    { name:'candidateInformation.city', displayName: "City", width:150},
+                    { name:'candidateInformation.state', displayName: "State", width:150},
+                    { name:'candidateInformation.zipCode', displayName: "Zip Code", width:150},
+                    { name:'phoneNumber', width:150},
+                    { name:'email', width:100, cellTemplate: '<div class="text-center"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
+                    { name:'phone', width:200},
+                    { name:'about', width:300 },
+                    { name:'dateEntered', cellFilter:'date', width:150 },
+                    { name:'dateModified', cellFilter:'date', width:150 },
+                    { name:'owner.email', displayName:'Owner', width:150 }
+                ];
+            },
+
+            setupReqData: function (data, files) {
+                var formData = new FormData();
+                formData.append('data', new Blob([JSON.stringify(data)], {type: "application/json"}));
+
+                if (files && files.length) {
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        formData.append("file", file);
+                    }
+                }
+
+                var req = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': undefined
+                    },
+                    data: formData
+                };
+
+                return req;
+            }
+        }
     });
 
     hratsApp.controller('CandidateController', function($scope, $modal, CandidateService){
 
-        $scope.candidatesCollection = [];
+        $scope.pageConfiguration = { dataCollectionName: 'candidatesCollection' };
+        $scope.pageConfiguration.columnDefs = CandidateService.getColumnDefs();
 
-        $scope.paginationOptions = CandidateService.paginationOptions();
+        $scope.candidatesCollection = [];
 
         CandidateService.fetchAll()
             .success(function (data) {
                 $scope.candidatesCollection = data;
-                $scope.displayedCollection = [].concat($scope.candidatesCollection);
             })
             .error(function () {
                 alert("Unable to fetch data ("+status+").");
             });
-
-        $scope.openModal = function(modalTemplate, candidate){
-
-            var modalInstance = $modal.open({
-                animation: false,
-                templateUrl: modalTemplate,
-                controller: modalTemplate + 'Controller',
-                size: 'lg',
-                backdrop: true,
-                scope: $scope,
-                resolve: {
-                    candidate: function(){
-                        return candidate;
-                    }
-                }
-            });
-        };
     });
 
-    hratsApp.controller('addCandidateModalController', function($scope, $modalInstance, CandidateService, candidate){
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CandidateService, row,
+                                                            VacancyService, ActivityTypeService, ActivityService, CompanyService, DepartmentService,
+                                                            ContractTypeService) {
 
+        //TODO reorganize controller, setup owner
         //Add candidate variables
         $scope.createCandidateSuccess = true;
-        $scope.newCandidate = angular.copy(candidate) || {};
-        $scope.newCandidate.owner = {};
-        $scope.newCandidate.owner.id = $('#userId').attr('value');
+        console.log(row);
+        var modalType = row.modalName;
+        $scope.candidate = row.data;
+        $scope.newCandidate = angular.copy(row.data) || {};
+        $scope.querySelection = {
+            selectedCompanies: [],
+            selectedDepartments: [],
+            selectedVacancies: []
+        };
+        $scope.companiesCollection = [];
+        $scope.departmentsCollection = [];
+        $scope.contractsCollection = [];
+        $scope.vacancyCollection = [];
 
+
+        CompanyService.fetchAll()
+            .success(function (data) {
+                console.log(data);
+                $scope.companiesCollection = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data (" + status + ").");
+            });
+
+        ContractTypeService.fetchAll()
+            .success(function(data) {
+                $scope.contractsCollection = data || [];
+            })
+            .error(function(status, data) {
+                alert("Unable to fetch data (" + status + ").");
+            });
+
+        $scope.fetchRelatedDepartments = function(selectedCompanies) {
+
+            $scope.querySelection.selectedDepartments = [];
+            if (selectedCompanies.length <= 0 ) {
+                return;
+            }
+
+            var departmentsCollectionPromise = DepartmentService.fetchRelatedDepartments(selectedCompanies);
+            departmentsCollectionPromise.then(function(result) {
+                $scope.departmentsCollection = result.data;
+            })
+        };
+
+        $scope.fetchRelatedVacancies = function(selectedDepartments) {
+
+            $scope.querySelection.selectedVacancies = [];
+            if (selectedDepartments.length <= 0 ) {
+                return;
+            }
+
+            var vacanciesCollectionPromise = VacancyService.fetchRelatedVacancies(selectedDepartments);
+            vacanciesCollectionPromise.then(function(result) {
+                $scope.vacancyCollection = result.data;
+            })
+        };
+
+        switch(modalType) {
+            case 'addCandidateModal':
+                $scope.newCandidate.owner = { id: $('#userId').attr('value')};
+                $scope.newCandidate.candidateInformation = {startDate: new Date()};
+                //
+                break;
+            case 'editCandidateModal':
+                //
+                break;
+            case 'deleteCandidateModal':
+                // do nothing
+                break;
+            case 'addToVacancyModal':
+                $scope.candidate.vacancyUserCandidateList = [{ owner: {id: $scope.candidate.owner.id} }];
+
+                VacancyService.fetchAll()
+                    .success(function(data) {
+                        $scope.vacancyCollection = data || {};
+                    })
+                    .error(function(data,status){
+                        alert("Unable to fetch vacancies ("+status+").");
+                    });
+                break;
+            case 'logActivityModal':
+                $scope.activity = {};
+
+                ActivityTypeService.fetchAll()
+                    .success(function(data){
+                        $scope.activityTypeCollection = data || {};
+                    })
+                    .error(function(data, status) {
+                        alert("Unable to fetch activity types ("+status+").");
+                    });
+
+                break;
+            default:
+                $modalInstance.close();
+                break;
+        }
 
         $scope.createCandidate = function(){
             console.log($scope.newCandidate);
+            $scope.newCandidate.candidateInformation.contractType = $scope.querySelection.selectedContractType || {};
             CandidateService.createRow($scope.newCandidate)
-            .success(function(data){
+                .success(function(data){
                     console.log(data);
                     $scope.candidatesCollection.push(data);
                 })
@@ -89,18 +210,8 @@
             $modalInstance.close();
         };
 
-        $scope.cancel = function(){
-            $modalInstance.dismiss('cancel');
-        };
-    });
-
-    hratsApp.controller('updateCandidateModalController', function($scope, $modalInstance, CandidateService, candidate){
-
-        //Edit/delete candidate variables
-        $scope.candidate = candidate;
-
-        $scope.updateCandidate = function(candidate) {
-            CandidateService.updateRow(candidate)
+        $scope.updateCandidate = function(row) {
+            CandidateService.updateRow(row)
                 .success(function(data){
                     angular.copy(data, $scope.candidate);
                     $modalInstance.close();
@@ -109,26 +220,6 @@
                     alert("Unable to update record ("+status+").");
                 })
         };
-
-        $scope.cancel = function(){
-            $modalInstance.dismiss('cancel');
-        };
-    });
-
-    hratsApp.controller('addToVacancyModalController', function($scope, $modalInstance, CandidateService, candidate, VacancyService) {
-
-        $scope.candidate = candidate;
-
-        $scope.candidate.vacancyUserCandidateList = [{ owner: {id: $scope.candidate.owner.id} }];
-        $scope.createCandidateSuccess = true;
-
-        VacancyService.fetchAll()
-            .success(function(data) {
-               $scope.vacancyCollection = data || {};
-            })
-            .error(function(data,status){
-                alert("Unable to fetch vacancies ("+status+").");
-            });
 
         $scope.addToVacancy = function(candidate) {
 
@@ -141,26 +232,6 @@
                     alert("Unable to update record ("+status+").");
                 })
         };
-
-        $scope.cancel = function(){
-            $modalInstance.dismiss('cancel');
-        };
-    });
-
-    hratsApp.controller('logActivityModalController', function($scope, $modalInstance, ActivityService, ActivityTypeService, candidate) {
-
-        $scope.createCandidateSuccess = true;
-
-        $scope.candidate = candidate;
-        $scope.activity = {};
-
-        ActivityTypeService.fetchAll()
-            .success(function(data){
-                $scope.activityTypeCollection = data || {};
-            })
-            .error(function(data, status) {
-                alert("Unable to fetch activity types ("+status+").");
-            });
 
         $scope.logActivity = function(candidate) {
 
@@ -178,18 +249,6 @@
                     alert("Unable to update record ("+status+").");
                 })
         };
-
-        $scope.cancel = function(){
-            $modalInstance.dismiss('cancel');
-        };
-    });
-
-    hratsApp.controller('deleteCandidateModalController', function($scope, $modalInstance, CandidateService, candidate){
-
-        //Edit/delete candidate variables
-        $scope.candidate = candidate;
-        $scope.candidate.activityTypeCollection[0] = { owner: {id: $scope.candidate.owner.id} };
-
         $scope.removeRow = function(candidate) {
             CandidateService.removeRow(candidate.id)
                 .success(function(){
