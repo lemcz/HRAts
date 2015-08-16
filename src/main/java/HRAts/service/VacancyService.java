@@ -31,6 +31,11 @@ public class VacancyService {
         return vacancyRepository.findByDepartment_IdIn(departmentsIds);
     }
 
+/*    @Transactional(readOnly = true)
+    public Iterable<Vacancy> findByVacancyUserListCandidate_IdIn(List<Integer> candidatesIds) {
+        return vacancyRepository.findByVacancyUserListCandidate_IdIn(candidatesIds);
+    }*/
+
     @Transactional
     public Vacancy save(Vacancy vacancy) {
         return vacancyRepository.save(vacancy);

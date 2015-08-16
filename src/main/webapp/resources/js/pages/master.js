@@ -2,7 +2,7 @@
 
     var hratsApp = angular.module('HRAts', ['ui.bootstrap', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.pinning',
                                             'ui.grid.selection', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.grouping',
-                                            'ngTagsInput', 'ui.select', /*'ngSanitize',*/ 'ngFileUpload', 'textAngular']);
+                                            'ngTagsInput', 'ui.select', 'ngFileUpload', 'textAngular']);
 
     hratsApp.controller('LocationController', function($scope, $location){
         if($location.$$absUrl.lastIndexOf('/candidates') > 0){
@@ -13,12 +13,12 @@
             $scope.activeURL = 'companies';
         } else if($location.$$absUrl.lastIndexOf('/contacts') > 0){
             $scope.activeURL = 'contacts';
-        } else if($location.$$absUrl.lastIndexOf('/candidates') > 0){
-            $scope.activeURL = 'candidates';
         } else if($location.$$absUrl.lastIndexOf('/activities') > 0){
             $scope.activeURL = 'activities';
-        } else if($location.$$absUrl.lastIndexOf('/candidate') > 0){
+        } else if($location.$$absUrl.lastIndexOf('/candidates') > 0){
             $scope.activeURL = 'candidate';
+        } else if($location.$$absUrl.lastIndexOf('/settings') > 0){
+            $scope.activeURL = 'settings';
         }
         else{
             $scope.activeURL = 'home';

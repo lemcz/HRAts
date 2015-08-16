@@ -28,6 +28,13 @@ public class VacancyController {
         return vacancyService.findAll();
     }
 
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @ResponseBody ResponseEntity createVacancy(@RequestBody Vacancy vacancy){
+
+        return new ResponseEntity<Vacancy>(vacancyService.save(vacancy), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/perDepartments", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     Iterable<Vacancy> getVacanciesByDepartmentsIds(@RequestBody(required = false) List<Integer> departmentsIds){
@@ -37,15 +44,18 @@ public class VacancyController {
         return vacancyService.findByDepartmentIdIn(departmentsIds);
     }
 
+    @RequestMapping(value = "/perUser", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Iterable<Vacancy> getVacanciesByVacancyUserListByUserIdIn(@RequestBody(required = false) List<Integer> departmentsIds){
+        if(departmentsIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return vacancyService.findByDepartmentIdIn(departmentsIds);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public Vacancy getVacancyById(@PathVariable int id){
         return vacancyService.findById(id);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Vacancy createVacancy(@RequestBody Vacancy vacancy){
-        return vacancyService.save(vacancy);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")

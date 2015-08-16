@@ -2,6 +2,7 @@ package HRAts.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -52,7 +53,6 @@ public class User implements Serializable{
     private List<VacancyUser> vacancyUserOwnerList;
 
     @OneToMany(mappedBy = "manager", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference("manager-department")
     private List<Department> departmentList;
 
     @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -79,7 +79,7 @@ public class User implements Serializable{
     public User(String email, String name, String middleName, String lastName, String phoneNumber,
                 String note, String enabled, String password, Date dateEntered, Date dateModified, Role role,
                 CandidateInformation candidateInformation, List<VacancyUser> vacancyUserCandidateList,
-                List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, List<Attachment> candidateAttachmentList, List<Attachment> contactAttachmentList, List<Attachment> ownerAttachmentList, User owner, List<User> contactList) {
+                List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, List<Attachment> candidateAttachmentList, List<Attachment> contactAttachmentList, List<Attachment> ownerAttachmentList, User owner, List<User> contactList ) {
         this.email = email;
         this.name = name;
         this.middleName = middleName;
@@ -203,10 +203,12 @@ public class User implements Serializable{
         this.candidateInformation = candidateInformation;
     }
 
+    @JsonIgnore
     public List<Department> getDepartmentList() {
         return departmentList;
     }
 
+    @JsonProperty
     public void setDepartmentList(List<Department> departmentList) {
         this.departmentList = departmentList;
     }

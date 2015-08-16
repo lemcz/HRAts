@@ -46,7 +46,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <ui-select ng-model="newVacancy.company"
-                               on-select="fetchRelatedDepartments(newVacancy.company)"
+                               on-select="fetchRelatedDepartments([newVacancy.company])"
                                theme="bootstrap"
                                ng-disabled="disabled"
                                reset-search-input="false">

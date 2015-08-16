@@ -54,6 +54,7 @@
                     </div>
                     <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="loginForm.$invalid"><spring:message code="login.signIn" /></button>
                 </form>
+                <a href="<c:url value='/signIn'/>">Don't have an account? Register</a>
             </div>
         </div>
     </div>

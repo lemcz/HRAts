@@ -15,7 +15,7 @@
              },
 
              fetchAllByCompany: function(companyId) {
-                 return $http.get(baseUrl+'/?companyId='+companyId);
+                 return $http.get(baseUrl+'?companyId='+companyId);
              },
 
              fetchAllByCompany_IdIn: function(companiesIds) {

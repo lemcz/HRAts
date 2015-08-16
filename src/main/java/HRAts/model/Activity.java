@@ -1,5 +1,7 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -29,15 +31,21 @@ public class Activity {
     @JoinColumn(name = "candidate_id", nullable = false, updatable = false)
     private User candidate;
 
+    @JsonBackReference("activity-vacancy")
+    @ManyToOne
+    @JoinColumn(name = "vacancy_id", updatable = false)
+    private Vacancy vacancy;
+
     public Activity(){}
 
-    public Activity(ActivityTypeLkp activityType, String note, Date dateEntered, User owner, User candidate) {
+    public Activity(ActivityTypeLkp activityType, String note, Date dateEntered, User owner, User candidate, Vacancy vacancy) {
         super();
         this.activityType = activityType;
         this.note = note;
         this.dateEntered = dateEntered;
         this.owner = owner;
         this.candidate = candidate;
+        this.vacancy = vacancy;
     }
 
     @PrePersist
@@ -91,5 +99,13 @@ public class Activity {
 
     public void setCandidate(User candidate) {
         this.candidate = candidate;
+    }
+
+    public Vacancy getVacancy() {
+        return vacancy;
+    }
+
+    public void setVacancy(Vacancy vacancy) {
+        this.vacancy = vacancy;
     }
 }

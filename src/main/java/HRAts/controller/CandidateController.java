@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/protected/candidate")
+@RequestMapping(value = "/protected/candidates")
 public class CandidateController {
 
     @Autowired
@@ -26,12 +26,17 @@ public class CandidateController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
-        return new ModelAndView("candidateList");
+        return new ModelAndView("candidatesList");
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public Iterable<User> listCandidates(){
         return userService.findByRole(Role.ROLE_CANDIDATE);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView getCandidateViewById(@PathVariable int id){
+        return new ModelAndView("candidateById");
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -50,33 +55,38 @@ public class CandidateController {
         candidate.setContactList(contactList);
         candidate.setDepartmentList(departmentList);
 
-        if(candidate.getVacancyUserCandidateList() != null) {
-            User owner = candidate.getOwner();
-            Activity insertCandidateActivity = new Activity();
-            insertCandidateActivity.setOwner(owner);
-            insertCandidateActivity.setNote("New candidate added to the repository");
+        User owner = candidate.getOwner();
+        Activity insertCandidateActivity = new Activity();
+        insertCandidateActivity.setOwner(owner);
+        insertCandidateActivity.setNote("New candidate <a>added </a>to the repository");
 
-            ActivityTypeLkp insertCandidateActivityType = activityTypeService.findById(4);
-                    
-            insertCandidateActivity.setActivityType(insertCandidateActivityType);
+        ActivityTypeLkp insertCandidateActivityType = activityTypeService.findById(4);
 
-            User savedUser = userService.save(candidate);
-            if(savedUser != null) {
-                insertCandidateActivity.setCandidate(savedUser);
-                activityService.save(insertCandidateActivity);
-            }
-            return savedUser;
+        insertCandidateActivity.setActivityType(insertCandidateActivityType);
 
+        User savedUser = userService.save(candidate);
+
+        if(savedUser != null) {
+            insertCandidateActivity.setCandidate(savedUser);
+            activityService.save(insertCandidateActivity);
         }
-        return userService.save(candidate);
+
+        return savedUser;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateCandidate(@PathVariable("id") int candidateId,
-                                           @RequestBody User candidate) {
+//                                             @RequestParam(value = "type", required = false) String type,
+                                             @RequestBody User candidate) {
         if (candidateId != candidate.getId()){
             return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }
+
+        //TODO dodac typy edycji
+/*        if (type == null){
+            return new ResponseEntity<User>(userService.save(candidate), HttpStatus.OK);
+        }*/
+
         return new ResponseEntity<User>(userService.save(candidate), HttpStatus.OK);
     }
 

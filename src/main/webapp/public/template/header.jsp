@@ -15,7 +15,7 @@
                     <a href="#"><spring:message code="header.welcome"/>&nbsp;${user.name}</a>
                 </li>
                 <li>
-                    <a href="<c:url value='/settings'/>" title='<spring:message code="header.settings"/>'>
+                    <a href="<c:url value='/protected/settings'/>" title='<spring:message code="header.settings"/>'>
                         <spring:message code="header.settings"/>
                     </a>
                 </li>

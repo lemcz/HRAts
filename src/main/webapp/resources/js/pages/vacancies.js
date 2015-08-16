@@ -39,7 +39,7 @@
         $scope.vacancy = row.data;
 
         $scope.fetchRelatedDepartments = function(company) {
-            DepartmentService.fetchAllByCompany(company.id)
+            DepartmentService.fetchRelatedDepartments(company)
                 .success(function(data){
                     company.departmentList = data;
                     $scope.newVacancy.department = null;

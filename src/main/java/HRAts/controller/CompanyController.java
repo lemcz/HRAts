@@ -3,6 +3,7 @@ package HRAts.controller;
 import HRAts.model.Company;
 import HRAts.model.Department;
 import HRAts.service.CompanyService;
+import HRAts.service.DepartmentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class CompanyController {
 
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private DepartmentService departmentService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -42,6 +45,19 @@ public class CompanyController {
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Company createCompany(@RequestBody Company company){
+
+        if(company.getDepartmentList() != null) {
+
+            Company savedCompany = companyService.save(company);
+
+            for (Department department : company.getDepartmentList()) {
+                department.setCompany(savedCompany);
+                departmentService.save(department);
+            }
+
+            return savedCompany;
+        }
+
         return companyService.save(company);
     }
 

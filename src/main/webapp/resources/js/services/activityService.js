@@ -37,14 +37,10 @@
             getColumnDefs: function() {
                 return [
                     { name:'id', width:50 },
-                    { name:'name', width:100 },
-                    { name:'lastName', width:100 },
-                    { name:'company', width:100},
-                    { name:'email', width:100, cellTemplate: '<div class="text-center"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
-                    { name:'phone', width:200},
-                    { name:'about', width:300 },
+                    { name:'activityType.name', width:100 },
+                    { name:'candidate.email', width:100 },
+                    { name:'note', width:300 },
                     { name:'dateEntered', cellFilter:'date', width:150 },
-                    { name:'dateModified', cellFilter:'date', width:150 },
                     { name:'owner.email', displayName:'Owner', width:150 }
                 ];
             },

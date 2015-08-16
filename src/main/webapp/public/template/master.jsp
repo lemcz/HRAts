@@ -40,12 +40,6 @@
                             <spring:message code="header.candidates"/>
                         </a>
                     </li>
-                    <li ng-class="{'active': activeURL == 'candidate', '': activeURL != 'candidate'}">
-                        <a href="<c:url value='/protected/candidate'/>"
-                           title='<spring:message code="header.candidates"/>'>
-                            Mockup Candidates
-                        </a>
-                    </li>
                 </ul>
                 <ul class="nav nav-sidebar">
                     <li ng-class="{'active': activeURL == 'companies', '': activeURL != 'companies'}">

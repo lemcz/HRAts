@@ -31,7 +31,7 @@
         }
     });
 
-    hratsApp.controller('UiGridController', function($log, $scope, $modal, GridService){
+    hratsApp.controller('UiGridController', function($log, $scope, $modal, $location, GridService){
 
         var collectionName = $scope.pageConfiguration.dataCollectionName || '';
 
@@ -55,7 +55,23 @@
 
         };
 
-        $scope.gridOptions.onRegisterApi =  function(gridApi){
+        $scope.redirect = function (location, row) {
+            var rowsId = row.entity.id || 0;
+
+            console.log(rowsId);
+
+            var splitIndex = $location.$$absUrl.lastIndexOf('/protected');
+            if (splitIndex !== -1) {
+                var baseUrl = $location.$$absUrl.substring(0, splitIndex+'/protected'.length);
+
+                window.location = baseUrl+'/'+location+'/'+rowsId;
+
+            } else {
+                alert('Could not relocate to '+location+' to display id '+rowsId+' item\'s details');
+            }
+        };
+
+        $scope.gridOptions.onRegisterApi = function(gridApi){
             //set gridApi on scope
             $scope.gridApi = gridApi;
             gridApi.selection.on.rowSelectionChanged($scope,function(row){

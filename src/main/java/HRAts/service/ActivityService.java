@@ -14,6 +14,9 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
+    @Autowired
+    private ActivityTypeService activityTypeService;
+
     @Transactional(readOnly = true)
     public Iterable<Activity> findAll() {
         return activityRepository.findAll();
@@ -33,6 +36,27 @@ public class ActivityService {
     public Activity save(Activity activity) {
         return activityRepository.save(activity);
     }
+
+/*    @Transactional
+    public Activity saveCustom(User owner, int activityId, String note) {
+
+        Activity activity = new Activity();
+        activity.setOwner(owner);
+        activity.setNote(note);
+
+        ActivityTypeLkp activityType = activityTypeService.findById(activityId);
+
+        activity.setActivityType(activityType);
+
+        User savedUser = userService.save(candidate);
+
+        if(savedUser != null) {
+            activity.setCandidate(savedUser);
+            activityService.save(activity);
+        }
+
+        return activityRepository.save(activity);
+    }*/
 
     @Secured("ROLE_ADMIN")
     public void delete(int activityId) {

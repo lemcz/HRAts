@@ -1,6 +1,5 @@
 package HRAts.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -38,8 +37,7 @@ public class Vacancy implements Serializable {
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<VacancyUser> vacancyUserList;
 
-    @JsonBackReference("department-vacancy")
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
@@ -47,10 +45,14 @@ public class Vacancy implements Serializable {
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Attachment> attachmentList;
 
+    @JsonManagedReference("activity-vacancy")
+    @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER)
+    private List<Activity> activityList;
+
     public Vacancy(){}
 
     public Vacancy(String name, int numberOfVacancies, String description, String note, int salary, Date dateEntered,
-                   Date dateModified, List<VacancyUser> vacancyUserList, Department department, List<Attachment> attachmentList){
+                   Date dateModified, List<VacancyUser> vacancyUserList, Department department, List<Attachment> attachmentList, List<Activity> activityList ){
         super();
         this.name = name;
         this.numberOfVacancies = numberOfVacancies;
@@ -62,6 +64,7 @@ public class Vacancy implements Serializable {
         this.vacancyUserList = vacancyUserList;
         this.department = department;
         this.attachmentList = attachmentList;
+        this.activityList = activityList;
     }
 
     @PrePersist
@@ -171,5 +174,13 @@ public class Vacancy implements Serializable {
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    public List<Activity> getActivityList() {
+        return activityList;
+    }
+
+    public void setActivityList(List<Activity> activityList) {
+        this.activityList = activityList;
     }
 }

@@ -1,260 +1,285 @@
-(function(angular) {
+(function(angular){
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.controller('CandidatesController', ['$scope', '$http', function($scope, $http){
+    hratsApp.service('CandidateService', function ($http){
 
-    $scope.pageToGet = 0;
+        var baseUrl = 'http://localhost:8080/HRAts/protected/candidates/';
 
-    $scope.state = 'busy';
+        return {
 
-    $scope.lastAction = '';
+            fetchAll: function () {
+                return $http.get(baseUrl);
+            },
 
-    $scope.url = "/HRAts/protected/candidates/";
+            fetchById: function(candidateId) {
+                return $http.get(baseUrl + candidateId)
+            },
 
-    $scope.errorOnSubmit = false;
-    $scope.errorIllegalAccess = false;
-    $scope.displayMessageToUser = false;
-    $scope.displayValidationError = false;
-    $scope.displaySearchMessage = false;
-    $scope.displaySearchButton = false;
-    $scope.displayCreateCandidateButton = false;
+            createRow: function(candidateData){
+                return $http.post(baseUrl, candidateData);
+            },
 
-    $scope.candidate = {};
+            updateRow: function(candidateData) {
+                console.log(candidateData);
+                return $http.put(baseUrl+'/'+candidateData.id, candidateData);
+            },
 
-    $scope.searchFor = "";
+            removeRow: function(candidateId){
+                return $http.delete(candidateId);
+            },
 
-    $scope.getCandidateList = function () {
-        var url = $scope.url;
-        $scope.lastAction = 'list';
+            getColumnDefs: function() {
+                return [
+                    { name:'id', width:50 },
+                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a data-toggle="modal" ng-click="grid.appScope.openModal(\'addToVacancyModal\', row.entity)" role="button" >{{COL_FIELD}}</a></div>', width:100 },
+                    { name:'middleName', width:100 },
+                    { name:'lastName', width:100 },
+                    { name:'candidateInformation.address', displayName: "Address", width:150},
+                    { name:'candidateInformation.city', displayName: "City", width:150},
+                    { name:'candidateInformation.state', displayName: "State", width:150},
+                    { name:'candidateInformation.zipCode', displayName: "Zip Code", width:150},
+                    { name:'phoneNumber', width:150},
+                    { name:'email', width:100, cellTemplate: '<div class="ui-grid-cell-contents text-center"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
+                    { name:'phone', width:200},
+                    { name:'about', width:300 },
+                    { name:'dateEntered', cellFilter:'date', width:150 },
+                    { name:'dateModified', cellFilter:'date', width:150 },
+                    { name:'owner.email', displayName:'Owner', width:150 }
+                ];
+            },
 
-        $scope.startDialogAjaxRequest();
+            setupReqData: function (data, files) {
+                var formData = new FormData();
+                formData.append('data', new Blob([JSON.stringify(data)], {type: "application/json"}));
 
-        var config = {params: {page: $scope.pageToGet}};
+                if (files && files.length) {
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        formData.append("file", file);
+                    }
+                }
 
-        $http.get(url, config)
+                var req = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': undefined
+                    },
+                    data: formData
+                };
+
+                return req;
+            }
+        }
+    });
+
+    hratsApp.controller('CandidateController', function($scope, $modal, CandidateService){
+
+        $scope.pageConfiguration = { dataCollectionName: 'candidatesCollection' };
+        $scope.pageConfiguration.columnDefs = CandidateService.getColumnDefs();
+
+        $scope.candidatesCollection = [];
+
+        CandidateService.fetchAll()
             .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, null, false);
+                $scope.candidatesCollection = data;
             })
             .error(function () {
-                $scope.state = 'error';
-                $scope.displayCreateCandidateButton = false;
+                alert("Unable to fetch data ("+status+").");
             });
-    };
+    });
 
-    $scope.populateTable = function (data) {
-        if (data.pagesCount > 0) {
-            $scope.state = 'list';
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CandidateService, row,
+                                                            VacancyService, ActivityTypeService, ActivityService,
+                                                            CompanyService, DepartmentService, ContractTypeService, VacancyUserService) {
 
-            $scope.page = {
-                source: data.candidates,
-                currentPage: $scope.pageToGet,
-                pagesCount: data.pagesCount,
-                totalCandidates: data.totalCandidates
+        //TODO reorganize controller, setup owner
+        //Add candidate variables
+        console.log(row);
+        var modalType = row.modalName;
+        $scope.candidate = row.data;
+        $scope.newCandidate = angular.copy(row.data) || {};
+        $scope.querySelection = {
+            selectedCompanies: [],
+            selectedDepartments: [],
+            selectedVacancies: []
+        };
+        $scope.companiesCollection = [];
+        $scope.departmentsCollection = [];
+        $scope.contractsCollection = [];
+        $scope.vacancyCollection = [];
+
+
+        $scope.showMe = function() {
+            alert('KUPA');
+        };
+
+        CompanyService.fetchAll()
+            .success(function (data) {
+                $scope.companiesCollection = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data (" + status + ").");
+            });
+
+        ContractTypeService.fetchAll()
+            .success(function(data) {
+                $scope.contractsCollection = data || [];
+            })
+            .error(function(status, data) {
+                alert("Unable to fetch data (" + status + ").");
+            });
+
+        $scope.fetchRelatedDepartments = function(selectedCompanies) {
+
+            $scope.querySelection.selectedDepartments = [];
+            if (selectedCompanies.length <= 0 ) {
+                return;
+            }
+
+            var departmentsCollectionPromise = DepartmentService.fetchRelatedDepartments(selectedCompanies);
+            departmentsCollectionPromise.then(function(result) {
+                $scope.departmentsCollection = result.data;
+            })
+        };
+
+        $scope.fetchRelatedVacancies = function(selectedDepartments) {
+
+            $scope.querySelection.selectedVacancies = [];
+            if (selectedDepartments.length <= 0 ) {
+                return;
+            }
+
+            var vacanciesCollectionPromise = VacancyService.fetchRelatedVacancies(selectedDepartments);
+            vacanciesCollectionPromise.then(function(result) {
+                $scope.vacancyCollection = result.data;
+            })
+        };
+
+        switch(modalType) {
+            case 'addCandidateModal':
+                $scope.newCandidate.owner = { id: $('#userId').attr('value')};
+                $scope.newCandidate.candidateInformation = {startDate: new Date()};
+                //
+                break;
+            case 'editCandidateModal':
+                //
+                break;
+            case 'deleteCandidateModal':
+                // do nothing
+                break;
+            case 'addToVacancyModal':
+
+                VacancyService.fetchAll()
+                    .success(function(data) {
+                        $scope.vacancyCollection = data || {};
+                    })
+                    .error(function(data,status){
+                        alert("Unable to fetch vacancies ("+status+").");
+                    });
+                break;
+            case 'logActivityModal':
+                $scope.activity = {};
+
+                ActivityTypeService.fetchAll()
+                    .success(function(data){
+                        $scope.activityTypeCollection = data || {};
+                    })
+                    .error(function(data, status) {
+                        alert("Unable to fetch activity types ("+status+").");
+                    });
+
+                VacancyService.fetchAll()
+                    .success(function(data) {
+                        $scope.vacancyCollection = data || {};
+                    })
+                    .error(function(data, status) {
+                        alert("Unable to fetch vacancies ("+status+").");
+                    });
+
+                break;
+            default:
+                $modalInstance.close();
+                break;
+        }
+
+        $scope.createCandidate = function(){
+
+            $scope.newCandidate.candidateInformation.contractType = $scope.querySelection.selectedContractType || {};
+            CandidateService.createRow($scope.newCandidate)
+                .success(function(data){
+                    console.log(data);
+                    $scope.candidatesCollection.push(data);
+                })
+                .error(function(data,status){
+                    alert("Unable to create record ("+status+").");
+                });
+
+            $modalInstance.close();
+        };
+
+        $scope.updateCandidate = function(row) {
+            CandidateService.updateRow(row)
+                .success(function(data){
+                    angular.copy(data, $scope.candidate);
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to update record ("+status+").");
+                })
+        };
+
+        $scope.addToVacancy = function(row, vacancy) {
+
+            var requestData = {};
+
+            var vacanciesToAddList =  {
+                candidate: {id: row.id },
+                vacancy: $scope.querySelection.selectedVacancies[0],
+                owner: {id: $scope.candidate.owner.id}
             };
 
-            if ($scope.page.pagesCount <= $scope.page.currentPage) {
-                $scope.pageToGet = $scope.page.pagesCount - 1;
-                $scope.page.currentPage = $scope.page.pagesCount - 1;
-            }
+            VacancyUserService.createRow(vacanciesToAddList)
+                .success(function(data){
+                    //TODO Add success behavior (update row)
+                    //angular.copy(data, $scope.row);
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to update record ("+status+").");
+                })
+        };
 
-            $scope.displayCreateCandidateButton = true;
-            $scope.displaySearchButton = true;
-        } else {
-            $scope.state = 'noresult';
-            $scope.displayCreateCandidateButton = true;
+        $scope.logActivity = function() {
 
-            if (!$scope.searchFor) {
-                $scope.displaySearchButton = false;
-            }
-        }
+            $scope.activity.candidate = {id: $scope.candidate.id};
+            $scope.activity.owner = {id: $scope.candidate.owner.id};
 
-        if (data.actionMessage || data.searchMessage) {
-            $scope.displayMessageToUser = $scope.lastAction != 'search';
+            ActivityService.createRow($scope.activity)
+                .success(function(data){
+                    angular.copy(data, $scope.newActivity);
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to update record ("+status+").");
+                })
+        };
+        $scope.removeRow = function(row) {
+            CandidateService.removeRow(row.id)
+                .success(function(){
+                    var index = $scope.candidatesCollection.indexOf(row);
+                    if(index !== -1){
+                        $scope.candidatesCollection.splice(index, 1);
+                    }
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to remove record ("+status+").");
+                })
+        };
 
-            $scope.page.actionMessage = data.actionMessage;
-            $scope.page.searchMessage = data.searchMessage;
-        } else {
-            $scope.displayMessageToUser = false;
-        }
-    };
-
-    $scope.changePage = function (page) {
-        $scope.pageToGet = page;
-
-        if ($scope.searchFor) {
-            $scope.searchCandidate($scope.searchFor, true);
-        } else {
-            $scope.getCandidateList();
-        }
-    };
-
-    $scope.exit = function (modalId) {
-        $(modalId).modal('hide');
-
-        $scope.candidate = {};
-        $scope.errorOnSubmit = false;
-        $scope.errorIllegalAccess = false;
-        $scope.displayValidationError = false;
-    };
-
-    $scope.finishAjaxCallOnSuccess = function (data, modalId, isPagination) {
-        $scope.populateTable(data);
-
-        if (!isPagination) {
-            if (modalId) {
-                $scope.exit(modalId);
-            }
-        }
-        $scope.lastAction = '';
-    };
-
-    $scope.startDialogAjaxRequest = function () {
-        $scope.displayValidationError = false;
-        $scope.previousState = $scope.state;
-        $scope.state = 'busy';
-    };
-
-    $scope.handleErrorInDialogs = function (status) {
-        $scope.state = $scope.previousState;
-
-        // illegal access
-        if (status == 403) {
-            $scope.errorIllegalAccess = true;
-            return;
-        }
-
-        $scope.errorOnSubmit = true;
-        $scope.lastAction = '';
-    };
-
-    $scope.addSearchParametersIfNeeded = function (config, isPagination) {
-        if (!config.params) {
-            config.params = {};
-        }
-
-        config.params.page = $scope.pageToGet;
-
-        if ($scope.searchFor) {
-            config.params.searchFor = $scope.searchFor;
-        }
-    };
-
-    $scope.resetCandidate = function () {
-        $scope.candidate = {};
-    };
-
-    $scope.createCandidate = function (newCandidateForm) {
-        if (!newCandidateForm.$valid) {
-            $scope.displayValidationError = true;
-            return;
-        }
-
-        $scope.lastAction = 'create';
-
-        var url = $scope.url;
-
-        var config = {headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}};
-
-        $scope.addSearchParametersIfNeeded(config, false);
-
-        $scope.startDialogAjaxRequest();
-
-        $http.post(url, $.param($scope.candidate), config)
-            .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, "#addCandidatesModal", false);
-            })
-            .error(function (data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
-            });
-    };
-
-    $scope.selectedCandidate = function (candidate) {
-        var selectedCandidate = angular.copy(candidate);
-        $scope.candidate = selectedCandidate;
-    };
-
-    $scope.updateCandidate = function (updateCandidateForm) {
-        if (!updateCandidateForm.$valid) {
-            $scope.displayValidationError = true;
-            return;
-        }
-
-        $scope.lastAction = 'update';
-
-        var url = $scope.url + $scope.candidate.id;
-
-        $scope.startDialogAjaxRequest();
-
-        var config = {};
-
-        $scope.addSearchParametersIfNeeded(config, false);
-
-        $http.put(url, $scope.candidate, config)
-            .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, "#updateCandidatesModal", false);
-            })
-            .error(function (data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
-            });
-    };
-
-    $scope.searchCandidate = function (searchCandidateForm, isPagination) {
-        if (!($scope.searchFor) && (!searchCandidateForm.$valid)) {
-            $scope.displayValidationError = true;
-            return;
-        }
-
-        $scope.lastAction = 'search';
-
-        var url = $scope.url + $scope.searchFor;
-
-        $scope.startDialogAjaxRequest();
-
-        var config = {};
-
-        if ($scope.searchFor) {
-            $scope.addSearchParametersIfNeeded(config, isPagination);
-        }
-
-        $http.get(url, config)
-            .success(function (data) {
-                $scope.finishAjaxCallOnSuccess(data, "#searchCandidatesModal", isPagination);
-                $scope.displaySearchMessage = true;
-            })
-            .error(function (data, status, headers, config) {
-                $scope.handleErrorInDialogs(status);
-            });
-    };
-
-    $scope.deleteCandidate = function () {
-        $scope.lastAction = 'delete';
-
-        var url = $scope.url + $scope.candidate.id;
-
-        $scope.startDialogAjaxRequest();
-
-        var params = {searchFor: $scope.searchFor, page: $scope.pageToGet};
-
-        $http({
-            method: 'DELETE',
-            url: url,
-            params: params
-        }).success(function (data) {
-            $scope.resetCandidate();
-            $scope.finishAjaxCallOnSuccess(data, "#deleteCandidatesModal", false);
-        }).error(function (data, status, headers, config) {
-            $scope.handleErrorInDialogs(status);
-        });
-    };
-
-    $scope.resetSearch = function () {
-        $scope.searchFor = "";
-        $scope.pageToGet = 0;
-        $scope.getCandidateList();
-        $scope.displaySearchMessage = false;
-    };
-
-    $scope.getCandidateList();
-}]);
+        $scope.cancel = function(){
+            $modalInstance.dismiss('cancel');
+        };
+    });
 })(angular);
