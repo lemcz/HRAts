@@ -65,7 +65,7 @@
                                ng-disabled="disabled"
                                reset-search-input="false">
                         <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
-                        <ui-select-choices repeat="department in newVacancy.company.departmentList | propsFilter: {id: $select.search, name: $select.search}">
+                        <ui-select-choices repeat="department in departmentList | propsFilter: {id: $select.search, name: $select.search}">
                             <div ng-bind-html="department.name | highlight: $select.search"></div>
                             <small>
                                 id: <span ng-bind-html="''+department.id | highlight: $select.search"></span>

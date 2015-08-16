@@ -45,8 +45,8 @@
                 return [
                     {name: 'id', width: 50},
                     {name: 'name', width: 100},
-                    {name: 'company', width: 100},
-                    {name: 'department', width: 100},
+                    {name: 'department.company.name', displayName: 'Company', width: 100},
+                    {name: 'department.name', width: 100},
                     {name: 'about', width: 300},
                     {name: 'dateEntered', cellFilter: 'date', width: 150},
                     {name: 'dateModified', cellFilter: 'date', width: 150},

@@ -41,7 +41,7 @@
         $scope.fetchRelatedDepartments = function(company) {
             DepartmentService.fetchRelatedDepartments(company)
                 .success(function(data){
-                    company.departmentList = data;
+                    $scope.departmentList = data;
                     $scope.newVacancy.department = null;
                 })
                 .error(function(data, status){
