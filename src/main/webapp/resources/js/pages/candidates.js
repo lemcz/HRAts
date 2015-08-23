@@ -239,6 +239,15 @@
                 owner: {id: $scope.candidate.owner.id}
             };
 
+            /*TODO urozmaicic prompt, by sprawdzal vacancy.vacancyUserList status === accepted
+                i znalezc bardziej odpowiednie miejsce na ten komunikat, ewnetualnie dorobic obsluge, tak aby wychodzil z funkcji, jesli rezygnujemy
+                ------------------------------------------------------------------------------
+            var numberOfTakenVacancies = vacanciesToAddList.vacancy.vacancyUserList.length || 0;
+            console.log(numberOfTakenVacancies);
+            if ( numberOfTakenVacancies >= vacancy.numberOfVacancies ) {
+                alert("The vacancy you've chosen has enough candidates accepted for the job\n Do you want to add another one?");
+            }*/
+
             VacancyUserService.createRow(vacanciesToAddList)
                 .success(function(data){
                     //TODO Add success behavior (update row)

@@ -244,3 +244,42 @@
         <spring:message code="request.illegal.access"/>
     </span>
 </script>
+
+<script type="text/ng-template" id="addDepartmentModal">
+    <div class="modal-header">
+        <button type="button" class="close"
+                data-dismiss="modal"
+                ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="addToVacancyModalLabel">
+            <spring:message code="addToVacancy"/>
+        </h4>
+    </div>
+    <form name="addDepartmentForm" role="form" novalidate ng-submit="addDepartment(row, departmentList);">
+        <div class="modal-body">
+            <fieldset class="form">
+                <div class="form-group col-md-12">
+                    <label>Departments</label>
+                    <tags-input ng-model="departmentList"
+                                display-property="name">
+                    </tags-input>
+                </div>
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default"
+                    type="button"
+                    data-dismiss="modal"
+                    ng-click="cancel()"
+                    aria-hidden="true">
+                <spring:message code="cancel"/>
+            </button>
+            <input type="submit"
+                   class="btn btn-primary"
+                   ng-disabled="addDepartmentForm.$invalid"
+                   value='<spring:message code="add"/>'/>
+        </div>
+    </form>
+</script>

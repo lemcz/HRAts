@@ -18,7 +18,7 @@
             });
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CompanyService, row, SectorService){
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CompanyService, row, SectorService, DepartmentService){
 
         //Add company variables
         $scope.newCompany = angular.copy(row.data) || {};
@@ -71,6 +71,28 @@
                 })
                 .error(function(data,status){
                     alert("Unable to remove record ("+status+").");
+                })
+        };
+
+
+        //TODO poprawic te funkcje (zunifikowac ownera, tak zeby zawsze byl przechowywany jako jedna zmienna i sprawdzic czy rzeczywiscie dodaje depratment do company)
+        //pomyslec nad opcja manager per department przy okazji dodawania nowych departamentow. trzeba by zmienic sposob dodawania
+        //(nie po tagach, tylko oddzielne input fieldy, automatycznie generowane per department?)
+
+        $scope.addDepartment = function(company, departmentList) {
+
+            for (var i = 0; i < $scope.departmentList.length; i++) {
+                $scope.departmentList[i].owner = {id: $scope.owner.id};
+                $scope.departmentList[i].company = company;
+            }
+
+            DepartmentService.createRow(departmentList)
+                .success(function(){
+                    //TODO dorobic update company do ktorej zostaly dodane departamenty
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to create records ("+status+").");
                 })
         };
 
