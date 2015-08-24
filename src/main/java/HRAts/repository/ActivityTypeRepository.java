@@ -7,4 +7,5 @@ import org.springframework.data.repository.query.Param;
 public interface ActivityTypeRepository extends CrudRepository<ActivityTypeLkp, Integer> {
     ActivityTypeLkp findById(@Param("id") int id);
 
+    ActivityTypeLkp findByName(@Param("name") String name);
 }

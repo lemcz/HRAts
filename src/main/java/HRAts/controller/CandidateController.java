@@ -46,7 +46,7 @@ public class CandidateController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody User createCandidate(@RequestBody final User candidate){
+    public @ResponseBody ResponseEntity createCandidate(@RequestBody final User candidate){
 
         List<Department> departmentList= new ArrayList<>();
         List<User> contactList = new ArrayList<>();
@@ -56,43 +56,38 @@ public class CandidateController {
         candidate.setDepartmentList(departmentList);
 
         User owner = candidate.getOwner();
-        Activity insertCandidateActivity = new Activity();
-        insertCandidateActivity.setOwner(owner);
-        insertCandidateActivity.setNote("New candidate <a>added </a>to the repository");
+        Activity activityLog = new Activity();
+        activityLog.setOwner(owner);
+        activityLog.setNote("New candidate added to the repository");
 
-        ActivityTypeLkp insertCandidateActivityType = activityTypeService.findById(4);
+        ActivityTypeLkp activityLogType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
 
-        insertCandidateActivity.setActivityType(insertCandidateActivityType);
+        activityLog.setActivityType(activityLogType);
 
         User savedUser = userService.save(candidate);
 
-        if(savedUser != null) {
-            insertCandidateActivity.setCandidate(savedUser);
-            activityService.save(insertCandidateActivity);
-        }
+        activityLog.setCandidate(savedUser);
+        activityService.save(activityLog);
 
-        return savedUser;
+        return new ResponseEntity<User>(savedUser, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateCandidate(@PathVariable("id") int candidateId,
-//                                             @RequestParam(value = "type", required = false) String type,
                                              @RequestBody User candidate) {
         if (candidateId != candidate.getId()){
             return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }
-
-        //TODO dodac typy edycji
-/*        if (type == null){
-            return new ResponseEntity<User>(userService.save(candidate), HttpStatus.OK);
-        }*/
 
         return new ResponseEntity<User>(userService.save(candidate), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody void deleteCandidate(@PathVariable("id") int candidateId) {
+    public @ResponseBody ResponseEntity deleteCandidate(@PathVariable("id") int candidateId) {
+
         userService.delete(candidateId);
+
+        return new ResponseEntity<User>(HttpStatus.OK);
     }
 }

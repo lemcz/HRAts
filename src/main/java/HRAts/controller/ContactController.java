@@ -1,12 +1,7 @@
 package HRAts.controller;
 
-import HRAts.model.Attachment;
-import HRAts.model.Department;
-import HRAts.model.Role;
-import HRAts.model.User;
-import HRAts.service.AttachmentService;
-import HRAts.service.DepartmentService;
-import HRAts.service.UserService;
+import HRAts.model.*;
+import HRAts.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +30,11 @@ public class ContactController {
     private AttachmentService attachmentService;
     @Autowired
     private DepartmentService departmentService;
+
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    private ActivityTypeService activityTypeService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -107,7 +107,21 @@ public class ContactController {
 
         contact.setDepartmentList(departmentList);
 
-        return new ResponseEntity<User>(userService.save(contact), HttpStatus.OK);
+        //Log activity
+        Activity activityLog = new Activity();
+        activityLog.setOwner(contact.getOwner());
+        activityLog.setNote("New contact added to the repository");
+
+        ActivityTypeLkp activityLogType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
+
+        activityLog.setActivityType(activityLogType);
+
+        User savedContact = userService.save(contact);
+
+        activityLog.setCandidate(savedContact);
+        activityService.save(activityLog);
+
+        return new ResponseEntity<User>(savedContact, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/{file_name:.+}", method = RequestMethod.GET)

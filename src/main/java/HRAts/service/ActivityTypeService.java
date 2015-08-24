@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ActivityTypeService {
 
+    public static final String ACTIVITY_TYPE_CREATE_RECORD = "Other";
+
     @Autowired
     private ActivityTypeRepository activityTypeRepository;
 
@@ -22,6 +24,11 @@ public class ActivityTypeService {
     @Transactional(readOnly = true)
     public ActivityTypeLkp findById(int activityTypeId) {
         return activityTypeRepository.findById(activityTypeId);
+    }
+
+    @Transactional(readOnly = true)
+    public ActivityTypeLkp findByName(String name) {
+        return activityTypeRepository.findByName(name);
     }
 
     @Transactional

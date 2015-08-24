@@ -1,6 +1,10 @@
 package HRAts.controller;
 
+import HRAts.model.Activity;
+import HRAts.model.ActivityTypeLkp;
 import HRAts.model.Vacancy;
+import HRAts.service.ActivityService;
+import HRAts.service.ActivityTypeService;
 import HRAts.service.VacancyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +22,11 @@ public class VacancyController {
     @Autowired
     private VacancyService vacancyService;
 
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    private ActivityTypeService activityTypeService;
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
         return new ModelAndView("vacanciesList");
@@ -32,7 +41,21 @@ public class VacancyController {
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody ResponseEntity createVacancy(@RequestBody Vacancy vacancy){
 
-        return new ResponseEntity<Vacancy>(vacancyService.save(vacancy), HttpStatus.OK);
+        Activity activityLog = new Activity();
+        //TODO add owner to activity logging
+        //activityLog.setOwner(vacancy.getOwner());
+        activityLog.setNote("New vacancy added to the repository");
+
+        ActivityTypeLkp activityLogType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
+
+        activityLog.setActivityType(activityLogType);
+
+        Vacancy savedVacancy = vacancyService.save(vacancy);
+
+        activityLog.setVacancy(savedVacancy);
+        activityService.save(activityLog);
+
+        return new ResponseEntity<Vacancy>(savedVacancy, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perDepartments", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")

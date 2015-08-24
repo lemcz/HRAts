@@ -1,7 +1,11 @@
 package HRAts.controller;
 
+import HRAts.model.Activity;
+import HRAts.model.ActivityTypeLkp;
 import HRAts.model.Department;
 import HRAts.model.User;
+import HRAts.service.ActivityService;
+import HRAts.service.ActivityTypeService;
 import HRAts.service.DepartmentService;
 import HRAts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,11 @@ public class DepartmentController {
     private DepartmentService departmentService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    private ActivityTypeService activityTypeService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -46,7 +55,7 @@ public class DepartmentController {
         return departmentService.findByCompanyIdIn(companiesIds);
     }
 
-    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.POST, produces = "application/json")
     public Department getDepartmentById(@PathVariable int id){
         return departmentService.findById(id);
     }
@@ -54,6 +63,7 @@ public class DepartmentController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody ResponseEntity createDepartment(@RequestBody final Department department){
+
         if (department.getManager() != null) {
 
             User manager = userService.findById(department.getManager().getId());
@@ -62,6 +72,20 @@ public class DepartmentController {
                 return new ResponseEntity<String>("Provided user is not a manager", HttpStatus.BAD_REQUEST);
             }
         }
+
+        //Log activity
+        Activity activityLog = new Activity();
+        activityLog.setOwner(department.getOwner());
+        activityLog.setNote("New department added to the repository");
+
+        ActivityTypeLkp insertCandidateActivityType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
+
+        activityLog.setActivityType(insertCandidateActivityType);
+
+        //todo set department for the activity
+        //activityLog.setDepartment(savedDepartment);
+
+        activityService.save(activityLog);
 
         return new ResponseEntity<Department>(departmentService.save(department), HttpStatus.OK);
     }

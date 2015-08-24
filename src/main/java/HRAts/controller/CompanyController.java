@@ -1,7 +1,11 @@
 package HRAts.controller;
 
+import HRAts.model.Activity;
+import HRAts.model.ActivityTypeLkp;
 import HRAts.model.Company;
 import HRAts.model.Department;
+import HRAts.service.ActivityService;
+import HRAts.service.ActivityTypeService;
 import HRAts.service.CompanyService;
 import HRAts.service.DepartmentService;
 import org.slf4j.Logger;
@@ -27,6 +31,11 @@ public class CompanyController {
     @Autowired
     private DepartmentService departmentService;
 
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    private ActivityTypeService activityTypeService;
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
         return new ModelAndView("companiesList");
@@ -44,21 +53,34 @@ public class CompanyController {
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody Company createCompany(@RequestBody Company company){
+    public @ResponseBody ResponseEntity createCompany(@RequestBody Company company){
+
+        Company savedCompany = companyService.save(company);
 
         if(company.getDepartmentList() != null) {
-
-            Company savedCompany = companyService.save(company);
 
             for (Department department : company.getDepartmentList()) {
                 department.setCompany(savedCompany);
                 departmentService.save(department);
             }
-
-            return savedCompany;
         }
 
-        return companyService.save(company);
+        //Log activity
+        Activity activityLog = new Activity();
+        //todo add owner of activity
+        //activityLog.setOwner(company.getOwner());
+        activityLog.setNote("New company added to the repository");
+
+        ActivityTypeLkp activityLogType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
+
+        activityLog.setActivityType(activityLogType);
+
+        //todo set company for the activity
+        //activityLog.setCompany(savedCompany);
+
+        activityService.save(activityLog);
+
+        return new ResponseEntity<Company>(savedCompany, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
