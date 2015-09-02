@@ -17,12 +17,11 @@
     </mvc:interceptors>
 
     <!-- SET default mail properties -->
-    <!-- TODO clean this shit up before committing -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="25"/>
-        <property name="username" value="blemiec@gmail.com"/>
-        <property name="password" value="245282bl"/>
+        <property name="username" value="hrapplicantstrackingsystem@gmail.com"/>
+        <property name="password" value="HRATS123"/>
         <property name="javaMailProperties">
             <props>
                 <prop key="mail.transport.protocol">smtp</prop>

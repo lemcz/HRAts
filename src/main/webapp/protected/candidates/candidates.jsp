@@ -36,22 +36,13 @@
                 <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;<spring:message code="edit"/>&nbsp;<spring:message code="candidate"/>
             </a>
             <a href=""
-               ng-click="openModal('deleteCandidateModal', row)"
-               ng-disabled="gridOptions.multipleSelected"
-               role="button"
-               title="<spring:message code="delete"/>&nbsp;<spring:message code="candidate"/>"
-               class="btn btn-default"
-               data-toggle="modal">
-                <span class="glyphicon glyphicon-minus"></span>&nbsp;&nbsp;<spring:message code="delete"/>&nbsp;<spring:message code="candidate"/>
-            </a>
-            <a href=""
                ng-click="openModal('addToVacancyModal', row)"
                ng-disabled="gridOptions.multipleSelected"
                role="button"
                title="Add To Vacancy"
                class="btn btn-default"
                data-toggle="modal">
-                <span class="glyphicon glyphicon-minus"></span>&nbsp;&nbsp;Add&nbsp;To&nbsp;Vacancy
+                <span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;Add&nbsp;To&nbsp;Vacancy
             </a>
             <a href=""
                ng-click="openModal('logActivityModal', row)"
@@ -60,7 +51,16 @@
                title="Log Activity"
                class="btn btn-default"
                data-toggle="modal">
-                <span class="glyphicon glyphicon-minus"></span>&nbsp;&nbsp;Log&nbsp;Activity
+                <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Log&nbsp;Activity
+            </a>
+            <a href=""
+               ng-click="openModal('deleteCandidateModal', row)"
+               ng-disabled="gridOptions.multipleSelected"
+               role="button"
+               title="<spring:message code="delete"/>&nbsp;<spring:message code="candidate"/>"
+               class="btn btn-default"
+               data-toggle="modal">
+                <span class="glyphicon glyphicon-minus"></span>&nbsp;&nbsp;<spring:message code="delete"/>&nbsp;<spring:message code="candidate"/>
             </a>
             <br><br>
             <div class="table" id="grid1" ui-grid="gridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping class="grid"></div>

@@ -35,6 +35,15 @@
                 <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;<spring:message code="edit"/>&nbsp;<spring:message code="company"/>
             </a>
             <a href=""
+               ng-click="openModal('addDepartmentModal', row)"
+               ng-disabled="gridOptions.multipleSelected"
+               role="button"
+               title="<spring:message code="add"/>&nbsp;<spring:message code="department"/>"
+               class="btn btn-default"
+               data-toggle="modal">
+                <span class="glyphicon glyphicon-copy"></span>&nbsp;&nbsp;<spring:message code="add"/>&nbsp;<spring:message code="department"/>
+            </a>
+            <a href=""
                ng-click="openModal('deleteCompanyModal', row)"
                ng-disabled="gridOptions.multipleSelected"
                role="button"
@@ -42,16 +51,6 @@
                class="btn btn-default"
                data-toggle="modal">
                 <span class="glyphicon glyphicon-minus"></span>&nbsp;&nbsp;<spring:message code="delete"/>&nbsp;<spring:message code="company"/>
-            </a>
-            <a href=""
-               ng-click="openModal('addDepartmentModal', row)"
-               ng-disabled="gridOptions.multipleSelected"
-               role="button"
-               title="<spring:message code="add"/>&nbsp;<spring:message code="department"/>"
-               class="btn btn-default"
-               data-toggle="modal">
-
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<spring:message code="add"/>&nbsp;<spring:message code="department"/>
             </a>
             <br><br>
             <div class="table" id="grid1" ui-grid="gridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping class="grid"></div>

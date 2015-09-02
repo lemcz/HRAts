@@ -25,7 +25,6 @@
                 <div class="field"><strong>Name</strong>
                     <div click-to-edit="userData.name"></div>
                 </div>
-
                 <div class="field"><strong>Middle Name</strong>
                     <div click-to-edit="userData.middleName"></div>
                 </div>
@@ -41,8 +40,16 @@
                 <div class="field"><strong>Phone</strong>
                     <div click-to-edit="userData.phoneNumber"></div>
                 </div>
+                <div class="field"><strong>Date created</strong>
+                    <div class="col-md-12">
+                        {{ userData.dateEntered | date}}
+                    </div>
+                </div>
             </div>
-                <button type="submit" class="col-md-2 col-md-offset-8 btn btn-primary">Update</button>
+                <div class="col-md-12">
+                    <br>
+                    <button type="submit" class="col-md-2 col-md-offset-5 btn btn-primary">Update</button>
+                </div>
             </form>
         </div>
         <h2 class="page-header">

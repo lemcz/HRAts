@@ -38,7 +38,7 @@
                 return [
                     { name:'id', width:50 },
                     { name:'activityType.name', width:100 },
-                    { name:'candidate.email', width:100 },
+                    { name:'candidate.email', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
                     { name:'note', width:300 },
                     { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
                     { name:'owner.email', displayName:'Owner', width:150 }
