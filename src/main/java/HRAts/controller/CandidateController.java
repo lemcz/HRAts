@@ -35,11 +35,6 @@ public class CandidateController {
         return new ModelAndView("candidateDetails");
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView getCandidateViewById(@PathVariable int id){
-        return new ModelAndView("candidateById");
-    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public User getCandidateById(@PathVariable int id){
         return userService.findById(id);

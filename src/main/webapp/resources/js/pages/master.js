@@ -1,5 +1,4 @@
 (function(angular) {
-
     var hratsApp = angular.module('HRAts', ['ui.bootstrap', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.pinning',
                                             'ui.grid.selection', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.grouping',
                                             'ngTagsInput', 'ui.select', 'ngFileUpload', 'textAngular', 'uiSwitch']);

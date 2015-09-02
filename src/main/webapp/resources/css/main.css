@@ -50,6 +50,12 @@ body {
     margin-top: 28px;
 }
 
+.navbar-right > li > p {
+    color: white;
+    margin: 0px;
+    padding: 15px;
+}
+
 #push,
 #footer {
     height: 60px;

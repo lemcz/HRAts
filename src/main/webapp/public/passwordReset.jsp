@@ -16,6 +16,7 @@
             </div>
         </div>
         <div class="row">
+            <%--TODO add hiding fields dependable on current url--%>
             <div class="col-md-4 col-md-offset-4 well" ng-controller="ResetController" id="reset">
                 <legend><spring:message code="reset.header" /></legend>
                 <form name="resetPasswordForm"

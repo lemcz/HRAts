@@ -12,7 +12,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="#"><spring:message code="header.welcome"/>&nbsp;${user.name}</a>
+                    <p><spring:message code="header.welcome"/>&nbsp;<strong>${user.name}</strong></p>
                 </li>
                 <li>
                     <a href="<c:url value='/protected/settings'/>" title='<spring:message code="header.settings"/>'>
