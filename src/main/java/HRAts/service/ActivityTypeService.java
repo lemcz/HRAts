@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ActivityTypeService {
 
-    public static final String ACTIVITY_TYPE_CREATE_RECORD = "Other";
-
     @Autowired
     private ActivityTypeRepository activityTypeRepository;
 

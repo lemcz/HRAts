@@ -14,6 +14,9 @@ public class VacancyUserService {
     @Autowired
     private VacancyUserRepository vacancyUserRepository;
 
+    @Autowired
+    private ActivityService activityService;
+
     @Transactional(readOnly = true)
     public Iterable<VacancyUser> findAll() {
         return vacancyUserRepository.findAll();
@@ -21,6 +24,11 @@ public class VacancyUserService {
 
     @Transactional
     public VacancyUser save(VacancyUser vacancyUser) {
+
+        //TODO extend activity logging
+        String activityNote = "New activity logged per user and vacancy";
+        activityService.logUserActivity(activityNote, vacancyUser.getOwner());
+
         return vacancyUserRepository.save(vacancyUser);
     }
 

@@ -1,7 +1,12 @@
 package HRAts.controller;
 
-import HRAts.model.*;
-import HRAts.service.*;
+import HRAts.model.Attachment;
+import HRAts.model.Department;
+import HRAts.model.Role;
+import HRAts.model.User;
+import HRAts.service.AttachmentService;
+import HRAts.service.DepartmentService;
+import HRAts.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +36,6 @@ public class ContactController {
     @Autowired
     private DepartmentService departmentService;
 
-    @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ActivityTypeService activityTypeService;
-
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
         return new ModelAndView("contactsList");
@@ -45,6 +45,11 @@ public class ContactController {
     public Iterable<User> listContacts(){
         Role role = Role.ROLE_MANAGER;
         return userService.findByRole(role);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView details(@PathVariable int id) {
+        return new ModelAndView("contactDetails");
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
@@ -107,19 +112,7 @@ public class ContactController {
 
         contact.setDepartmentList(departmentList);
 
-        //Log activity
-        Activity activityLog = new Activity();
-        activityLog.setOwner(contact.getOwner());
-        activityLog.setNote("New contact added to the repository");
-
-        ActivityTypeLkp activityLogType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
-
-        activityLog.setActivityType(activityLogType);
-
         User savedContact = userService.save(contact);
-
-        activityLog.setCandidate(savedContact);
-        activityService.save(activityLog);
 
         return new ResponseEntity<User>(savedContact, HttpStatus.OK);
     }
@@ -152,7 +145,7 @@ public class ContactController {
         if (contactId != contact.getId()){
             return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<User>(userService.save(contact), HttpStatus.OK);
+        return new ResponseEntity<User>(userService.update(contact), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")

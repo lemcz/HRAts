@@ -29,8 +29,7 @@ public class User implements Serializable{
     private String phoneNumber;
     private String note;
     //@Column(columnDefinition = "boolean default true")
-    private String enabled;
-    @JsonIgnore
+    private boolean enabled;
     private String password;
     @Column(name="date_entered", nullable = false)
     private Date dateEntered;
@@ -52,7 +51,7 @@ public class User implements Serializable{
     @JsonManagedReference("owner-vacancy_user")
     private List<VacancyUser> vacancyUserOwnerList;
 
-    @OneToMany(mappedBy = "manager", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "manager", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> departmentList;
 
     @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -77,7 +76,7 @@ public class User implements Serializable{
     public User () {}
 
     public User(String email, String name, String middleName, String lastName, String phoneNumber,
-                String note, String enabled, String password, Date dateEntered, Date dateModified, Role role,
+                String note, boolean enabled, String password, Date dateEntered, Date dateModified, Role role,
                 CandidateInformation candidateInformation, List<VacancyUser> vacancyUserCandidateList,
                 List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, List<Attachment> candidateAttachmentList, List<Attachment> contactAttachmentList, List<Attachment> ownerAttachmentList, User owner, List<User> contactList ) {
         this.email = email;
@@ -147,19 +146,21 @@ public class User implements Serializable{
         this.role = role;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(String enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 

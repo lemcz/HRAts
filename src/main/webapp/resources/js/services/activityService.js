@@ -1,7 +1,7 @@
 (function(angular) {
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('ActivityService', function ($http){
+    hratsApp.service('ActivityService', function ($http, uiGridConstants){
 
         var baseUrl = 'http://localhost:8080/HRAts/protected/activities/';
 
@@ -40,7 +40,7 @@
                     { name:'activityType.name', width:100 },
                     { name:'candidate.email', width:100 },
                     { name:'note', width:300 },
-                    { name:'dateEntered', cellFilter:'date', width:150 },
+                    { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
                     { name:'owner.email', displayName:'Owner', width:150 }
                 ];
             },

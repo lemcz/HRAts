@@ -2,7 +2,7 @@
 
     var hratsApp = angular.module('HRAts', ['ui.bootstrap', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.pinning',
                                             'ui.grid.selection', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.grouping',
-                                            'ngTagsInput', 'ui.select', 'ngFileUpload', 'textAngular']);
+                                            'ngTagsInput', 'ui.select', 'ngFileUpload', 'textAngular', 'uiSwitch']);
 
     hratsApp.controller('LocationController', function($scope, $location){
         if($location.$$absUrl.lastIndexOf('/candidates') > 0){
@@ -54,5 +54,55 @@
 
             return out;
         }
+    });
+
+    hratsApp.directive("clickToEdit", function () {
+        var editorTemplate = '' +
+            '<div class="click-to-edit col-md-12">' +
+                '<div ng-hide="view.editorEnabled">' +
+                    '{{value}} ' +
+                    '<span class="glyphicon glyphicon-pencil" ng-click="enableEditor()"></span>' +
+                '</div>' +
+                '<div ng-show="view.editorEnabled" class="input-group">' +
+                    '<input type="text" class="form-control" ng-model="view.editableValue"/> ' +
+                    '<span class="glyphicon glyphicon-ok input-group-addon" ng-click="save()"></span>' +
+                    '  ' +
+                    '<span class="glyphicon glyphicon-remove input-group-addon" ng-click="disableEditor()"></span>' +
+                '</div>' +
+            '</div>';
+
+        return {
+            restrict: "A",
+            replace: true,
+            template: editorTemplate,
+            scope: {
+                value: "=clickToEdit",
+            },
+            link: function (scope, element, attrs) {
+                scope.view = {
+                    editableValue: scope.value,
+                    editorEnabled: false
+                };
+
+                scope.enableEditor = function () {
+                    scope.view.editorEnabled = true;
+                    scope.view.editableValue = scope.value;
+                    setTimeout(function () {
+                        element.find('input')[0].focus();
+                        //element.find('input').focus().select(); // w/ jQuery
+                    });
+                };
+
+                scope.disableEditor = function () {
+                    scope.view.editorEnabled = false;
+                };
+
+                scope.save = function () {
+                    scope.value = scope.view.editableValue;
+                    scope.disableEditor();
+                };
+
+            }
+        };
     });
 })(angular);

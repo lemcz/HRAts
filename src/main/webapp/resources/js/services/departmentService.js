@@ -46,8 +46,12 @@
                      .error(function(data, status){
                          alert("Unable to fetch departments ("+status+").");
                      });
-             }
-         }
+             },
+
+            createMultiple: function(departmentList) {
+                return $http.post(baseUrl+'', departmentList);
+            }
+         };
         
         return departmentServiceFunctions;
     });

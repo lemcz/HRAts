@@ -1,8 +1,8 @@
 package HRAts.controller;
 
-import HRAts.model.*;
-import HRAts.service.ActivityService;
-import HRAts.service.ActivityTypeService;
+import HRAts.model.Department;
+import HRAts.model.Role;
+import HRAts.model.User;
 import HRAts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +19,6 @@ public class CandidateController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ActivityTypeService activityTypeService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -32,6 +28,11 @@ public class CandidateController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public Iterable<User> listCandidates(){
         return userService.findByRole(Role.ROLE_CANDIDATE);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView details(@PathVariable int id) {
+        return new ModelAndView("candidateDetails");
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -48,26 +49,13 @@ public class CandidateController {
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody ResponseEntity createCandidate(@RequestBody final User candidate){
 
-        List<Department> departmentList= new ArrayList<>();
         List<User> contactList = new ArrayList<>();
 
         candidate.setRole(Role.ROLE_CANDIDATE);
         candidate.setContactList(contactList);
-        candidate.setDepartmentList(departmentList);
-
-        User owner = candidate.getOwner();
-        Activity activityLog = new Activity();
-        activityLog.setOwner(owner);
-        activityLog.setNote("New candidate added to the repository");
-
-        ActivityTypeLkp activityLogType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
-
-        activityLog.setActivityType(activityLogType);
+        candidate.setDepartmentList(new ArrayList<Department>());
 
         User savedUser = userService.save(candidate);
-
-        activityLog.setCandidate(savedUser);
-        activityService.save(activityLog);
 
         return new ResponseEntity<User>(savedUser, HttpStatus.OK);
     }
@@ -79,7 +67,7 @@ public class CandidateController {
             return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<User>(userService.save(candidate), HttpStatus.OK);
+        return new ResponseEntity<User>(userService.update(candidate), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")

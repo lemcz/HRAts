@@ -14,6 +14,9 @@
     <definition name="welcomePage" extends="master.page">
         <put-attribute name="body" value="/protected/welcomePage.jsp"/>
     </definition>
+    <definition name="settings" extends="master.page">
+        <put-attribute name="body" value="/protected/settings.jsp"/>
+    </definition>
     <definition name="activitiesList" extends="master.page">
         <put-attribute name="body" value="/protected/activities/activities.jsp"/>
     </definition>
@@ -29,13 +32,39 @@
     <definition name="contactsList" extends="master.page">
         <put-attribute name="body" value="/protected/contacts/contacts.jsp"/>
     </definition>
-    <!--TODO do sth about it-->
-    <definition name="candidateById" extends="master.page">
-        <put-attribute name="body" value="/protected/candidate/candidateDetails.jsp"/>
+    <!-- Details -->
+    <definition name="candidateDetails" extends="master.page">
+        <put-attribute name="body" value="/protected/contacts/candidateDetails.jsp"/>
     </definition>
-    <!--! ! ! ! ! ! ! ! ! ! -->
-    <definition name="settings" extends="master.page">
-        <put-attribute name="body" value="/protected/settings.jsp"/>
+    <definition name="companyDetails" extends="master.page">
+        <put-attribute name="body" value="/protected/contacts/vacancyDetails.jsp"/>
+    </definition>
+    <definition name="contactDetails" extends="master.page">
+        <put-attribute name="body" value="/protected/contacts/contactDetails.jsp"/>
+    </definition>
+    <definition name="vacancyDetails" extends="master.page">
+        <put-attribute name="body" value="/protected/contacts/vacancyDetails.jsp"/>
+    </definition>
+
+    <!-- Login page -->
+    <definition name="login" template="/public/login.jsp">
+        <put-attribute name="scriptBundle" value="/public/template/scriptBundle.jsp"/>
+        <put-attribute name="header" value=""/>
+        <put-attribute name="footer" value=""/>
+        <put-attribute name="body" value="/public/login.jsp"/>
+    </definition>
+    <!-- Register page -->
+    <definition name="register" template="/public/register.jsp">
+        <put-attribute name="scriptBundle" value="/public/template/scriptBundle.jsp"/>
+        <put-attribute name="header" value=""/>
+        <put-attribute name="footer" value=""/>
+        <put-attribute name="body" value="/public/register.jsp"/>
+    </definition>
+    <definition name="passwordReset" template="/public/passwordReset.jsp">
+        <put-attribute name="scriptBundle" value="/public/template/scriptBundle.jsp"/>
+        <put-attribute name="header" value=""/>
+        <put-attribute name="footer" value=""/>
+        <put-attribute name="body" value="/public/passwordReset.jsp"/>
     </definition>
 
     <!-- TODO Error page
@@ -45,12 +74,4 @@
         <put-attribute name="footer" value=""/>
         <put-attribute name="body" value="/public/customErrorPage.jsp"/>
     </definition> -->
-
-    <!-- Login page -->
-    <definition name="login" template="/public/login.jsp">
-        <put-attribute name="scriptBundle" value="/public/template/scriptBundle.jsp"/>
-        <put-attribute name="header" value=""/>
-        <put-attribute name="footer" value=""/>
-        <put-attribute name="body" value="/public/login.jsp"/>
-    </definition>
 </tiles-definitions>

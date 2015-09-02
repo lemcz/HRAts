@@ -1,11 +1,7 @@
 package HRAts.controller;
 
-import HRAts.model.Activity;
-import HRAts.model.ActivityTypeLkp;
 import HRAts.model.Department;
 import HRAts.model.User;
-import HRAts.service.ActivityService;
-import HRAts.service.ActivityTypeService;
 import HRAts.service.DepartmentService;
 import HRAts.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +21,6 @@ public class DepartmentController {
     private DepartmentService departmentService;
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private ActivityService activityService;
-    @Autowired
-    private ActivityTypeService activityTypeService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcome() {
@@ -55,7 +46,24 @@ public class DepartmentController {
         return departmentService.findByCompanyIdIn(companiesIds);
     }
 
-    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @ResponseBody ResponseEntity createDepartments(@RequestBody List<Department> departmentList){
+
+        List<Department> savedDepartments = new ArrayList<>();
+
+        for (Department department : departmentList) {
+            if (department.getCompany() == null) {
+                return new ResponseEntity<String>("Missing company", HttpStatus.BAD_REQUEST);
+            }
+            Department createdDepartment = departmentService.save(department);
+            savedDepartments.add(createdDepartment);
+        }
+
+        return new ResponseEntity<List>(savedDepartments, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.GET, produces = "application/json")
     public Department getDepartmentById(@PathVariable int id){
         return departmentService.findById(id);
     }
@@ -73,28 +81,12 @@ public class DepartmentController {
             }
         }
 
-        //Log activity
-        Activity activityLog = new Activity();
-        activityLog.setOwner(department.getOwner());
-        activityLog.setNote("New department added to the repository");
-
-        ActivityTypeLkp insertCandidateActivityType = activityTypeService.findByName(activityTypeService.ACTIVITY_TYPE_CREATE_RECORD);
-
-        activityLog.setActivityType(insertCandidateActivityType);
-
-        //todo set department for the activity
-        //activityLog.setDepartment(savedDepartment);
-
-        activityService.save(activityLog);
-
         return new ResponseEntity<Department>(departmentService.save(department), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> updateCompany(@PathVariable("id") int departmentId,
-                                           @RequestBody Department department) {
-
-
+    public ResponseEntity<?> updateDepartment(@PathVariable("id") int departmentId,
+                                              @RequestBody Department department) {
         if (departmentId != department.getId()){
             return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }

@@ -8,6 +8,7 @@
         $scope.pageConfiguration.columnDefs = CompanyService.getColumnDefs();
 
         $scope.companiesCollection = [];
+        $scope.owner = $('#userId').attr('value');
 
         CompanyService.fetchAll()
             .success(function (data) {
@@ -23,7 +24,7 @@
         //Add company variables
         $scope.newCompany = angular.copy(row.data) || {};
         $scope.newCompany.owner = {};
-        $scope.newCompany.owner.id = $('#userId').attr('value');
+        $scope.newCompany.owner.id = $scope.owner;
 
         $scope.loadSectors = function(query) {
             return SectorService.fetchAllByName();
@@ -82,11 +83,11 @@
         $scope.addDepartment = function(company, departmentList) {
 
             for (var i = 0; i < $scope.departmentList.length; i++) {
-                $scope.departmentList[i].owner = {id: $scope.owner.id};
+                $scope.departmentList[i].owner = {id: $scope.owner};
                 $scope.departmentList[i].company = company;
             }
 
-            DepartmentService.createRow(departmentList)
+            DepartmentService.createMultiple(departmentList)
                 .success(function(){
                     //TODO dorobic update company do ktorej zostaly dodane departamenty
                     $modalInstance.close();

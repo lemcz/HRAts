@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-md-12">
                 <div class="form-group">
-                        <label class="control-label sr-only">* <spring:message code="user.name"/>:</label>
+                        <label class="control-label sr-only"><spring:message code="user.name"/>:</label>
                         <input type="text"
                                class="form-control"
                                required
@@ -32,7 +32,7 @@
                                placeholder="<spring:message code='user.name'/>"/>
                 </div>
                 <div class="form-group">
-                    <label class="control-label sr-only">* <spring:message code="user.middleName"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="user.middleName"/>:</label>
                     <input type="text"
                            class="form-control"
                                required
@@ -42,7 +42,7 @@
                                placeholder="<spring:message code='user.middleName'/>"/>
                 </div>
                 <div class="form-group">
-                    <label class="control-label sr-only">* <spring:message code="user.lastName"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="user.lastName"/>:</label>
                     <input type="text"
                            class="form-control"
                            required
@@ -59,7 +59,7 @@
                     </div>
                 <div class="col-md-12">
                 <div class="form-group">
-                        <label class="control-label sr-only">* <spring:message code="phoneNumber"/>:</label>
+                        <label class="control-label sr-only"><spring:message code="phoneNumber"/>:</label>
                         <input type="tel"
                                class="form-control"
                                required
@@ -69,7 +69,7 @@
                                placeholder="<spring:message code='sample.phone'/>"/>
                     </div>
                     <div class="form-group">
-                        <label class="control-label sr-only">* <spring:message code="email"/>:</label>
+                        <label class="control-label sr-only"><spring:message code="email"/>:</label>
                         <input type="email"
                                class="form-control"
                                required
@@ -184,7 +184,7 @@
                        required
                        ng-model="contact.id"
                        name="id"/>
-                <label>* <spring:message code="contacts.name"/>:</label>
+                <label><spring:message code="contacts.name"/>:</label>
                 <input type="text"
                        class="form-control"
                        autofocus
@@ -194,7 +194,7 @@
                        placeholder="<spring:message code='contacts.name'/> "/>
             </div>
             <div class="form-group">
-                <label>* <spring:message code="contacts.note"/>:</label>
+                <label><spring:message code="contacts.note"/>:</label>
                 <input type="text"
                        class="form-control"
                        required

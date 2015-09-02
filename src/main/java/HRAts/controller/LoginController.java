@@ -13,13 +13,14 @@ public class LoginController {
         return new ModelAndView("login");
     }
 
-    @RequestMapping(value = "/signIn", method = RequestMethod.GET)
-    public ModelAndView getSignInPage() {
-        return new ModelAndView("signIn");
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public ModelAndView getRegisterPage() {
+        return new ModelAndView("register");
     }
 
-    @RequestMapping(value = "/signIn", method = RequestMethod.POST)
-    public ModelAndView createUser() {
-        return new ModelAndView("signIn");
+    @RequestMapping(value = "/passwordReset", method = RequestMethod.GET)
+    public ModelAndView getResetPasswordPage() {
+        return new ModelAndView("passwordReset");
     }
+
 }

@@ -19,6 +19,13 @@
                data-toggle="modal">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<spring:message code="create"/>&nbsp;<spring:message code="company"/>
             </a>
+            <a href="{{row.id}}"
+               role="button"
+               ng-disabled="gridOptions.multipleSelected"
+               title="<spring:message code='view'/>&nbsp;<spring:message code='details'/>"
+               class="btn btn-info">
+                <span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;<spring:message code="view"/>&nbsp;<spring:message code="details"/>
+            </a>
             <a href=""
                ng-click="openModal('updateCompanyModal', row)"
                ng-disabled="gridOptions.multipleSelected"

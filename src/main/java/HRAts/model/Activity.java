@@ -23,12 +23,12 @@ public class Activity {
     @JoinColumn(name = "activity_type_id", nullable = false, updatable = false)
     private ActivityTypeLkp activityType;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "owner_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "owner_id", updatable = false)
     private User owner;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "candidate_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "candidate_id", updatable = false)
     private User candidate;
 
     @JsonBackReference("activity-vacancy")

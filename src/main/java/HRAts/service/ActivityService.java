@@ -1,6 +1,9 @@
 package HRAts.service;
 
+import HRAts.constants.ActivityTypeEnum;
 import HRAts.model.Activity;
+import HRAts.model.ActivityTypeLkp;
+import HRAts.model.User;
 import HRAts.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -37,26 +40,19 @@ public class ActivityService {
         return activityRepository.save(activity);
     }
 
-/*    @Transactional
-    public Activity saveCustom(User owner, int activityId, String note) {
+    @Transactional
+    public Activity logUserActivity(String activityNote, User owner) {
 
         Activity activity = new Activity();
+
+        ActivityTypeLkp activityTypeLkp = activityTypeService.findByName(ActivityTypeEnum.ADD.toString());
+
+        activity.setActivityType(activityTypeLkp);
+        activity.setNote(activityNote);
         activity.setOwner(owner);
-        activity.setNote(note);
-
-        ActivityTypeLkp activityType = activityTypeService.findById(activityId);
-
-        activity.setActivityType(activityType);
-
-        User savedUser = userService.save(candidate);
-
-        if(savedUser != null) {
-            activity.setCandidate(savedUser);
-            activityService.save(activity);
-        }
 
         return activityRepository.save(activity);
-    }*/
+    }
 
     @Secured("ROLE_ADMIN")
     public void delete(int activityId) {

@@ -2,7 +2,7 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('ContactService', function ($http, uiGridConstants, uiGridGroupingConstants){
+    hratsApp.service('ContactService', function ($http, uiGridConstants){
 
         var baseUrl = 'http://localhost:8080/HRAts/protected/contacts/';
 
@@ -35,17 +35,17 @@
 
             getColumnDefs: function() {
                 return [
-                    { name:'id', width:50 },
-                    { name:'name', width:100 },
+                    { name:'id', width:50},
+                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row)">{{COL_FIELD}}</a></div>', width:100 },
                     { name:'middleName', width:100 },
                     { name:'lastName', width:100 },
                     { name:'departmentList[0].company.name', width:100},
                     { name:'departmentList[0].name', width:100},
-                    { name:'email', width:100, cellTemplate: '<div class="text-center"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
+                    { name:'email', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
                     { name:'phoneNumber', displayName: 'Phone', width:200},
                     { name:'note', width:300 },
-                    { name:'dateEntered', cellFilter:'date', width:150 },
-                    { name:'dateModified', cellFilter:'date', width:150 },
+                    { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150 },
+                    { name:'dateModified', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
                     { name:'owner.email', displayName:'Owner', width:150 }
                 ];
             },

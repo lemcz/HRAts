@@ -55,20 +55,14 @@
 
         };
 
-        $scope.redirect = function (location, row) {
+        $scope.redirect = function (row) {
             var rowsId = row.entity.id || 0;
 
             console.log(rowsId);
 
-            var splitIndex = $location.$$absUrl.lastIndexOf('/protected');
-            if (splitIndex !== -1) {
-                var baseUrl = $location.$$absUrl.substring(0, splitIndex+'/protected'.length);
+            var baseUrl = $location.$$absUrl;
 
-                window.location = baseUrl+'/'+location+'/'+rowsId;
-
-            } else {
-                alert('Could not relocate to '+location+' to display id '+rowsId+' item\'s details');
-            }
+            window.location = baseUrl+rowsId;
         };
 
         $scope.gridOptions.onRegisterApi = function(gridApi){

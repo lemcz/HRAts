@@ -6,7 +6,7 @@
 <div class="row">
   <h1 class="page-header">
     <p class="text-center">
-      <spring:message code='candidates.header'/>&nbsp;Details
+      <spring:message code='companies.header'/>&nbsp;Details
     </p>
   </h1>
 </div>

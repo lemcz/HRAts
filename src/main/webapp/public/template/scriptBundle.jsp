@@ -14,11 +14,11 @@
 <link href="<c:url value='/resources/css/ui-grid.min.css'/>" rel="stylesheet" type="text/css"/>
 <link href="<c:url value='/resources/css/font-awesome.min.css'/>" rel="stylesheet" type="text/css"/>
 <link href="<c:url value='/resources/css/textAngular.css'/>" rel="stylesheet" type="text/css"/>
+<link href="<c:url value='/resources/css/angular-ui-switch.min.css'/>" rel="stylesheet" type="text/css"/>
 
 <!-- Base JS -->
 <script src="<c:url value='/resources/js/jquery-2.1.3.min.js' />" type="text/javascript"></script>
 <script src="<c:url value='/resources/js/angular.min.js' />" type="text/javascript"></script>
-<%--<script src="<c:url value='/resources/js/angular-sanitize.min.js' />" type="text/javascript"></script>--%>
 <script src="<c:url value='/resources/js/bootstrap.min.js' />" type="text/javascript"></script>
 
 <!-- Additional JS -->
@@ -30,4 +30,4 @@
 <script src="<c:url value='/resources/js/textAngular-rangy.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/resources/js/textAngular-sanitize.min.js'/>" type="text/javascript"></script>
 <script src="<c:url value='/resources/js/textAngular.min.js'/>" type="text/javascript"></script>
-
+<script src="<c:url value='/resources/js/angular-ui-switch.min.js'/>" type="text/javascript"></script>

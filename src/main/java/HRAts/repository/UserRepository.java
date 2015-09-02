@@ -10,5 +10,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     User findByEmail(String email);
 
+    User findByEmailAndEnabledIsTrue(String email);
+
     Iterable<User> findByRole(Role role);
 }

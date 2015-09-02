@@ -449,35 +449,17 @@
     </div>
     <form name="logActivityForm" role="form" novalidate ng-submit="logActivity(candidate);">
         <div class="modal-body">
-            <formgroup class="form">
-            <div class="form-group col-md-12">
+            <fieldset class="form">
+            <div class="form-group">
                 <input type="hidden"
                        required
                        ng-model="candidate.id"
                        name="id"
                        value="{{candidate.id}}"/>
                 <div class="col-md-6">
-                <label><spring:message code="candidates.activityType"/></label>
-                    <ui-select ng-model="activity.activityType"
-                               theme="bootstrap"
-                               ng-disabled="disabled"
-                               reset-search-input="false"
-                               style="width: 300px;">
-                        <ui-select-match placeholder="Select activity type">{{$select.selected.name}}</ui-select-match>
-                        <ui-select-choices repeat="activityType in activityTypeCollection | propsFilter: {id: $select.search, name: $select.search}">
-                            <div ng-bind-html="activityType.name | highlight: $select.search"></div>
-                            <small>
-                                id: <span ng-bind-html="''+activityType.id | highlight: $select.search"></span>
-                                name: {{activityType.name}}
-                            </small>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="col-md-6">
-                <label><spring:message code="candidates.vacancy"/></label>
+                    <label><spring:message code="candidates.vacancy"/></label>
                     <ui-select ng-model="activity.vacancy"
                                theme="bootstrap"
-                               ng-disabled="disabled"
                                reset-search-input="false"
                                style="width: 300px;">
                         <ui-select-match placeholder="Select vacancy">{{$select.selected.name}}</ui-select-match>
@@ -490,16 +472,39 @@
                         </ui-select-choices>
                     </ui-select>
                 </div>
-                <label><spring:message code="note"/></label>
-                <textarea rows="4"
-                          cols="50"
-                          class="form-control"
-                          required
-                          ng-model="activity.note"
-                          name="note"
-                          placeholder="<spring:message code='note'/>"></textarea>
+                <div class="col-md-6">
+                <label><spring:message code="candidates.activityType"/></label>
+                    <ui-select ng-model="activity.activityType"
+                               theme="bootstrap"
+                               reset-search-input="false"
+                               style="width: 300px;">
+                        <ui-select-match placeholder="Select activity type">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="activityType in activityTypeCollection | propsFilter: {id: $select.search, name: $select.search}">
+                            <div ng-bind-html="activityType.name | highlight: $select.search"></div>
+                            <small>
+                                id: <span ng-bind-html="''+activityType.id | highlight: $select.search"></span>
+                                name: {{activityType.name}}
+                            </small>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="form-group col-md-12">
+                    <label><spring:message code="note"/></label>
+                    <textarea rows="4"
+                              cols="50"
+                              class="form-control"
+                              required
+                              ng-model="activity.note"
+                              name="note"
+                              placeholder="<spring:message code='note'/>"></textarea>
+                </div>
+                    <label class=""><spring:message code="logStatusChange"/></label>
+                <div class="col-md-12">
+                    <switch id="statusSwitch" name="enabled" ng-model="enabled" class="green" on="On" off="Off"></switch>
+                    <br>{{ enabled }}
+                </div>
             </div>
-            </formgroup>
+            </fieldset>
         </div>
         <div class="modal-footer">
             <button class="btn btn-default"

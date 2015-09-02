@@ -1,7 +1,7 @@
 package HRAts.service;
 
-import HRAts.model.Company;
-import HRAts.model.Sector;
+import HRAts.constants.ActivityTypeEnum;
+import HRAts.model.*;
 import HRAts.repository.CompanyRepository;
 import HRAts.repository.SectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 public class CompanyService implements Serializable{
 
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
     private SectorRepository sectorRepository;
+    @Autowired
+    private DepartmentService departmentService;
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    ActivityTypeService activityTypeService;
 
     @Transactional(readOnly = true)
     public Iterable<Company> findAll() {
@@ -47,9 +52,44 @@ public class CompanyService implements Serializable{
             company.setSectorList(sectorList);
         }
 
-        return companyRepository.save(company);
+        Company savedCompany = companyRepository.save(company);
+
+        if(company.getDepartmentList() != null) {
+
+            for (Department department : company.getDepartmentList()) {
+                department.setCompany(savedCompany);
+                departmentService.save(department);
+            }
+        }
+
+        //Log activity
+        Activity activityLog = new Activity();
+        //todo add owner of activity
+        //activityLog.setOwner(company.getOwner());
+        activityLog.setNote("New company added to the repository");
+
+        ActivityTypeLkp activityLogType = activityTypeService.findByName(ActivityTypeEnum.OTHER.toString());
+
+        activityLog.setActivityType(activityLogType);
+
+        //todo set company for the activity
+        //activityLog.setCompany(savedCompany);
+
+        activityService.save(activityLog);
+
+        return savedCompany;
     }
 
+    @Transactional
+    public Company update(Company company) {
+
+        //TODO add update logic
+        Company savedCompany = companyRepository.save(company);
+
+        return savedCompany;
+    }
+
+    @Transactional
     private List<Sector> updateSectors(List<Sector> existingList) {
 
         List<Sector> newList = new ArrayList<>();
