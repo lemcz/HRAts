@@ -31,13 +31,13 @@
             getColumnDefs: function() {
                 return [
                     { name:'id', width:50 },
-                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row)" >{{COL_FIELD}}</a></div>', width:100 },
-                    { name:'website', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a href="{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
+                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'companies\')" >{{COL_FIELD}}</a></div>', width:100 },
+                    { name:'website', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a href="http://{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
                     { name:'phone', width:200},
                     { name:'country', width:200},
                     { name:'about', width:300 },
                     { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150 },
-                    { name:'dateModified', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
+                    { name:'dateModified', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} }
                 ];
             },
 

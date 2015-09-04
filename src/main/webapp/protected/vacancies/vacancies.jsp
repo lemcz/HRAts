@@ -24,7 +24,7 @@
                ng-disabled="gridOptions.multipleSelected"
                title="<spring:message code='view'/>&nbsp;<spring:message code='details'/>"
                class="btn btn-info">
-                <span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;<spring:message code="view"/>&nbsp;<spring:message code="details"/>
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<spring:message code="view"/>&nbsp;<spring:message code="details"/>
             </a>
             <a href=""
                ng-click="openModal('updateVacancyModal', row)"

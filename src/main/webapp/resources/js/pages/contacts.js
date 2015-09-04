@@ -36,7 +36,7 @@
             getColumnDefs: function() {
                 return [
                     { name:'id', width:50},
-                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row)">{{COL_FIELD}}</a></div>', width:100 },
+                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'contacts\')">{{COL_FIELD}}</a></div>', width:100 },
                     { name:'middleName', width:100 },
                     { name:'lastName', width:100 },
                     { name:'departmentList[0].company.name', width:100},

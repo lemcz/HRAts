@@ -42,13 +42,20 @@ public class VacancyController {
         return new ResponseEntity<Vacancy>(savedVacancy, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/perDepartments", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "/perDepartments", headers={"type=list"}, method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Iterable<Vacancy> getVacanciesByDepartmentsIds(@RequestBody(required = false) List<Integer> departmentsIds){
         if(departmentsIds.isEmpty()) {
             return new ArrayList<>();
         }
         return vacancyService.findByDepartmentIdIn(departmentsIds);
+    }
+
+    @RequestMapping(value = "/perDepartments", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Iterable<Vacancy> getVacanciesByDepartmentsIdsPerCandidate(@RequestBody(required = true) List<Integer> departmentsIds,
+                                                               @RequestParam(value="candidateId") int candidateId){
+        return vacancyService.findByDepartmentIdInAndCandidateIdEqual(departmentsIds, candidateId);
     }
 
     @RequestMapping(value = "/perUser", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")

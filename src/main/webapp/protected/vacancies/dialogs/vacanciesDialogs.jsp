@@ -48,7 +48,7 @@
                     <ui-select ng-model="newVacancy.company"
                                on-select="fetchRelatedDepartments([newVacancy.company])"
                                theme="bootstrap"
-                               ng-disabled="disabled"
+
                                reset-search-input="false">
                         <ui-select-match placeholder="Select a company">{{$select.selected.name}}</ui-select-match>
                         <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
@@ -62,7 +62,6 @@
                 <div class="form-group col-md-6">
                     <ui-select ng-model="newVacancy.department"
                                theme="bootstrap"
-                               ng-disabled="disabled"
                                reset-search-input="false">
                         <ui-select-match placeholder="Select a department">{{$select.selected.name}}</ui-select-match>
                         <ui-select-choices repeat="department in departmentList | propsFilter: {id: $select.search, name: $select.search}">

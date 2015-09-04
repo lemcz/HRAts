@@ -1,6 +1,7 @@
 package HRAts.controller;
 
 import HRAts.model.Department;
+import HRAts.model.GenericResponse;
 import HRAts.model.Role;
 import HRAts.model.User;
 import HRAts.service.UserService;
@@ -50,27 +51,38 @@ public class CandidateController {
         candidate.setContactList(contactList);
         candidate.setDepartmentList(new ArrayList<Department>());
 
-        User savedUser = userService.save(candidate);
+        if(userService.findByEmail(candidate.getEmail()) != null) {
+            new ResponseEntity<>(new GenericResponse(-1, "User with provided email already exists"), HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<User>(savedUser, HttpStatus.OK);
+        try {
+            User savedUser = userService.save(candidate);
+            return new ResponseEntity<>(new GenericResponse(0, savedUser), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new GenericResponse(-2, e), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> updateCandidate(@PathVariable("id") int candidateId,
+    public ResponseEntity updateCandidate(@PathVariable("id") int candidateId,
                                              @RequestBody User candidate) {
         if (candidateId != candidate.getId()){
-            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new GenericResponse(-1, "Bad Request"), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<User>(userService.update(candidate), HttpStatus.OK);
+        return new ResponseEntity<>(userService.update(candidate), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody ResponseEntity deleteCandidate(@PathVariable("id") int candidateId) {
 
-        userService.delete(candidateId);
+        try{
+            userService.delete(candidateId);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new GenericResponse(-1, e), HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<User>(HttpStatus.OK);
+        return new ResponseEntity<>(new GenericResponse(0, "Candidate deleted successfully"), HttpStatus.OK);
     }
 }

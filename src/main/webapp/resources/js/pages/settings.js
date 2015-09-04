@@ -32,10 +32,8 @@
 
     hratsApp.controller('SettingsController', function($scope, $http, UserService){
 
-        //todo fill this in
         var userId = $('#userId').val();
 
-        console.log ('asd');
         UserService.fetchById(userId)
             .success(function(data) {
                 $scope.userData = data;

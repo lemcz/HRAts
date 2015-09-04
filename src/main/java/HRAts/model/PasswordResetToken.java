@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "password_reset_token")
 public class PasswordResetToken implements Serializable {
 
     private static final int EXPIRATION = 60 * 24;

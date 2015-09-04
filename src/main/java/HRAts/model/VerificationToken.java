@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "verification_token")
 public class VerificationToken implements Serializable {
     private static final int EXPIRATION = 60 * 24;
 

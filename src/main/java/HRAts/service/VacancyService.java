@@ -34,6 +34,11 @@ public class VacancyService {
         return vacancyRepository.findByDepartment_IdIn(departmentsIds);
     }
 
+    @Transactional(readOnly = true)
+    public Iterable<Vacancy> findByDepartmentIdInAndCandidateIdEqual(List<Integer> departmentsIds, int candidateId) {
+        return vacancyRepository.findByDepartment_IdInAndVacancyUserListCandidate_IdIsNot(departmentsIds, candidateId);
+    }
+
 /*    @Transactional(readOnly = true)
     public Iterable<Vacancy> findByVacancyUserListCandidate_IdIn(List<Integer> candidatesIds) {
         return vacancyRepository.findByVacancyUserListCandidate_IdIn(candidatesIds);
@@ -41,8 +46,6 @@ public class VacancyService {
 
     @Transactional
     public Vacancy save(Vacancy vacancy) {
-        //TODO add owner to activity logging
-        //activityLog.setOwner(vacancy.getOwner());
         String activityNote = "New vacancy added to the repository";
 
         activityService.logUserActivity(activityNote, vacancy.getDepartment().getOwner());

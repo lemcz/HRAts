@@ -18,7 +18,7 @@
 
             fetchAllByDepartment_IdIn: function(departmentsIds) {
                 var req = {
-                    method: 'PUT',
+                    method: 'POST',
                     url: baseUrl+'/perDepartments',
                     headers: {
                         type: 'list'
@@ -27,6 +27,20 @@
                 };
 
                 return $http(req);
+            },
+
+            fetchAllByDepartment_IdInAndCandidateIdEqual: function(departmentsIds, candidateId) {
+                var req = {
+                    method: 'GET',
+                    url: baseUrl+'/perDepartments?candidateId='+candidateId,
+                    data: departmentsIds
+                };
+
+                return $http(req);
+            },
+
+            fetchAllByCandidateId: function(candidateId) {
+                $http.get(baseUrl/ candidateId)
             },
 
             createRow: function (vacancyData) {
@@ -44,7 +58,7 @@
             getColumnDefs: function () {
                 return [
                     {name: 'id', width: 50},
-                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row)">{{COL_FIELD}}</a></div>', width:100 },
+                    {name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'vacancies\')">{{COL_FIELD}}</a></div>', width:100 },
                     {name: 'department.company.name', displayName: 'Company', width: 100},
                     {name: 'department.name', width: 100},
                     {name: 'about', width: 300},

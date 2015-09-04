@@ -32,7 +32,7 @@
             getColumnDefs: function() {
                 return [
                     { name:'id', width:50 },
-                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a data-toggle="modal" ng-click="grid.appScope.openModal(\'addToVacancyModal\', row.entity)" role="button" >{{COL_FIELD}}</a></div>', width:100 },
+                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a data-toggle="modal" ng-click="grid.appScope.redirect(row.entity, \'candidates\', row.entity)" role="button" >{{COL_FIELD}}</a></div>', width:100 },
                     { name:'middleName', width:100 },
                     { name:'lastName', width:100 },
                     { name:'candidateInformation.address', displayName: "Address", width:150},
@@ -91,7 +91,8 @@
 
     hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CandidateService, row,
                                                             VacancyService, ActivityTypeService, ActivityService,
-                                                            CompanyService, DepartmentService, ContractTypeService, VacancyUserService) {
+                                                            CompanyService, DepartmentService, ContractTypeService,
+                                                            VacancyUserService, StatusService, StatusTypeService) {
 
         //TODO reorganize controller, setup owner
         //Add candidate variables
@@ -108,11 +109,6 @@
         $scope.departmentsCollection = [];
         $scope.contractsCollection = [];
         $scope.vacancyCollection = [];
-
-
-        $scope.showMe = function() {
-            alert('KUPA');
-        };
 
         CompanyService.fetchAll()
             .success(function (data) {
@@ -174,27 +170,36 @@
                     .success(function(data) {
                         $scope.vacancyCollection = data || {};
                     })
-                    .error(function(data,status){
-                        alert("Unable to fetch vacancies ("+status+").");
+                    .error(function(data){
+                        alert("Unable to fetch vacancies ("+data+").");
                     });
                 break;
             case 'logActivityModal':
                 $scope.activity = {};
+                $scope.status = {};
+
+                StatusTypeService.fetchAll()
+                    .success(function(data){
+                        $scope.statusTypeCollection = data || {};
+                    })
+                    .error(function(data){
+                        alert("Unable to fetch vacancies ("+data.status+").");
+                    });
 
                 ActivityTypeService.fetchAll()
                     .success(function(data){
                         $scope.activityTypeCollection = data || {};
                     })
-                    .error(function(data, status) {
-                        alert("Unable to fetch activity types ("+status+").");
+                    .error(function(data) {
+                        alert("Unable to fetch activity types ("+data+").");
                     });
 
                 VacancyService.fetchAll()
                     .success(function(data) {
                         $scope.vacancyCollection = data || {};
                     })
-                    .error(function(data, status) {
-                        alert("Unable to fetch vacancies ("+status+").");
+                    .error(function(data) {
+                        alert("Unable to fetch vacancies ("+data+").");
                     });
 
                 break;
@@ -206,16 +211,24 @@
         $scope.createCandidate = function(){
 
             $scope.newCandidate.candidateInformation.contractType = $scope.querySelection.selectedContractType || {};
+            var selectedVacancies = [];
+            for( var i = 0; i < $scope.querySelection.selectedVacancies.length; i++) {
+                var vacancyToAdd = { vacancy: {id: $scope.querySelection.selectedVacancies[i].id},
+                                     owner: {id: $scope.newCandidate.owner.id}
+                };
+                selectedVacancies.push(vacancyToAdd);
+            }
+            $scope.newCandidate.vacancyUserCandidateList = selectedVacancies;
+            console.log($scope.newCandidate);
             CandidateService.createRow($scope.newCandidate)
                 .success(function(data){
                     console.log(data);
-                    $scope.candidatesCollection.push(data);
+                    $scope.candidatesCollection.push(data.data);
+                    $modalInstance.close();
                 })
                 .error(function(data,status){
                     alert("Unable to create record ("+status+").");
                 });
-
-            $modalInstance.close();
         };
 
         $scope.updateCandidate = function(row) {
@@ -230,8 +243,6 @@
         };
 
         $scope.addToVacancy = function(row, vacancy) {
-
-            var requestData = {};
 
             var vacanciesToAddList =  {
                 candidate: {id: row.id },
@@ -259,12 +270,19 @@
                 })
         };
 
-        $scope.logActivity = function() {
+        $scope.logActivity = function(user) {
 
             $scope.activity.candidate = {id: $scope.candidate.id};
             $scope.activity.owner = {id: $scope.candidate.owner.id};
 
-            ActivityService.createRow($scope.activity)
+            if ($scope.statusSwitch) {
+                $scope.status.owner = { id: user.owner.id };
+                $scope.status.statusType = $scope.querySelection.selectedStatusType;
+            }
+
+            var activityStatusContext = { activity: $scope.activity, status: $scope.status || null};
+            console.log(activityStatusContext);
+            ActivityService.createRow(activityStatusContext)
                 .success(function(data){
                     angular.copy(data, $scope.newActivity);
                     $modalInstance.close();

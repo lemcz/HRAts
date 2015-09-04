@@ -1,5 +1,6 @@
 package HRAts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class Vacancy implements Serializable {
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Attachment> attachmentList;
 
-    @JsonManagedReference("activity-vacancy")
+    @JsonIgnore
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER)
     private List<Activity> activityList;
 

@@ -55,14 +55,14 @@
 
         };
 
-        $scope.redirect = function (row) {
-            var rowsId = row.entity.id || 0;
+        $scope.redirect = function (row, endpoint) {
+            var rowsId = row.id || 0;
 
-            console.log(rowsId);
+            var baseUrl = $location.absUrl();
+            var trimIndex = baseUrl.indexOf('protected');
+            baseUrl = baseUrl.substr(0,trimIndex+'protected'.length);
 
-            var baseUrl = $location.$$absUrl;
-
-            window.location = baseUrl+rowsId;
+            window.location = baseUrl+'/'+endpoint+'/'+rowsId;
         };
 
         $scope.gridOptions.onRegisterApi = function(gridApi){
@@ -91,7 +91,6 @@
                 for(var i = 0; i < rows.length; i++) {
                     $scope.row.append(rows[i].entity);
                 }
-                var msg = 'rows changed ' + rows.length + ' multipleSelected: '+ $scope.gridOptions.multipleSelected;
             });
         };
 

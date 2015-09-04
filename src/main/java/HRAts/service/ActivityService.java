@@ -20,6 +20,9 @@ public class ActivityService {
     @Autowired
     private ActivityTypeService activityTypeService;
 
+    @Autowired
+    private UserService userService;
+
     @Transactional(readOnly = true)
     public Iterable<Activity> findAll() {
         return activityRepository.findAll();
@@ -31,7 +34,7 @@ public class ActivityService {
     }
 
     @Transactional(readOnly = true)
-    public Activity findByCandidateId(int candidateId) {
+    public Iterable<Activity> findByCandidateId(int candidateId) {
         return activityRepository.findByCandidate_Id(candidateId);
     }
 
@@ -49,7 +52,10 @@ public class ActivityService {
 
         activity.setActivityType(activityTypeLkp);
         activity.setNote(activityNote);
-        activity.setOwner(owner);
+        if (owner != null) {
+            owner = userService.findById(owner.getId());
+            activity.setOwner(owner);
+        }
 
         return activityRepository.save(activity);
     }

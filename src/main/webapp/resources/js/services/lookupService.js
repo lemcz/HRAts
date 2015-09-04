@@ -78,4 +78,30 @@
             return $http.delete(statusId);
         };
     });
+
+    hratsApp.service('StatusService', function($http) {
+
+        var urlExtension = '/protected/statusType';
+
+        this.fetchAll = function () {
+
+            return $http.get(baseUrl + urlExtension);
+        };
+
+        this.fetchById = function (statusId) {
+            return $http.get(baseUrl + urlExtension + statusId)
+        };
+
+        this.createRow = function (statusData) {
+            return $http.post(baseUrl + urlExtension, statusData);
+        };
+
+        this.updateRow = function (statusData) {
+            return $http.put(baseUrl + urlExtension + statusData.id, statusData);
+        };
+
+        this.removeRow = function (statusId) {
+            return $http.delete(statusId);
+        };
+    });
 })(angular);

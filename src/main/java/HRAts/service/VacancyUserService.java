@@ -23,6 +23,11 @@ public class VacancyUserService {
     }
 
     @Transactional
+    public VacancyUser findByVacancyIdAndCandidateId(int vacancyId, int candidateId) {
+        return vacancyUserRepository.findByVacancy_IdAndCandidate_Id(vacancyId, candidateId);
+    }
+
+    @Transactional
     public VacancyUser save(VacancyUser vacancyUser) {
 
         //TODO extend activity logging

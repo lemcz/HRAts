@@ -59,11 +59,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User save(User user) {
-        //Log activity
-        String activityNote = "New user added to the repository";
-        activityService.logUserActivity(activityNote, user.getOwner());
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        String activityNote = "New user added to the repository";
+        activityService.logUserActivity(activityNote, savedUser.getOwner());
+
+        return savedUser;
     }
 
     @Transactional(readOnly = true)

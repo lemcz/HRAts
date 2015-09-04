@@ -1,7 +1,5 @@
 package HRAts.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -31,7 +29,6 @@ public class Activity {
     @JoinColumn(name = "candidate_id", updatable = false)
     private User candidate;
 
-    @JsonBackReference("activity-vacancy")
     @ManyToOne
     @JoinColumn(name = "vacancy_id", updatable = false)
     private Vacancy vacancy;

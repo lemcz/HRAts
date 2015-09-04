@@ -34,16 +34,16 @@
     </definition>
     <!-- Details -->
     <definition name="candidateDetails" extends="master.page">
-        <put-attribute name="body" value="/protected/contacts/candidateDetails.jsp"/>
+        <put-attribute name="body" value="/protected/candidates/candidateDetails.jsp"/>
     </definition>
     <definition name="companyDetails" extends="master.page">
-        <put-attribute name="body" value="/protected/contacts/vacancyDetails.jsp"/>
+        <put-attribute name="body" value="/protected/companies/companyDetails.jsp"/>
     </definition>
     <definition name="contactDetails" extends="master.page">
         <put-attribute name="body" value="/protected/contacts/contactDetails.jsp"/>
     </definition>
     <definition name="vacancyDetails" extends="master.page">
-        <put-attribute name="body" value="/protected/contacts/vacancyDetails.jsp"/>
+        <put-attribute name="body" value="/protected/vacancies/vacancyDetails.jsp"/>
     </definition>
 
     <!-- Login page -->

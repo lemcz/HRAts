@@ -147,8 +147,8 @@
                 </div>
                 <div class="col-md-6">
                     <ui-select ng-model="querySelection.selectedContractType"
-                               reset-search-input="false"
-                               ng-disabled="disabled">
+                               required
+                               reset-search-input="false">
                         <ui-select-match placeholder="Select contract type">{{$select.selected.name}}</ui-select-match>
                         <ui-select-choices group-by="someGroupFn" repeat="contract in contractsCollection | propsFilter: {name: $select.search, id: $select.search}">
                             <div ng-bind-html="contract.name | highlight: $select.search"></div>
@@ -164,7 +164,7 @@
                                on-select="fetchRelatedDepartments(querySelection.selectedCompanies)"
                                on-remove="fetchRelatedDepartments(querySelection.selectedCompanies)"
                                ng-model="querySelection.selectedCompanies"
-                               theme="bootstrap" ng-disabled="disabled">
+                               theme="bootstrap" >
                         <ui-select-match placeholder="Select companies">{{$item.name}}</ui-select-match>
                         <ui-select-choices group-by="someGroupFn" repeat="company in companiesCollection | propsFilter: {name: $select.search, id: $select.search}">
                             <div ng-bind-html="company.name | highlight: $select.search"></div>
@@ -180,7 +180,7 @@
                                on-select="fetchRelatedVacancies(querySelection.selectedDepartments)"
                                on-remove="fetchRelatedVacancies(querySelection.selectedDepartments)"
                                ng-model="querySelection.selectedDepartments"
-                               theme="bootstrap" ng-disabled="disabled">
+                               theme="bootstrap" >
                         <ui-select-match placeholder="Select departments">{{$item.name}}</ui-select-match>
                         <ui-select-choices group-by="someGroupFn" repeat="department in departmentsCollection | propsFilter: {name: $select.search, id: $select.search}">
                             <div ng-bind-html="department.name | highlight: $select.search"></div>
@@ -193,7 +193,7 @@
                 <div class="col-md-12">
                     <ui-select multiple
                                ng-model="querySelection.selectedVacancies"
-                               ng-disabled="disabled">
+                               >
                         <ui-select-match placeholder="Select vacancies">{{$item.name}}</ui-select-match>
                         <ui-select-choices group-by="someGroupFn" repeat="vacancy in vacancyCollection | propsFilter: {name: $select.search, id: $select.search}">
                             <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
@@ -279,7 +279,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <label>* <spring:message code="note"/>:</label>
+                <label><spring:message code="note"/></label>
                 <input type="text"
                        class="form-control"
                        required
@@ -375,7 +375,7 @@
                                    on-select="fetchRelatedDepartments(querySelection.selectedCompanies)"
                                    on-remove="fetchRelatedDepartments(querySelection.selectedCompanies)"
                                    ng-model="querySelection.selectedCompanies"
-                                   theme="bootstrap" ng-disabled="disabled">
+                                   theme="bootstrap" >
                             <ui-select-match placeholder="Select companies">{{$item.name}}</ui-select-match>
                             <ui-select-choices group-by="someGroupFn" repeat="company in companiesCollection | propsFilter: {name: $select.search, id: $select.search}">
                                 <div ng-bind-html="company.name | highlight: $select.search"></div>
@@ -391,7 +391,7 @@
                                    on-select="fetchRelatedVacancies(querySelection.selectedDepartments)"
                                    on-remove="fetchRelatedVacancies(querySelection.selectedDepartments)"
                                    ng-model="querySelection.selectedDepartments"
-                                   theme="bootstrap" ng-disabled="disabled">
+                                   theme="bootstrap" >
                             <ui-select-match placeholder="Select departments">{{$item.name}}</ui-select-match>
                             <ui-select-choices group-by="someGroupFn" repeat="department in departmentsCollection | propsFilter: {name: $select.search, id: $select.search}">
                                 <div ng-bind-html="department.name | highlight: $select.search"></div>
@@ -404,7 +404,7 @@
                     <div class="col-md-12">
                         <ui-select multiple
                                    ng-model="querySelection.selectedVacancies"
-                                   ng-disabled="disabled">
+                                   >
                             <ui-select-match placeholder="Select vacancies">{{$item.name}}</ui-select-match>
                             <ui-select-choices group-by="someGroupFn" repeat="vacancy in vacancyCollection | propsFilter: {name: $select.search, id: $select.search}">
                                 <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
@@ -462,7 +462,7 @@
                                theme="bootstrap"
                                reset-search-input="false"
                                style="width: 300px;">
-                        <ui-select-match placeholder="Select vacancy">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-match placeholder="Select vacancy" allow-clear="true">{{$select.selected.name}}</ui-select-match>
                         <ui-select-choices repeat="vacancy in vacancyCollection | propsFilter: {id: $select.search, name: $select.search}">
                             <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
                             <small>
@@ -498,10 +498,33 @@
                               name="note"
                               placeholder="<spring:message code='note'/>"></textarea>
                 </div>
+                <div class="col-md-12" ng-show="activity.vacancy && activity.activityType">
                     <label class=""><spring:message code="logStatusChange"/></label>
-                <div class="col-md-12">
-                    <switch id="statusSwitch" name="enabled" ng-model="enabled" class="green" on="On" off="Off"></switch>
-                    <br>{{ enabled }}
+                    <switch id="statusSwitch" name="enabled" ng-model="statusSwitch" class="green" on="On" off="Off"></switch>
+                    <%--TODO prototype here, if doing mail sending, this probably will be edited--%>
+                    <%--<label class=""><spring:message code="sendMail"/></label>
+                    <switch id="sendMailSwitch" name="enabled" ng-model="sendMailSwitch" class="green" on="On" off="Off"></switch>--%>
+                    <div ng-show="statusSwitch">
+                        <ui-select ng-model="querySelection.selectedStatusType"
+                                   required
+                                   reset-search-input="false">
+                            <ui-select-match placeholder="Select status type">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices group-by="someGroupFn" repeat="statusType in statusTypeCollection | propsFilter: {name: $select.search, id: $select.search}">
+                                <div ng-bind-html="statusType.name | highlight: $select.search"></div>
+                                <small>
+                                    id: {{statusType.id}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                        <label>Status Change <spring:message code="note"/></label>
+                        <textarea rows="4"
+                                  cols="50"
+                                  class="form-control"
+                                  required
+                                  ng-model="status.note"
+                                  name="note"
+                                  placeholder="<spring:message code='note'/>"></textarea>
+                    </div>
                 </div>
             </div>
             </fieldset>

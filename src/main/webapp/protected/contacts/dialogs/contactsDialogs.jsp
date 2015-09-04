@@ -99,7 +99,7 @@
                 <ui-select ng-model="newContact.company"
                            on-select="fetchRelatedDepartments(newContact.company)"
                            theme="bootstrap"
-                           ng-disabled="disabled"
+
                            reset-search-input="false">
                     <ui-select-match placeholder="Assign company">{{$select.selected.name}}</ui-select-match>
                     <ui-select-choices repeat="company in companiesCollection | propsFilter: {id: $select.search, name: $select.search}">
@@ -114,7 +114,6 @@
                 <div class="col-md-6">
                 <ui-select ng-model="newContact.departmentList[0]"
                            theme="bootstrap"
-                           ng-disabled="disabled"
                            reset-search-input="false"
                            tagging="departmentTransform">
                     <ui-select-match placeholder="Assign department">{{$select.selected.name}}</ui-select-match>

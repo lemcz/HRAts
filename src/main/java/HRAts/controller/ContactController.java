@@ -1,9 +1,6 @@
 package HRAts.controller;
 
-import HRAts.model.Attachment;
-import HRAts.model.Department;
-import HRAts.model.Role;
-import HRAts.model.User;
+import HRAts.model.*;
 import HRAts.service.AttachmentService;
 import HRAts.service.DepartmentService;
 import HRAts.service.UserService;
@@ -97,7 +94,7 @@ public class ContactController {
 
                 contactAttachmentList.add(currentFile);
             } catch (Exception e) {
-                return new ResponseEntity<String>("You failed to upload " + name + " => " + e.getMessage(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new GenericResponse(-1, "You failed to upload " + name + " => " + e.getMessage()), HttpStatus.BAD_REQUEST);
             }
             contact.setContactAttachmentList(contactAttachmentList);
         }
@@ -114,7 +111,7 @@ public class ContactController {
 
         User savedContact = userService.save(contact);
 
-        return new ResponseEntity<User>(savedContact, HttpStatus.OK);
+        return new ResponseEntity<>(savedContact, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}/{file_name:.+}", method = RequestMethod.GET)
@@ -143,9 +140,9 @@ public class ContactController {
     public ResponseEntity<?> updateContact(@PathVariable("id") int contactId,
                                            @RequestBody User contact) {
         if (contactId != contact.getId()){
-            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new GenericResponse(-1, "Bad Request"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<User>(userService.update(contact), HttpStatus.OK);
+        return new ResponseEntity<>(userService.update(contact), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")
@@ -169,8 +166,9 @@ public class ContactController {
 
         String rootPath = System.getProperty("catalina.home");
         File dir = new File(rootPath + File.separator + "UploadedFiles" + File.separator + attachmentCategory + File.separator + usersIdDirectory);
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
 
         return dir;
     }
