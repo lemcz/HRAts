@@ -35,6 +35,11 @@ public class VacancyService {
     }
 
     @Transactional(readOnly = true)
+    public Iterable<Vacancy> findByManagerId(int managerId){
+        return vacancyRepository.findByDepartment_Manager_Id(managerId);
+    }
+
+    @Transactional(readOnly = true)
     public Iterable<Vacancy> findByDepartmentIdInAndCandidateIdEqual(List<Integer> departmentsIds, int candidateId) {
         return vacancyRepository.findByDepartment_IdInAndVacancyUserListCandidate_IdIsNot(departmentsIds, candidateId);
     }

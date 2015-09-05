@@ -36,6 +36,15 @@
                 <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;<spring:message code="edit"/>&nbsp;<spring:message code="contact"/>
             </a>
             <a href=""
+               ng-click="openModal('logActivityModal', row)"
+               ng-disabled="gridOptions.multipleSelected"
+               role="button"
+               title="Log Activity"
+               class="btn btn-default"
+               data-toggle="modal">
+                <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Log&nbsp;Activity
+            </a>
+            <a href=""
                ng-click="openModal('deleteContactModal', row)"
                ng-disabled="gridOptions.multipleSelected"
                role="button"
@@ -51,7 +60,11 @@
     </div>
 </div>
 
-<script src="<c:url value="/resources/js/pages/gridConf.js"/>"></script>
+<script src="<c:url value="/resources/js/services/activityService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/companyService.js"/>"></script>
+<script src="<c:url value="/resources/js/services/contactService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/departmentService.js"/>"></script>
+<script src="<c:url value="/resources/js/services/lookupService.js"/>"></script>
+<script src="<c:url value="/resources/js/services/vacancyService.js"/>"></script>
+<script src="<c:url value="/resources/js/pages/gridConf.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/contacts.js"/>"></script>

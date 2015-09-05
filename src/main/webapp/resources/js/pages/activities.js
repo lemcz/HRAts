@@ -9,8 +9,6 @@
 
         $scope.activitiesCollection = [];
 
-        $scope.paginationOptions = ActivityService.paginationOptions();
-
         ActivityService.fetchAll()
             .success(function (data) {
                 $scope.activitiesCollection = data;

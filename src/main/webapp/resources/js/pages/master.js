@@ -22,6 +22,20 @@
         else{
             $scope.activeURL = 'home';
         }
+
+        hratsApp.config(function(uiSelectConfig) {
+            uiSelectConfig.theme = 'bootstrap';
+            uiSelectConfig.resetSearchInput = true;
+            uiSelectConfig.appendToBody = true;
+        });
+
+        $scope.someGroupFn = function (item) {
+            if (item.name[0] >= 'A' && item.name[0] <= 'M')
+                return 'From A - M';
+
+            if (item.name[0] >= 'N' && item.name[0] <= 'Z')
+                return 'From N - Z';
+        };
     });
 
     hratsApp.filter('propsFilter', function() {

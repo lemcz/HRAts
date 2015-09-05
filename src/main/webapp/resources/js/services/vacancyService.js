@@ -39,8 +39,12 @@
                 return $http(req);
             },
 
+            fetchAllByManagerId: function(managerId) {
+                return $http.get(baseUrl +'?search=manager&id=' + managerId);
+            },
+
             fetchAllByCandidateId: function(candidateId) {
-                $http.get(baseUrl/ candidateId)
+                return $http.get(baseUrl+'/'+ candidateId);
             },
 
             createRow: function (vacancyData) {

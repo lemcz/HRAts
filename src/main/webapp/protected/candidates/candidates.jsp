@@ -69,11 +69,11 @@
     </div>
 </div>
 
-<script src="<c:url value="/resources/js/pages/gridConf.js"/>"></script>
 <script src="<c:url value="/resources/js/services/activityService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/companyService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/departmentService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/lookupService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/vacancyService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/vacancyUserService.js"/>"></script>
+<script src="<c:url value="/resources/js/pages/gridConf.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/candidates.js"/>"></script>

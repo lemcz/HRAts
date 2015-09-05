@@ -6,10 +6,6 @@
         var baseUrl = 'http://localhost:8080/HRAts/protected/activities/';
 
         return {
-            paginationOptions : function(){
-                return [10, 15, 25, 50, 100];
-            },
-
             fetchAll : function () {
                 return $http.get(baseUrl);
             },
@@ -20,6 +16,10 @@
 
             fetchByCandidateId : function(candidateId) {
                 return $http.get(baseUrl +'perCandidate/'+ candidateId);
+            },
+
+            fetchByContactId : function(candidateId) {
+                return $http.get(baseUrl +'?search=contact&id='+ candidateId);
             },
 
             createRow : function(activityData){

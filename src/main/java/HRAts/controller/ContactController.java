@@ -39,14 +39,22 @@ public class ContactController {
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Iterable<User> listContacts(){
+    public Iterable<User> listContacts(@RequestParam(value = "search", required = false) String search,
+                                       @RequestParam(value = "id", required = false) Integer id){
         Role role = Role.ROLE_MANAGER;
+
+        if (search != null && id != null) {
+            switch (search) {
+                case "company": return userService.findAllByDepartmentManagerWhereCompanyId(id);
+                default: return userService.findByRole(role);
+            }
+        }
         return userService.findByRole(role);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView details(@PathVariable int id) {
-        return new ModelAndView("contactDetails");
+        return new ModelAndView("contactDetails").addObject("pathId", id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")

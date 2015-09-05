@@ -31,7 +31,7 @@
 
     hratsApp.service('ContractTypeService', function($http) {
 
-        var urlExtension = '/protected/contractTypeLkp';
+        var urlExtension = '/protected/contractTypeLkp/';
 
         this.fetchAll = function () {
             return $http.get(baseUrl + urlExtension);
@@ -56,7 +56,7 @@
 
     hratsApp.service('StatusTypeService', function($http) {
 
-        var urlExtension = '/protected/statusTypeLkp';
+        var urlExtension = '/protected/statusTypeLkp/';
 
         this.fetchAll = function () {
             return $http.get(baseUrl + urlExtension);
@@ -81,7 +81,7 @@
 
     hratsApp.service('StatusService', function($http) {
 
-        var urlExtension = '/protected/statusType';
+        var urlExtension = '/protected/statusType/';
 
         this.fetchAll = function () {
 

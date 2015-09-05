@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-6">
                 <div class="field"><strong>Email</strong>
-                    <div click-to-edit="userData.email"></div>
+                    <div class="col-md-12">{{userData.email}}</div>
                 </div>
                 <div class="field"><strong>Phone</strong>
                     <div click-to-edit="userData.phoneNumber"></div>

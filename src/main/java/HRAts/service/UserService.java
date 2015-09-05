@@ -53,6 +53,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional
+    public Iterable<User> findAllByDepartmentManagerWhereCompanyId(int companyId) {
+        return userRepository.findByDepartmentListCompany_Id(companyId);
+    }
+
+    @Transactional
     public User findById(int id) {
         return userRepository.findById(id);
     }

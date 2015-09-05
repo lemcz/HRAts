@@ -2,101 +2,184 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('ContactService', function ($http, uiGridConstants){
-
-        var baseUrl = 'http://localhost:8080/HRAts/protected/contacts/';
-
-        return {
-
-            fetchAllContacts: function() {
-                return $http.get(baseUrl);
-            },
-
-            fetchById: function(contactId) {
-                return $http.get(baseUrl + contactId);
-            },
-
-            sendCustomRequest: function(endPoint, requestData) {
-                requestData.url = baseUrl + endPoint;
-                return $http(requestData);
-            },
-            createRow: function(contactData){
-                var temporaryAppend = "uploadContactAndFiles";
-                return $http.post(baseUrl + temporaryAppend, contactData);
-            },
-
-            updateRow: function(contactData) {
-                return $http.put(baseUrl+contactData.id, contactData);
-            },
-
-            removeRow: function(contactId){
-                return $http.delete(contactId);
-            },
-
-            getColumnDefs: function() {
-                return [
-                    { name:'id', width:50},
-                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'contacts\')">{{COL_FIELD}}</a></div>', width:100 },
-                    { name:'middleName', width:100 },
-                    { name:'lastName', width:100 },
-                    { name:'departmentList[0].company.name', width:100},
-                    { name:'departmentList[0].name', width:100},
-                    { name:'email', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
-                    { name:'phoneNumber', displayName: 'Phone', width:200},
-                    { name:'note', width:300 },
-                    { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150 },
-                    { name:'dateModified', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
-                    { name:'owner.email', displayName:'Owner', width:150 }
-                ];
-            },
-
-            setupReqData: function(data, files) {
-                var formData = new FormData();
-                formData.append('data', new Blob([JSON.stringify(data)], { type: "application/json" }));
-
-                if (files && files.length) {
-                    for (var i = 0; i < files.length; i++) {
-                        var file = files[i];
-                        formData.append("file", file);
-                    }
-                }
-
-                var req = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': undefined
-                    },
-                    data: formData
-                };
-
-                return req;
-            }
-        };
-    });
-
     hratsApp.controller('ContactController', function($scope, $modal, ContactService){
 
         $scope.pageConfiguration = { dataCollectionName: 'contactsCollection' };
         $scope.pageConfiguration.columnDefs = ContactService.getColumnDefs();
 
-        $scope.contactsCollection = [];
-
         ContactService.fetchAllContacts()
             .success(function (data) {
-                $scope.contactsCollection = data;
+                $scope.contactsCollection = data || [];
             })
             .error(function (status, data) {
                 alert("Unable to fetch data ("+status+").");
             });
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, $timeout, row, Upload, ContactService, CompanyService, DepartmentService){
+    hratsApp.controller('ContactDetailsController', function($scope, $modal, ContactService, DepartmentService) {
+        var contactId = $('#pathId').val();
 
-        $scope.log = "";
+        ContactService.fetchById(contactId)
+            .success(function(data) {
+                $scope.contactData = data || {};
+                console.log(data);
+            })
+            .error(function(data) {
+                alert('Unable to fetch data\r\n' + data);
+            });
+
+        DepartmentService.fetchAllByManager(contactId)
+            .success(function(data){
+                $scope.departmentsCollection = data || [];
+            })
+            .error(function(data){
+                alert('Unable to fetch departments\r\n'+data);
+            });
+
+        $scope.updateUsersInfo = function(user) {
+            ContactService.updateRow(user)
+                .success(function(data){
+                    angular.copy(data, $scope.contactData);
+                    alert("User's info updated successfully");
+                })
+                .error(function(data) {
+                    alert("Could not update user's info\r\nStatus: "+data.status+'\r\nReason: '+data.data);
+                })
+        };
+
+        $scope.openModal = function(modalTemplate, row){
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: modalTemplate,
+                controller: 'DetailsModalController',
+                size: 'lg',
+                backdrop: true,
+                scope: $scope,
+                resolve: {
+                    row: function(){
+                        return {
+                            modalName: modalTemplate,
+                            data: row || {}
+                        };
+                    }
+                }
+            });
+        };
+    });
+
+    hratsApp.controller('DetailsGridsController', function($scope, VacancyService, ActivityService, GridService){
+        var contactId = $('#pathId').val();
+
+        $scope.vacanciesGridOptions = GridService.getGridConfiguration() || {};
+        $scope.vacanciesGridOptions.data = [];
+        $scope.vacanciesGridOptions.columnDefs = VacancyService.getColumnDefs();
+
+        VacancyService.fetchAllByManagerId(contactId)
+            .success(function (data) {
+                console.log(data);
+                $scope.vacanciesGridOptions.data = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data ("+status+").");
+            });
+
+        $scope.activitiesGridOptions = GridService.getGridConfiguration() || {};
+        $scope.activitiesGridOptions.columnDefs = ActivityService.getColumnDefs();
+        $scope.activitiesGridOptions.data = [];
+
+        ActivityService.fetchByContactId(contactId)
+            .success(function (data) {
+                $scope.activitiesGridOptions.data = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data ("+status+").");
+            });
+
+        $scope.redirect = function (row, endpoint) {
+            GridService.redirect(row, endpoint);
+        };
+    });
+
+    hratsApp.controller('DetailsModalController', function($scope, $modalInstance, $location, row, VacancyService,
+                                                           ActivityService, ContactService, ActivityTypeService){
+        $scope.contact = row.data;
+
+        VacancyService.fetchAllByManagerId($scope.contact.id)
+            .success(function(data) {
+                $scope.vacancyCollection = data || {};
+            })
+            .error(function(data) {
+                alert("Unable to fetch vacancies ("+data+").");
+            });
+
+        ActivityTypeService.fetchAll()
+            .success(function(data){
+                $scope.activityTypeCollection = data || {};
+            })
+            .error(function(data) {
+                alert("Unable to fetch activity types ("+data+").");
+            });
+
+        $scope.removeRow = function(contact) {
+            ContactService.removeRow(contact.id)
+                .success(function(){
+                    var lookupString = '/protected/contacts/';
+                    var baseUrl = $location.absUrl();
+                    var trimIndex = baseUrl.indexOf(lookupString);
+                    baseUrl = baseUrl.substr(0,trimIndex+lookupString.length);
+                    window.location = baseUrl;
+                })
+                .error(function(data,status){
+                    alert("Unable to remove record ("+status+").");
+                })
+        };
+
+        $scope.logActivity = function(contactData) {
+
+            console.log(contactData);
+
+            var ownerId = $('#userId');
+
+            $scope.activity.candidate = {id: contactData.id};
+            $scope.activity.owner = {id: ownerId};
+
+            var activityStatusContext = { activity: $scope.activity, status: null};
+            ActivityService.createRow(activityStatusContext)
+                .success(function(data){
+                    alert("Activity successfully logged");
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to update record ("+status+").");
+                })
+        };
+
+        $scope.cancel = function(){
+            $modalInstance.dismiss('cancel');
+        };
+    });
+
+    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, $timeout, row, Upload,
+                                                            ContactService, VacancyService, CompanyService,
+                                                            DepartmentService, ActivityService, ActivityTypeService){
+        VacancyService.fetchAll()
+            .success(function(data) {
+                $scope.vacancyCollection = data || {};
+            })
+            .error(function(data) {
+                alert("Unable to fetch vacancies ("+data+").");
+            });
+
+        ActivityTypeService.fetchAll()
+            .success(function(data){
+                $scope.activityTypeCollection = data || {};
+            })
+            .error(function(data) {
+                alert("Unable to fetch activity types ("+data+").");
+            });
 
         CompanyService.fetchAll()
             .success(function (data){
-                console.log(data);
                 $scope.companiesCollection = data || [];
             })
             .error(function (status, data){
@@ -115,8 +198,8 @@
 
         $scope.departmentTransform = function(newDepartment) {
             var department = {
-                    name: newDepartment,
-                    company: {id: $scope.newContact.company.id}
+                name: newDepartment,
+                company: {id: $scope.newContact.company.id}
             };
 
             return department;
@@ -131,16 +214,14 @@
         };
 
         $scope.fetchRelatedDepartments = function(company) {
-            console.log(company);
             $scope.newContact.departmentList = [];
-            DepartmentService.fetchAllByCompany(company.id)
+            DepartmentService.fetchAllByCompanyWhereManagerIsNull(company.id)
                 .success(function(data){
                     company.departmentList = data;
                 })
                 .error(function(data, status){
                     alert("Unable to fetch departments ("+status+").");
                 });
-            console.log(company);
             return company.departmentList;
         };
 
@@ -152,7 +233,7 @@
             ContactService.sendCustomRequest('', req)
                 .success(function (data) {
                     $timeout(function() {
-                        $scope.log = 'file: ' + file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
+                        alert('file: ' + file.name + ', Response: ' + JSON.stringify(data) + '\n');
                     });
                     $scope.contactsCollection.push(data);
                     $modalInstance.close();
@@ -176,9 +257,7 @@
         $scope.removeRow = function(contact) {
             ContactService.removeRow(contact.id)
                 .success(function(){
-
                     $scope.contactsCollection = removeFromArray($scope.contactsCollection, contact);
-
                     $modalInstance.close();
                 })
                 .error(function(data,status){

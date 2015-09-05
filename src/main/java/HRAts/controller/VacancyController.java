@@ -23,14 +23,28 @@ public class VacancyController {
         return new ModelAndView("vacanciesList");
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ModelAndView details(@PathVariable int id) {
-        return new ModelAndView("vacancyDetails");
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public Iterable<Vacancy> listVacancies(@RequestParam(value = "search", required = false) String search,
+                                           @RequestParam(value = "id", required = false) Integer id){
+
+        if (search != null && id != null) {
+            switch (search) {
+                case "manager": return vacancyService.findByManagerId(id);
+                default: return vacancyService.findAll();
+            }
+        }
+
+        return vacancyService.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Iterable<Vacancy> listVacancies(){
-        return vacancyService.findAll();
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ModelAndView details(@PathVariable int id) {
+        return new ModelAndView("vacancyDetails").addObject("pathId", id);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+    public Vacancy getVacancyById(@PathVariable int id){
+        return vacancyService.findById(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -52,7 +66,8 @@ public class VacancyController {
     }
 
     @RequestMapping(value = "/perDepartments", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
+    public
+    @ResponseBody
     Iterable<Vacancy> getVacanciesByDepartmentsIdsPerCandidate(@RequestBody(required = true) List<Integer> departmentsIds,
                                                                @RequestParam(value="candidateId") int candidateId){
         return vacancyService.findByDepartmentIdInAndCandidateIdEqual(departmentsIds, candidateId);
@@ -65,11 +80,6 @@ public class VacancyController {
             return new ArrayList<>();
         }
         return vacancyService.findByDepartmentIdIn(departmentsIds);
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public Vacancy getVacancyById(@PathVariable int id){
-        return vacancyService.findById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")

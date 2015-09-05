@@ -9,4 +9,5 @@ public interface ActivityRepository extends CrudRepository<Activity, Integer> {
 
     Iterable<Activity> findByCandidate_Id(@Param("id") int id);
 
+    Iterable<Activity> findByContact_Id(int id);
 }

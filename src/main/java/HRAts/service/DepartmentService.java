@@ -46,6 +46,11 @@ public class DepartmentService {
         return departmentRepository.findByCompany_IdIn(companiesIds);
     }
 
+    @Transactional
+    public Iterable<Department> findByCompany_Id(int companyId) {
+        return departmentRepository.findByCompany_Id(companyId);
+    }
+
     @Transactional(readOnly = true)
     public Iterable<Department> findByCompany_IdAndManagerIsNull(int companyId) {
         return departmentRepository.findByCompany_IdAndManagerIsNull(companyId);
@@ -86,4 +91,8 @@ public class DepartmentService {
         departmentRepository.delete(sectorId);
     }
 
+    @Transactional
+    public Iterable<Department> findByManagerId(int managerId) {
+        return departmentRepository.findByManager_Id(managerId);
+    }
 }

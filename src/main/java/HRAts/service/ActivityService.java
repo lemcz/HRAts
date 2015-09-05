@@ -33,6 +33,11 @@ public class ActivityService {
         return activityRepository.findById(activityId);
     }
 
+    @Transactional
+    public Iterable<Activity> findByContactId(int managerId) {
+        return activityRepository.findByContact_Id(managerId);
+    }
+
     @Transactional(readOnly = true)
     public Iterable<Activity> findByCandidateId(int candidateId) {
         return activityRepository.findByCandidate_Id(candidateId);

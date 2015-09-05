@@ -3,7 +3,7 @@
 
     hratsApp.service('DepartmentService', function ($http){
 
-        var baseUrl = 'http://localhost:8080/HRAts/protected/departments';
+        var baseUrl = 'http://localhost:8080/HRAts/protected/departments/';
 
         var departmentServiceFunctions = {
              fetchAll: function() {
@@ -15,8 +15,16 @@
              },
 
              fetchAllByCompany: function(companyId) {
-                 return $http.get(baseUrl+'?companyId='+companyId);
+                 return $http.get(baseUrl+'?search=company&id='+companyId);
              },
+
+            fetchAllByManager: function(managerId) {
+                return $http.get(baseUrl+'?search=manager&id='+managerId);
+            },
+
+            fetchAllByCompanyWhereManagerIsNull: function(companyId) {
+                return $http.get(baseUrl+'?search=managerEmpty&id='+companyId);
+            },
 
              fetchAllByCompany_IdIn: function(companiesIds) {
                  var req = {

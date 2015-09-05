@@ -22,6 +22,10 @@ public class Activity {
     private ActivityTypeLkp activityType;
 
     @ManyToOne
+    @JoinColumn(name = "contact_id", updatable = false)
+    private User contact;
+
+    @ManyToOne
     @JoinColumn(name = "owner_id", updatable = false)
     private User owner;
 
@@ -33,14 +37,16 @@ public class Activity {
     @JoinColumn(name = "vacancy_id", updatable = false)
     private Vacancy vacancy;
 
-    public Activity(){}
+    public Activity(){
+    }
 
-    public Activity(ActivityTypeLkp activityType, String note, Date dateEntered, User owner, User candidate, Vacancy vacancy) {
+    public Activity(ActivityTypeLkp activityType, String note, Date dateEntered, User owner, User contact, User candidate, Vacancy vacancy) {
         super();
         this.activityType = activityType;
         this.note = note;
         this.dateEntered = dateEntered;
         this.owner = owner;
+        this.contact = contact;
         this.candidate = candidate;
         this.vacancy = vacancy;
     }
@@ -104,5 +110,13 @@ public class Activity {
 
     public void setVacancy(Vacancy vacancy) {
         this.vacancy = vacancy;
+    }
+
+    public User getContact() {
+        return contact;
+    }
+
+    public void setContact(User contact) {
+        this.contact = contact;
     }
 }

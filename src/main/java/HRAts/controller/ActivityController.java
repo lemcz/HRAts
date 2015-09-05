@@ -27,7 +27,15 @@ public class ActivityController {
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Iterable<Activity> listActivities(){
+    public Iterable<Activity> listActivities(@RequestParam(value = "search", required = false) String search,
+                                             @RequestParam(value = "id", required = false) Integer id){
+
+        if (search != null && id != null) {
+            switch (search) {
+                case "contact": return activityService.findByContactId(id);
+                default: return activityService.findAll();
+            }
+        }
         return activityService.findAll();
     }
 

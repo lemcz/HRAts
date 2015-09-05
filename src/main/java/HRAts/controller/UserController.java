@@ -74,10 +74,16 @@ public class UserController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateUser(@PathVariable("id") int userId,
-                                           @RequestBody User user) {
+                                        @RequestBody User user) {
         if (userId != user.getId()){
-            return new ResponseEntity<>(new GenericResponse(-1, "Bad request"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new GenericResponse(-1, "Action forbidden"), HttpStatus.FORBIDDEN);
         }
+
+        User relatedUser = userService.findById(user.getId());
+        if (!relatedUser.getEmail().equals(user.getEmail())) {
+            return new ResponseEntity<>(new GenericResponse(-2, "Cannot update email"), HttpStatus.FORBIDDEN);
+        }
+
         return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
     }
 

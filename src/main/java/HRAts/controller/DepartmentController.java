@@ -28,13 +28,19 @@ public class DepartmentController {
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Iterable<Department> listDepartments(@RequestParam(value="companyId", required = false) Integer companyId){
+    public Iterable<Department> listDepartments(@RequestParam(value = "search", required = false) String search,
+                                                @RequestParam(value = "id", required = false) Integer id){
 
-        if (companyId == null) {
-            return departmentService.findAll();
+        if (search != null && id != null) {
+            switch (search) {
+                case "company": return departmentService.findByCompany_Id(id);
+                case "manager": return departmentService.findByManagerId(id);
+                case "managerEmpty": return departmentService.findByCompany_IdAndManagerIsNull(id);
+                default: return departmentService.findAll();
+            }
         }
 
-        return departmentService.findByCompany_IdAndManagerIsNull(companyId);
+        return departmentService.findAll();
     }
 
     @RequestMapping(value = "/perCompanies", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")

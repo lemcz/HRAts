@@ -2,7 +2,7 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('GridService', function() {
+    hratsApp.service('GridService', function($location) {
         var gridConfiguration = {
             enableColumnResizing: true,
             enableFiltering: true,
@@ -27,42 +27,31 @@
         return {
             getGridConfiguration: function() {
                 return gridConfiguration;
+            },
+
+            redirect: function(row, endpoint) {
+                var rowsId = row.id || 0;
+
+                var baseUrl = $location.absUrl();
+                var trimIndex = baseUrl.indexOf('protected');
+                baseUrl = baseUrl.substr(0,trimIndex+'protected'.length);
+
+                window.location = baseUrl+'/'+endpoint+'/'+rowsId;
             }
         }
     });
 
-    hratsApp.controller('UiGridController', function($log, $scope, $modal, $location, GridService){
+    hratsApp.controller('UiGridController', function($scope, $modal, $location, GridService){
 
-        var collectionName = $scope.pageConfiguration.dataCollectionName || '';
+        var pageConfiguration = $scope.pageConfiguration || {};
+        var collectionName = pageConfiguration.dataCollectionName || '';
 
         $scope.gridOptions = GridService.getGridConfiguration() || {};
         $scope.gridOptions.data = collectionName;
-        $scope.gridOptions.columnDefs = $scope.pageConfiguration.columnDefs;
-
-        hratsApp.config(function(uiSelectConfig) {
-            uiSelectConfig.theme = 'bootstrap';
-            uiSelectConfig.resetSearchInput = true;
-            uiSelectConfig.appendToBody = true;
-        });
-
-        $scope.someGroupFn = function (item) {
-
-            if (item.name[0] >= 'A' && item.name[0] <= 'M')
-                return 'From A - M';
-
-            if (item.name[0] >= 'N' && item.name[0] <= 'Z')
-                return 'From N - Z';
-
-        };
+        $scope.gridOptions.columnDefs = pageConfiguration.columnDefs || '';
 
         $scope.redirect = function (row, endpoint) {
-            var rowsId = row.id || 0;
-
-            var baseUrl = $location.absUrl();
-            var trimIndex = baseUrl.indexOf('protected');
-            baseUrl = baseUrl.substr(0,trimIndex+'protected'.length);
-
-            window.location = baseUrl+'/'+endpoint+'/'+rowsId;
+            GridService.redirect(row, endpoint);
         };
 
         $scope.gridOptions.onRegisterApi = function(gridApi){

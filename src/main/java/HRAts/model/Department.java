@@ -1,6 +1,7 @@
 package HRAts.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -41,6 +42,7 @@ public class Department implements Serializable {
     private Company company;
 
     @ManyToOne
+    @JsonBackReference("department-manager")
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private User manager;
 

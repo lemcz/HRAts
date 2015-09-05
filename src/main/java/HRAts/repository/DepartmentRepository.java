@@ -13,6 +13,8 @@ public interface DepartmentRepository extends CrudRepository<Department, Integer
 
     Iterable<Department> findByCompany_Id(int id);
 
+    Iterable<Department> findByManager_Id(int id);
+
     Iterable<Department> findByCompany_IdIn(List<Integer> companiesIds);
 
     Iterable<Department> findByCompany_IdAndManagerIsNull(@Param("id") int id);

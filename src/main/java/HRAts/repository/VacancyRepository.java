@@ -13,5 +13,7 @@ public interface VacancyRepository extends CrudRepository<Vacancy, Integer> {
 
     Iterable<Vacancy> findByDepartment_IdInAndVacancyUserListCandidate_IdIsNot(List<Integer> departmentsIds, Integer candidateId);
 
+    Iterable<Vacancy> findByDepartment_Manager_Id(int id);
+
 //    Iterable<Vacancy> findByVacancyUserListCandidate_IdInOrVacancy(List<Integer> candidatesIds);
 }

@@ -33,7 +33,7 @@ public class CandidateController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView details(@PathVariable int id) {
-        return new ModelAndView("candidateDetails");
+        return new ModelAndView("candidateDetails").addObject("pathId", id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")

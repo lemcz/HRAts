@@ -90,7 +90,7 @@
                               required
                               ng-model="newContact.note"
                               name="note"
-                              placeholder="<spring:message code='note'/> "/>
+                              placeholder="<spring:message code='note'/> "></textarea>
                 </div>
             </fieldset>
             <fieldset class="form">
@@ -254,4 +254,86 @@
           ng-show="errorIllegalAccess">
         <spring:message code="request.illegal.access"/>
     </span>
+</script>
+
+<script type="text/ng-template" id="logActivityModal">
+    <div class="modal-header">
+        <button type="button" class="close"
+                data-dismiss="modal"
+                ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="logActivityModalLabel">
+            <spring:message code="create"/>&nbsp;<spring:message code="activity"/>
+        </h4>
+    </div>
+    <form name="logActivityForm" role="form" novalidate ng-submit="logActivity(candidate);">
+        <div class="modal-body">
+            <fieldset class="form">
+                <div class="form-group">
+                    <input type="hidden"
+                           required
+                           ng-model="candidate.id"
+                           name="id"
+                           value="{{candidate.id}}"/>
+                    <div class="col-md-6">
+                        <label><spring:message code="candidates.vacancy"/></label>
+                        <ui-select ng-model="activity.vacancy"
+                                   theme="bootstrap"
+                                   reset-search-input="false"
+                                   style="width: 300px;">
+                            <ui-select-match placeholder="Select vacancy" allow-clear="true">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="vacancy in vacancyCollection | propsFilter: {id: $select.search, name: $select.search}">
+                                <div ng-bind-html="vacancy.name | highlight: $select.search"></div>
+                                <small>
+                                    id: <span ng-bind-html="''+vacancy.id | highlight: $select.search"></span>
+                                    name: {{vacancy.name}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-6">
+                        <label><spring:message code="candidates.activityType"/></label>
+                        <ui-select ng-model="activity.activityType"
+                                   theme="bootstrap"
+                                   reset-search-input="false"
+                                   style="width: 300px;">
+                            <ui-select-match placeholder="Select activity type">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="activityType in activityTypeCollection | propsFilter: {id: $select.search, name: $select.search}">
+                                <div ng-bind-html="activityType.name | highlight: $select.search"></div>
+                                <small>
+                                    id: <span ng-bind-html="''+activityType.id | highlight: $select.search"></span>
+                                    name: {{activityType.name}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label><spring:message code="note"/></label>
+                    <textarea rows="4"
+                              cols="50"
+                              class="form-control"
+                              required
+                              ng-model="activity.note"
+                              name="note"
+                              placeholder="<spring:message code='note'/>"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default"
+                    type="button"
+                    data-dismiss="modal"
+                    ng-click="cancel()"
+                    aria-hidden="true">
+                <spring:message code="cancel"/>
+            </button>
+            <input type="submit"
+                   class="btn btn-primary"
+                   ng-disabled="newCandidateForm.$invalid"
+                   value='<spring:message code="create"/>'/>
+        </div>
+    </form>
 </script>
