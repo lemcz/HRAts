@@ -59,6 +59,16 @@ public class UserService {
     }
 
     @Transactional
+    public Iterable<User> findAllCandidatesByVacancyId(int vacancyId) {
+        return userRepository.findByVacancyUserCandidateListVacancy_Id(vacancyId);
+    }
+
+    @Transactional
+    public User findManagerByVacancyId(int vacancyId) {
+        return userRepository.findManagerByVacancyId(vacancyId);
+    }
+
+    @Transactional
     public User findById(int id) {
         return userRepository.findById(id);
     }

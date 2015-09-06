@@ -52,6 +52,11 @@ public class ContactController {
         return userService.findByRole(role);
     }
 
+    @RequestMapping(value = "/perVacancy", method = RequestMethod.GET, produces = "application/json")
+    public User findManagerByVacancy(@RequestParam(value = "id") Integer vacancyId) {
+        return userService.findManagerByVacancyId(vacancyId);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView details(@PathVariable int id) {
         return new ModelAndView("contactDetails").addObject("pathId", id);

@@ -25,7 +25,6 @@
         CompanyService.fetchById(companyId)
             .success(function(data) {
                 $scope.companyData = data || {};
-                console.log(data);
             })
             .error(function(data) {
                 alert('Unable to fetch data\r\n' + data);
@@ -81,7 +80,8 @@
     hratsApp.controller('DetailsGridsController', function($scope, VacancyService, ContactService, GridService){
         var companyId = $('#pathId').val();
 
-        $scope.vacanciesGridOptions = GridService.getGridConfiguration() || {};
+        $scope.vacanciesGridOptions = {};
+        angular.copy(GridService.getGridConfiguration(), $scope.vacanciesGridOptions);
         $scope.vacanciesGridOptions.data = [];
         $scope.vacanciesGridOptions.columnDefs = VacancyService.getColumnDefs();
 
@@ -94,7 +94,8 @@
                 alert("Unable to fetch data ("+status+").");
             });
 
-        $scope.contactsGridOptions = GridService.getGridConfiguration() || {};
+        $scope.contactsGridOptions = {};
+        angular.copy(GridService.getGridConfiguration(), $scope.contactsGridOptions);
         $scope.contactsGridOptions.columnDefs = ContactService.getColumnDefs();
         $scope.contactsGridOptions.data = [];
 
@@ -160,7 +161,7 @@
         $scope.newCompany.owner = {};
         $scope.newCompany.owner.id = $scope.owner;
 
-        $scope.loadSectors = function(query) {
+        $scope.loadSectors = function() {
             return SectorService.fetchAllByName();
         };
 
@@ -171,10 +172,8 @@
             for (var i = 0; i < $scope.newCompany.departmentList.length; i++) {
                 $scope.newCompany.departmentList[i].owner = {id: $scope.newCompany.owner.id};
             }
-            console.log($scope.newCompany);
             CompanyService.createRow($scope.newCompany)
                 .success(function(data){
-                    console.log(data);
                     $scope.companiesCollection.push(data);
                 })
                 .error(function(data,status){

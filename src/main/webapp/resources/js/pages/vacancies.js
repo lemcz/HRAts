@@ -18,6 +18,101 @@
             });
     });
 
+    hratsApp.controller('VacancyDetailsController', function($scope, $modal, VacancyService, GridService, ContactService) {
+        var vacancyId = $('#pathId').val();
+
+        VacancyService.fetchById(vacancyId)
+            .success(function(data) {
+                $scope.vacancyData = data || {};
+            })
+            .error(function(data) {
+                alert('Unable to fetch data\r\n' + data);
+            });
+
+        ContactService.fetchByVacancyId(vacancyId)
+            .success(function(data){
+                $scope.vacancyData.manager = data || {};
+            })
+            .error(function(data){
+                alert("Unable to fetch related manager\r\n" + data);
+            });
+
+        $scope.updateUsersInfo = function(entityData) {
+            VacancyService.updateRow(entityData)
+                .success(function(data){
+                    angular.copy(data, $scope.vacancyData);
+                    alert("User's info updated successfully");
+                })
+                .error(function(data) {
+                    alert("Could not update vacancy's info\r\nStatus: "+data.status+'\r\nReason: '+data.data);
+                })
+        };
+
+        $scope.redirect = function (row, endpoint) {
+            GridService.redirect(row, endpoint);
+        };
+
+        $scope.openModal = function(modalTemplate, row){
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: modalTemplate,
+                controller: 'DetailsModalController',
+                size: 'lg',
+                backdrop: true,
+                scope: $scope,
+                resolve: {
+                    row: function(){
+                        return {
+                            modalName: modalTemplate,
+                            data: row || {}
+                        };
+                    }
+                }
+            });
+        };
+    });
+
+    hratsApp.controller('DetailsGridsController', function($scope, CandidateService, GridService){
+        var vacancyId = $('#pathId').val();
+
+        $scope.candidatesGridOptions = GridService.getGridConfiguration() || {};
+        $scope.candidatesGridOptions.data = [];
+        $scope.candidatesGridOptions.columnDefs = CandidateService.getColumnDefs();
+
+        CandidateService.fetchAllByVacancyId(vacancyId)
+            .success(function (data) {
+                console.log(data);
+                $scope.candidatesGridOptions.data = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data ("+status+").");
+            });
+    });
+
+    hratsApp.controller('DetailsModalController', function($scope, $modalInstance, $location, row,
+                                                           VacancyService){
+        $scope.vacancy = row.data;
+        console.log(row);
+
+        $scope.removeRow = function(vacancy) {
+            VacancyService.removeRow(vacancy.id)
+                .success(function(){
+                    var lookupString = '/protected/companies/';
+                    var baseUrl = $location.absUrl();
+                    var trimIndex = baseUrl.indexOf(lookupString);
+                    baseUrl = baseUrl.substr(0,trimIndex+lookupString.length);
+                    window.location = baseUrl;
+                })
+                .error(function(data,status){
+                    alert("Unable to remove record ("+status+").");
+                })
+        };
+
+        $scope.cancel = function(){
+            $modalInstance.dismiss('cancel');
+        };
+    });
+
     hratsApp.controller('ModalInstanceController', function($log, $scope, $modalInstance, row, VacancyService, CompanyService, DepartmentService){
 
         //TODO organize vacancies modals - make them function properly
@@ -47,7 +142,6 @@
                 .error(function(data, status){
                     alert("Unable to fetch departments ("+status+").");
                 });
-            console.log(company);
             return company.departmentList;
         };
 

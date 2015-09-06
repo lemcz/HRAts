@@ -20,6 +20,10 @@
                 return $http.get(baseUrl + '?search=company&id=' + companyId);
             },
 
+            fetchByVacancyId: function(vacancyId) {
+                return $http.get(baseUrl + '/perVacancy?id='+vacancyId);
+            },
+
             sendCustomRequest: function(endPoint, requestData) {
                 requestData.url = baseUrl + endPoint;
                 return $http(requestData);

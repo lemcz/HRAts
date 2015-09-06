@@ -27,7 +27,16 @@ public class CandidateController {
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public Iterable<User> listCandidates(){
+    public Iterable<User> listCandidates(@RequestParam(value = "search", required = false) String search,
+                                         @RequestParam(value = "id", required = false) Integer id){
+
+        if (search != null && id != null) {
+            switch (search) {
+                case "vacancy": return userService.findAllCandidatesByVacancyId(id);
+                default: return userService.findByRole(Role.ROLE_CANDIDATE);
+            }
+        }
+
         return userService.findByRole(Role.ROLE_CANDIDATE);
     }
 

@@ -17,4 +17,10 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Iterable<User> findByDepartmentListCompany_Id(int id);
 
     Iterable<User> findByRole(Role role);
+
+    @Query("SELECT u FROM User u WHERE u.id IN (SELECT vu.candidate.id FROM VacancyUser vu WHERE vu.vacancy.id = ?1)")
+    Iterable<User> findByVacancyUserCandidateListVacancy_Id(int id);
+
+    @Query("SELECT u FROM User u WHERE u.id IN (SELECT d.manager.id FROM Department d, Vacancy v WHERE d.id = v.id and v.id = ?1)")
+    User findManagerByVacancyId(int id);
 }

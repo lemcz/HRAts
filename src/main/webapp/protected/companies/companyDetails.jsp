@@ -122,7 +122,6 @@
 <script src="<c:url value="/resources/js/services/contactService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/companyService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/departmentService.js"/>"></script>
-<script src="<c:url value="/resources/js/services/lookupService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/vacancyService.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/companies.js"/>"></script>
 <script src="<c:url value="/resources/js/pages/gridConf.js"/>"></script>

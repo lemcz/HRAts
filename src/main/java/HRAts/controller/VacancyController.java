@@ -30,6 +30,7 @@ public class VacancyController {
         if (search != null && id != null) {
             switch (search) {
                 case "manager": return vacancyService.findByManagerId(id);
+                case "candidate": return vacancyService.findByCandidateId(id);
                 default: return vacancyService.findAll();
             }
         }
@@ -71,15 +72,6 @@ public class VacancyController {
     Iterable<Vacancy> getVacanciesByDepartmentsIdsPerCandidate(@RequestBody(required = true) List<Integer> departmentsIds,
                                                                @RequestParam(value="candidateId") int candidateId){
         return vacancyService.findByDepartmentIdInAndCandidateIdEqual(departmentsIds, candidateId);
-    }
-
-    @RequestMapping(value = "/perUser", headers={"type=list"}, method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    Iterable<Vacancy> getVacanciesByVacancyUserListByUserIdIn(@RequestBody(required = false) List<Integer> departmentsIds){
-        if(departmentsIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return vacancyService.findByDepartmentIdIn(departmentsIds);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")

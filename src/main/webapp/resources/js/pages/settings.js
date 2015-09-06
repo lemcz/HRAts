@@ -17,13 +17,10 @@
             },
 
             updateRow: function(userData) {
-                console.log(userData);
                 return $http.put(baseUrl+'/'+userData.id, userData);
             },
 
             changePassword: function(userData, oldPassword, newPassword) {
-                console.log(userData);
-                console.log(baseUrl+'/changePassword'+'?oldPassword='+oldPassword+'&newPassword='+newPassword);
                 return $http.post(baseUrl+'/changePassword'+'?oldPassword='+oldPassword+'&newPassword='+newPassword, userData);
             }
         }

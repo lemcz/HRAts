@@ -1,6 +1,7 @@
 package HRAts.repository;
 
 import HRAts.model.Vacancy;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -15,5 +16,6 @@ public interface VacancyRepository extends CrudRepository<Vacancy, Integer> {
 
     Iterable<Vacancy> findByDepartment_Manager_Id(int id);
 
-//    Iterable<Vacancy> findByVacancyUserListCandidate_IdInOrVacancy(List<Integer> candidatesIds);
+    @Query("SELECT v FROM Vacancy v, VacancyUser vu WHERE v.id = vu.vacancy.id and vu.candidate.id = ?1")
+    Iterable<Vacancy> findByVacancy_UserCandidate_Id(int id);
 }

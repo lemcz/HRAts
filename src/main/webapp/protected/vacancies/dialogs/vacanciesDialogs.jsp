@@ -165,7 +165,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <label><spring:message code="vacancies.description"/>:</label>
+                <label><spring:message code="vacancies.description"/></label>
                 <input type="text"
                        class="form-control"
                        required
@@ -174,7 +174,7 @@
                        placeholder="<spring:message code='sample.description'/> "/>
                 <label>
                     <span class="alert alert-danger"
-                          ng-show="displayValidationError && updateVacancyForm.email.$error.required">
+                          ng-show="displayValidationError && updateVacancyForm.description.$error.required">
                         <spring:message code="required"/>
                     </span>
                 </label>

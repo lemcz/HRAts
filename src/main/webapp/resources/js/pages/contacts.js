@@ -22,7 +22,6 @@
         ContactService.fetchById(contactId)
             .success(function(data) {
                 $scope.contactData = data || {};
-                console.log(data);
             })
             .error(function(data) {
                 alert('Unable to fetch data\r\n' + data);
@@ -70,7 +69,8 @@
     hratsApp.controller('DetailsGridsController', function($scope, VacancyService, ActivityService, GridService){
         var contactId = $('#pathId').val();
 
-        $scope.vacanciesGridOptions = GridService.getGridConfiguration() || {};
+        $scope.vacanciesGridOptions = {};
+        angular.copy(GridService.getGridConfiguration(), $scope.vacanciesGridOptions);
         $scope.vacanciesGridOptions.data = [];
         $scope.vacanciesGridOptions.columnDefs = VacancyService.getColumnDefs();
 
@@ -83,7 +83,8 @@
                 alert("Unable to fetch data ("+status+").");
             });
 
-        $scope.activitiesGridOptions = GridService.getGridConfiguration() || {};
+        $scope.activitiesGridOptions = {};
+        angular.copy(GridService.getGridConfiguration(), $scope.activitiesGridOptions);
         $scope.activitiesGridOptions.columnDefs = ActivityService.getColumnDefs();
         $scope.activitiesGridOptions.data = [];
 
@@ -100,11 +101,13 @@
         };
     });
 
-    hratsApp.controller('DetailsModalController', function($scope, $modalInstance, $location, row, VacancyService,
-                                                           ActivityService, ContactService, ActivityTypeService){
+    hratsApp.controller('DetailsModalController', function($scope, $modalInstance, $location, row,
+                                                           ContactService, VacancyService, CompanyService,
+                                                           DepartmentService, ActivityService, ActivityTypeService){
+        var contactId = $('#pathId').val();
         $scope.contact = row.data;
 
-        VacancyService.fetchAllByManagerId($scope.contact.id)
+        VacancyService.fetchAll()
             .success(function(data) {
                 $scope.vacancyCollection = data || {};
             })
@@ -118,6 +121,14 @@
             })
             .error(function(data) {
                 alert("Unable to fetch activity types ("+data+").");
+            });
+
+        CompanyService.fetchAll()
+            .success(function (data){
+                $scope.companiesCollection = data || [];
+            })
+            .error(function (status, data){
+                alert("Unable to fetch data ("+status+").");
             });
 
         $scope.removeRow = function(contact) {
@@ -135,9 +146,6 @@
         };
 
         $scope.logActivity = function(contactData) {
-
-            console.log(contactData);
-
             var ownerId = $('#userId');
 
             $scope.activity.candidate = {id: contactData.id};
@@ -146,7 +154,7 @@
             var activityStatusContext = { activity: $scope.activity, status: null};
             ActivityService.createRow(activityStatusContext)
                 .success(function(data){
-                    alert("Activity successfully logged");
+                    alert("Activity successfully logged\r\n"+data);
                     $modalInstance.close();
                 })
                 .error(function(data,status){
@@ -197,12 +205,10 @@
         $scope.contact = row.data;
 
         $scope.departmentTransform = function(newDepartment) {
-            var department = {
+            return {
                 name: newDepartment,
                 company: {id: $scope.newContact.company.id}
             };
-
-            return department;
         };
 
         $scope.removeFromArray = function(array, value) {
@@ -233,7 +239,7 @@
             ContactService.sendCustomRequest('', req)
                 .success(function (data) {
                     $timeout(function() {
-                        alert('file: ' + file.name + ', Response: ' + JSON.stringify(data) + '\n');
+                        alert('file: ' + files.name + ', Response: ' + JSON.stringify(data) + '\n');
                     });
                     $scope.contactsCollection.push(data);
                     $modalInstance.close();

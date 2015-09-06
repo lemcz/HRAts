@@ -39,15 +39,15 @@ public class VacancyService {
         return vacancyRepository.findByDepartment_Manager_Id(managerId);
     }
 
+    @Transactional
+    public Iterable<Vacancy> findByCandidateId(int candidateId) {
+        return vacancyRepository.findByVacancy_UserCandidate_Id(candidateId);
+    }
+
     @Transactional(readOnly = true)
     public Iterable<Vacancy> findByDepartmentIdInAndCandidateIdEqual(List<Integer> departmentsIds, int candidateId) {
         return vacancyRepository.findByDepartment_IdInAndVacancyUserListCandidate_IdIsNot(departmentsIds, candidateId);
     }
-
-/*    @Transactional(readOnly = true)
-    public Iterable<Vacancy> findByVacancyUserListCandidate_IdIn(List<Integer> candidatesIds) {
-        return vacancyRepository.findByVacancyUserListCandidate_IdIn(candidatesIds);
-    }*/
 
     @Transactional
     public Vacancy save(Vacancy vacancy) {

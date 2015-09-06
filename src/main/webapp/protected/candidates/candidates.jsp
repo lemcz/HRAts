@@ -31,7 +31,6 @@
                ng-disabled="gridOptions.multipleSelected"
                role="button"
                title="<spring:message code="edit"/>&nbsp;<spring:message code="candidate"/>"
-
                class="btn btn-default" data-toggle="modal">
                 <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;<spring:message code="edit"/>&nbsp;<spring:message code="candidate"/>
             </a>
@@ -70,6 +69,7 @@
 </div>
 
 <script src="<c:url value="/resources/js/services/activityService.js"/>"></script>
+<script src="<c:url value="/resources/js/services/candidateService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/companyService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/departmentService.js"/>"></script>
 <script src="<c:url value="/resources/js/services/lookupService.js"/>"></script>

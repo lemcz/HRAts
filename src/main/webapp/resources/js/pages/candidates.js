@@ -2,77 +2,6 @@
 
     var hratsApp = angular.module('HRAts');
 
-    hratsApp.service('CandidateService', function ($http, uiGridConstants){
-
-        var baseUrl = 'http://localhost:8080/HRAts/protected/candidates/';
-
-        return {
-
-            fetchAll: function () {
-                return $http.get(baseUrl);
-            },
-
-            fetchById: function(candidateId) {
-                return $http.get(baseUrl + candidateId)
-            },
-
-            createRow: function(candidateData){
-                return $http.post(baseUrl, candidateData);
-            },
-
-            updateRow: function(candidateData) {
-                console.log(candidateData);
-                return $http.put(baseUrl+'/'+candidateData.id, candidateData);
-            },
-
-            removeRow: function(candidateId){
-                return $http.delete(candidateId);
-            },
-
-            getColumnDefs: function() {
-                return [
-                    { name:'id', width:50 },
-                    { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a data-toggle="modal" ng-click="grid.appScope.redirect(row.entity, \'candidates\', row.entity)" role="button" >{{COL_FIELD}}</a></div>', width:100 },
-                    { name:'middleName', width:100 },
-                    { name:'lastName', width:100 },
-                    { name:'candidateInformation.address', displayName: "Address", width:150},
-                    { name:'candidateInformation.city', displayName: "City", width:150},
-                    { name:'candidateInformation.state', displayName: "State", width:150},
-                    { name:'candidateInformation.zipCode', displayName: "Zip Code", width:150},
-                    { name:'phoneNumber', width:150},
-                    { name:'email', width:100, cellTemplate: '<div class="ui-grid-cell-contents text-center"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
-                    { name:'phone', width:200},
-                    { name:'about', width:300 },
-                    { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150 },
-                    { name:'dateModified', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
-                    { name:'owner.email', displayName:'Owner', width:150 }
-                ];
-            },
-
-            setupReqData: function (data, files) {
-                var formData = new FormData();
-                formData.append('data', new Blob([JSON.stringify(data)], {type: "application/json"}));
-
-                if (files && files.length) {
-                    for (var i = 0; i < files.length; i++) {
-                        var file = files[i];
-                        formData.append("file", file);
-                    }
-                }
-
-                var req = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': undefined
-                    },
-                    data: formData
-                };
-
-                return req;
-            }
-        }
-    });
-
     hratsApp.controller('CandidateController', function($scope, $modal, CandidateService){
 
         $scope.pageConfiguration = { dataCollectionName: 'candidatesCollection' };
@@ -89,6 +18,91 @@
             });
     });
 
+    hratsApp.controller('CandidateDetailsController', function($scope, $modal, ContactService, DepartmentService) {
+        var candidateId = $('#pathId').val();
+
+        ContactService.fetchById(candidateId)
+            .success(function(data) {
+                $scope.candidateData = data || {};
+            })
+            .error(function(data) {
+                alert('Unable to fetch data\r\n' + data);
+            });
+
+        DepartmentService.fetchAllByManager(candidateId)
+            .success(function(data){
+                $scope.departmentsCollection = data || [];
+            })
+            .error(function(data){
+                alert('Unable to fetch departments\r\n'+data);
+            });
+
+        $scope.updateUsersInfo = function(user) {
+            ContactService.updateRow(user)
+                .success(function(data){
+                    angular.copy(data, $scope.candidateData);
+                    alert("User's info updated successfully");
+                })
+                .error(function(data) {
+                    alert("Could not update user's info\r\nStatus: "+data.status+'\r\nReason: '+data.data);
+                })
+        };
+
+        $scope.openModal = function(modalTemplate, row){
+            var modalInstance = $modal.open({
+                animation: false,
+                templateUrl: modalTemplate,
+                controller: 'ModalInstanceController',
+                size: 'lg',
+                backdrop: true,
+                scope: $scope,
+                resolve: {
+                    row: function(){
+                        return {
+                            modalName: modalTemplate,
+                            data: $scope.candidateData || {}
+                        };
+                    }
+                }
+            });
+        };
+    });
+
+    hratsApp.controller('DetailsGridsController', function($scope, VacancyService, ActivityService, GridService){
+        var candidateId = $('#pathId').val();
+
+        $scope.vacanciesGridOptions = {};
+        angular.copy(GridService.getGridConfiguration(), $scope.vacanciesGridOptions);
+        $scope.vacanciesGridOptions.data = [];
+        $scope.vacanciesGridOptions.columnDefs = VacancyService.getColumnDefs();
+
+        VacancyService.fetchByCandidateId(candidateId)
+            .success(function (data) {
+                console.log(data);
+                $scope.vacanciesGridOptions.data = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data ("+status+").");
+            });
+
+        $scope.activitiesGridOptions = {};
+        angular.copy(GridService.getGridConfiguration(), $scope.activitiesGridOptions);
+        $scope.activitiesGridOptions.columnDefs = ActivityService.getColumnDefs();
+        $scope.activitiesGridOptions.data = [];
+
+        ActivityService.fetchByCandidateId(candidateId)
+            .success(function (data) {
+                $scope.activitiesGridOptions.data = data || [];
+            })
+            .error(function (status, data) {
+                alert("Unable to fetch data ("+status+").");
+            });
+
+        $scope.redirect = function (row, endpoint) {
+            GridService.redirect(row, endpoint);
+        };
+    });
+
     hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, CandidateService, row,
                                                             VacancyService, ActivityTypeService, ActivityService,
                                                             CompanyService, DepartmentService, ContractTypeService,
@@ -96,7 +110,6 @@
 
         //TODO reorganize controller, setup owner
         //Add candidate variables
-        console.log(row);
         var modalType = row.modalName;
         $scope.candidate = row.data;
         $scope.newCandidate = angular.copy(row.data) || {};
@@ -194,7 +207,7 @@
                         alert("Unable to fetch activity types ("+data+").");
                     });
 
-                VacancyService.fetchAll()
+                VacancyService.fetchByCandidateId($scope.candidate.id)
                     .success(function(data) {
                         $scope.vacancyCollection = data || {};
                     })
@@ -219,10 +232,8 @@
                 selectedVacancies.push(vacancyToAdd);
             }
             $scope.newCandidate.vacancyUserCandidateList = selectedVacancies;
-            console.log($scope.newCandidate);
             CandidateService.createRow($scope.newCandidate)
                 .success(function(data){
-                    console.log(data);
                     $scope.candidatesCollection.push(data.data);
                     $modalInstance.close();
                 })
@@ -291,6 +302,7 @@
                     alert("Unable to update record ("+status+").");
                 })
         };
+
         $scope.removeRow = function(row) {
             CandidateService.removeRow(row.id)
                 .success(function(){

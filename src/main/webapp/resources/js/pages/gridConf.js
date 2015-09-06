@@ -70,12 +70,7 @@
 
             gridApi.selection.on.rowSelectionChangedBatch($scope,function(rows){
 
-                if(rows.length > 1) {
-                    $scope.gridOptions.multipleSelected = true;
-                } else
-                {
-                    $scope.gridOptions.multipleSelected = false;
-                }
+                $scope.gridOptions.multipleSelected = rows.length > 1;
 
                 for(var i = 0; i < rows.length; i++) {
                     $scope.row.append(rows[i].entity);
