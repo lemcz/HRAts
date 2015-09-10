@@ -4,11 +4,11 @@ import HRAts.model.Department;
 import HRAts.model.User;
 import HRAts.service.DepartmentService;
 import HRAts.service.UserService;
+import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,6 @@ public class DepartmentController {
     private DepartmentService departmentService;
     @Autowired
     private UserService userService;
-
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView welcome() {
-        return new ModelAndView("companiesList");
-    }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public Iterable<Department> listDepartments(@RequestParam(value = "search", required = false) String search,
@@ -60,7 +55,7 @@ public class DepartmentController {
 
         for (Department department : departmentList) {
             if (department.getCompany() == null) {
-                return new ResponseEntity<String>("Missing company", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new GenericResponse(-1, "Missing company"), HttpStatus.BAD_REQUEST);
             }
             Department createdDepartment = departmentService.save(department);
             savedDepartments.add(createdDepartment);
@@ -82,21 +77,21 @@ public class DepartmentController {
 
             User manager = userService.findById(department.getManager().getId());
 
-            if (manager.getRole().toString() != "ROLE_MANAGER") {
-                return new ResponseEntity<String>("Provided user is not a manager", HttpStatus.BAD_REQUEST);
+            if (manager.getRole().toString().equals("ROLE_MANAGER")) {
+                return new ResponseEntity<>(new GenericResponse(-1, "Provided user is not a manager"), HttpStatus.BAD_REQUEST);
             }
         }
 
-        return new ResponseEntity<Department>(departmentService.save(department), HttpStatus.OK);
+        return new ResponseEntity<>(departmentService.save(department), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateDepartment(@PathVariable("id") int departmentId,
                                               @RequestBody Department department) {
         if (departmentId != department.getId()){
-            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Bad Request", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Department>(departmentService.save(department), HttpStatus.OK);
+        return new ResponseEntity<>(departmentService.save(department), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id:[\\d]+}", method = RequestMethod.DELETE, produces = "application/json")

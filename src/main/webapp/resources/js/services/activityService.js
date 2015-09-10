@@ -37,8 +37,8 @@
             getColumnDefs: function() {
                 return [
                     { name:'id', width:50 },
-                    { name:'activityType.name', width:100 },
-                    { name:'candidate.email', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity.candidate,\'candidates\')" >{{COL_FIELD}}</a></div>'},
+                    { name:'activityType.name', displayName: 'Activity type', width:100 },
+                    { name:'candidate.email', displayName: 'Related candidate', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity.candidate,\'candidates\')" >{{COL_FIELD}}</a></div>'},
                     { name:'note', width:300 },
                     { name:'dateEntered', cellFilter:'date: \'HH:MM:ss dd/MM/yyyy\'', width:150, sort: {direction: uiGridConstants.DESC} },
                     { name:'owner.email', displayName:'Owner', width:150, cellTemplate: '<div class="ui-grid-cell-contents"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>' },

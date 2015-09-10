@@ -30,8 +30,7 @@ public class PasswordResetToken implements Serializable {
 
     public PasswordResetToken(User user) {
         super();
-        String token = UUID.randomUUID().toString();
-        this.token = token;
+        this.token = UUID.randomUUID().toString();
         this.user = user;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
@@ -44,10 +43,7 @@ public class PasswordResetToken implements Serializable {
     }
 
     public boolean isExpired() {
-        if (this.getExpiryDate().before(new Date())){
-            return true;
-        }
-        return false;
+        return this.getExpiryDate().before(new Date());
     }
 
     public int getId() {

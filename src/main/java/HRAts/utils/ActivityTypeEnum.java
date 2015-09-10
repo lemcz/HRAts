@@ -1,4 +1,4 @@
-package HRAts.constants;
+package HRAts.utils;
 
 public enum ActivityTypeEnum {
     ADD("Create"),

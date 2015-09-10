@@ -1,11 +1,11 @@
 package HRAts.controller;
 
-import HRAts.model.GenericResponse;
 import HRAts.model.PasswordResetToken;
 import HRAts.model.User;
 import HRAts.model.VerificationToken;
 import HRAts.service.UserService;
 import HRAts.service.VerificationTokenService;
+import HRAts.utils.GenericResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,12 +60,12 @@ public class UserController {
             }
         }
 
-        String appUri = "http://"+ request.getServerName()
+        String appUrl = "http://"+ request.getServerName()
                         +":"+ request.getServerPort()
                         + request.getContextPath();
 
         try {
-            User registered = existingUser != null ? userService.registerUser(existingUser, appUri) : userService.registerUser(user, appUri);
+            User registered = existingUser != null ? userService.registerUser(existingUser, appUrl) : userService.registerUser(user, appUrl);
             return new ResponseEntity<Serializable>(registered, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Serializable>(e, HttpStatus.BAD_REQUEST);
@@ -93,7 +93,7 @@ public class UserController {
         logger.info(token);
         GenericResponse verificationInfo = verificationTokenService.verifyUser(token);
 
-        if (verificationInfo.equals("Success")) {
+        if (verificationInfo.getData().equals("Success")) {
             return new ResponseEntity<>(verificationInfo, HttpStatus.OK);
         }
 

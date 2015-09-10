@@ -103,14 +103,14 @@
         <br><br>
         <h2 class="page-header">
             <p>
-                <spring:message code='relatedVacancies'/>
+                <spring:message code='related'/>&nbsp;<spring:message code='vacancies.header'/>
             </p>
         </h2>
         <div ng-controller="DetailsGridsController">
             <div class="grid" id="vacanciesGrid" ui-grid="vacanciesGridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping></div>
             <h2 class="page-header">
                 <p>
-                    <spring:message code='relatedContacts'/>
+                    <spring:message code='related'/>&nbsp;<spring:message code='contacts.header'/>
                 </p>
             </h2>
             <div class="grid" id="contactsGrid" ui-grid="contactsGridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping></div>

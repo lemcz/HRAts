@@ -10,8 +10,6 @@ import java.util.Date;
 @Table(name = "status")
 public class Status implements Serializable{
 
-    //TODO add status change when adding candidate to vacancy
-
     @Id
     @Column(nullable = false, unique = true)
     @GeneratedValue

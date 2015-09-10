@@ -55,24 +55,20 @@
                     <div class="field"><strong>Name</strong>
                         <div click-to-edit="candidateData.name"></div>
                     </div>
-                    <div class="field"><strong>Number of vacancies</strong>
-                        <div click-to-edit="candidateData.numberOfVacancies"></div>
+                    <div class="field"><strong>Middle Name</strong>
+                        <div click-to-edit="candidateData.middleName"></div>
                     </div>
-                    <div class="field"><strong>Offered salary</strong>
-                        <div click-to-edit="candidateData.salary"></div>
+
+                    <div class="field"><strong>Last Name</strong>
+                        <div click-to-edit="candidateData.lastName"></div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="field"><strong>Company</strong>
-                        <a href="" ng-click="redirect(candidateData.department.company, 'companies')">{{candidateData.department.company.name}}</a>
+                    <div class="field"><strong>Email</strong>
+                        <div class="col-md-12">{{candidateData.email}}</div>
                     </div>
-                    <div class="field"><strong>Department</strong>
-                        {{candidateData.department.name}}
-                    </div>
-                    <div class="field"><strong>Manager</strong>
-                        <div class="col-md-12">
-                            <a href="" ng-click="redirect(candidateData.manager, 'contacts')">{{ candidateData.manager.email }}</a>
-                        </div>
+                    <div class="field"><strong>Phone</strong>
+                        <div click-to-edit="candidateData.phoneNumber"></div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -92,6 +88,66 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-12">
+                <h3>
+                    <p>
+                        <spring:message code='addressInformation'/>
+                    </p>
+                </h3>
+                <div class="col-md-4">
+                    <div class="field"><strong>Country</strong>
+                        <div click-to-edit="candidateData.candidateInformation.country"></div>
+                    </div>
+                    <div class="field"><strong>City</strong>
+                        <div click-to-edit="candidateData.candidateInformation.city"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="field"><strong>Address</strong>
+                        <div click-to-edit="candidateData.candidateInformation.address"></div>
+                    </div>
+                    <div class="field"><strong>Zip-code</strong>
+                        <div click-to-edit="candidateData.candidateInformation.zipcode"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <h3>
+                    <p>
+                        <spring:message code='contractInformation'/>
+                    </p>
+                </h3>
+                <div class="col-md-4">
+                    <div class="field"><strong>Prefered contract type</strong></div>
+                    <ui-select ng-model="candidateData.candidateInformation.contractType"
+                               required
+                               reset-search-input="false">
+                        <ui-select-match placeholder="Select contract type">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices group-by="someGroupFn" repeat="contract in contractsCollection | propsFilter: {name: $select.search, id: $select.search}">
+                            <div ng-bind-html="contract.name | highlight: $select.search"></div>
+                            <small>
+                                id: {{contract.id}}
+                            </small>
+                        </ui-select-choices>
+                    </ui-select>
+                    <div class="field"><strong>Financial requirements netto</strong>
+                        <div click-to-edit="candidateData.candidateInformation.financialReqNetto"></div>
+                    </div>
+                    <div class="field"><strong>Financial requirements brutto</strong>
+                        <div click-to-edit="candidateData.candidateInformation.financialReqBrutto"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="field"><strong>Current job termination date</strong>
+                        <div click-to-edit="candidateData.candidateInformation.datePrevJobTermination"></div>
+                    </div>
+                    <div class="field"><strong>Possible start date</strong>
+                        <div click-to-edit="candidateData.candidateInformation.startDate | date"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
                 <div class="col-md-6">
                     <strong>Note</strong>
                     <textarea rows="4"
@@ -103,10 +159,9 @@
                               name="note"
                               placeholder="<spring:message code='note'/> "></textarea>
                 </div>
-                <div class="col-md-12">
-                    <div class="field"><strong>Description</strong>
-                        <div text-angular ng-model="candidateData.description"></div>
-                    </div>
+                <div class="col-md-6">
+                    <div class="col-md-12"><Strong>Attachments</Strong></div>
+                    <div class="col-md-4" ng-repeat="attachment in companyData.candidateAttachmentList">{{sector.name}}</div>
                 </div>
             </div>
         </form>
@@ -114,13 +169,13 @@
         <div ng-controller="DetailsGridsController">
         <h2 class="page-header">
             <p>
-                <spring:message code='relatedVacancies'/>
+                <spring:message code='related'/>&nbsp;<spring:message code='vacancies.header'/>
             </p>
         </h2>
             <div class="grid" id="candidatesGrid" ui-grid="vacanciesGridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping></div>
             <h2 class="page-header">
                 <p>
-                    <spring:message code='relatedActivites'/>
+                    <spring:message code='related'/>&nbsp;<spring:message code='activities.header'/>
                 </p>
             </h2>
             <div class="grid" id="activitiesGrid" ui-grid="activitiesGridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping></div>

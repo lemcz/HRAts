@@ -16,10 +16,10 @@
             </div>
         </div>
         <div class="row">
-            <%--TODO add hiding fields dependable on current url--%>
             <div class="col-md-4 col-md-offset-4 well" ng-controller="ResetController" id="reset">
-                <legend><spring:message code="reset.header" /></legend>
+                <legend><spring:message code="reset.header"/>&nbsp;<spring:message code="user.password"/></legend>
                 <form name="resetPasswordForm"
+                      ng-hide="tokenIdAvailable"
                       role="form"
                       novalidate
                       autocomplete="off"
@@ -34,31 +34,32 @@
                                    name="email"
                                    placeholder="<spring:message code='sample.email'/>"/>
                         </div>
-                        <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="resetPasswordForm.$invalid"><spring:message code="sendResetMail" /></button>
+                        <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="resetPasswordForm.$invalid"><spring:message code="message.send.mail" /></button>
                     </fieldset>
                 </form>
                 <form name="changePasswordForm"
                       role="form"
                       novalidate
                       autocomplete="off"
+                      ng-show="tokenIdAvailable"
                       ng-submit="changePassword(user);">
                     <div class="form-group">
-                        <label class="control-label"><spring:message code="password"/></label>
+                        <label class="control-label"><spring:message code="user.password"/></label>
                         <input type="password"
                                class="form-control"
                                required
                                ng-model="user.password"
                                name="password"
-                               placeholder="<spring:message code='password'/>"/>
-                        <label class="control-label"><spring:message code="repeatPassword"/></label>
+                               placeholder="<spring:message code='user.password'/>"/>
+                        <label class="control-label"><spring:message code="user.repeatPassword"/></label>
                         <input type="password"
                                class="form-control"
                                required
                                ng-model="user.repeatPassword"
                                name="password"
-                               placeholder="<spring:message code='repeatPassword'/>"/>
+                               placeholder="<spring:message code='user.repeatPassword'/>"/>
                     </div>
-                    <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="changePasswordForm.$invalid"><spring:message code="changePassword" /></button>
+                    <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="changePasswordForm.$invalid"><spring:message code="user.changePassword" /></button>
                 </form>
                 <a href="<c:url value='/login'/>">Sign in</a>
             </div>

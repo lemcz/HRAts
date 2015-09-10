@@ -30,8 +30,7 @@ public class VacancyUserService {
     @Transactional
     public VacancyUser save(VacancyUser vacancyUser) {
 
-        //TODO extend activity logging
-        String activityNote = "New activity logged per user and vacancy";
+        String activityNote = "New user added to vacancy";
         activityService.logUserActivity(activityNote, vacancyUser.getOwner());
 
         return vacancyUserRepository.save(vacancyUser);

@@ -95,7 +95,7 @@
         <br><br>
         <h2 class="page-header">
             <p>
-                <spring:message code='relatedCandidates'/>
+                <spring:message code='related'/>&nbsp;<spring:message code='candidates.header'/>
             </p>
         </h2>
         <div ng-controller="DetailsGridsController">

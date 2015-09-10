@@ -24,20 +24,20 @@
                       autocomplete="off">
                     <fieldset class="form">
                         <div class="form-group">
-                            <label><spring:message code="firstName"/></label>
+                            <label><spring:message code="user.name"/></label>
                             <input type="text"
                                    class="form-control"
                                    required
                                    autofocus
                                    ng-model="newUser.name"
                                    name="firstName"
-                                   placeholder="<spring:message code='firstName'/>"/>
-                            <label><spring:message code="lastName"/></label>
+                                   placeholder="<spring:message code='user.name'/>"/>
+                            <label><spring:message code="user.lastName"/></label>
                             <input type="text"
                                    name="lastName"
                                    class="form-control"
                                    ng-model="newUser.lastName"
-                                   placeholder="<spring:message code='lastName'/>"
+                                   placeholder="<spring:message code='user.lastName'/>"
                                    required />
                             <label class="control-label"><spring:message code="email"/></label>
                             <input type="email"
@@ -46,22 +46,22 @@
                                    ng-model="newUser.email"
                                    name="email"
                                    placeholder="<spring:message code='sample.email'/>"/>
-                            <label class="control-label"><spring:message code="password"/></label>
+                            <label class="control-label"><spring:message code="user.password"/></label>
                             <input type="password"
                                    class="form-control"
                                    required
                                    ng-model="newUser.password"
                                    name="password"
-                                   placeholder="<spring:message code='password'/>"/>
-                            <label class="control-label"><spring:message code="repeatPassword"/></label>
+                                   placeholder="<spring:message code='user.password'/>"/>
+                            <label class="control-label"><spring:message code="user.repeatPassword"/></label>
                             <input type="password"
                                    class="form-control"
                                    required
                                    ng-model="newUser.repeatPassword"
                                    name="password"
-                                   placeholder="<spring:message code='repeatPassword'/>"/>
+                                   placeholder="<spring:message code='user.repeatPassword'/>"/>
                         </div>
-                        <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="registerForm.$invalid"><spring:message code="register" /></button>
+                        <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="registerForm.$invalid"><spring:message code="register.header"/></button>
                     </fieldset>
                 </form>
                 <a href="<c:url value='/login'/>">Sign in</a>

@@ -18,7 +18,7 @@
             });
     });
 
-    hratsApp.controller('CandidateDetailsController', function($scope, $modal, ContactService, DepartmentService) {
+    hratsApp.controller('CandidateDetailsController', function($scope, $modal, ContactService, DepartmentService, ContractTypeService) {
         var candidateId = $('#pathId').val();
 
         ContactService.fetchById(candidateId)
@@ -35,6 +35,14 @@
             })
             .error(function(data){
                 alert('Unable to fetch departments\r\n'+data);
+            });
+
+        ContractTypeService.fetchAll()
+            .success(function(data) {
+                $scope.contractsCollection = data || [];
+            })
+            .error(function(status, data) {
+                alert("Unable to fetch data (" + status + ").");
             });
 
         $scope.updateUsersInfo = function(user) {
@@ -107,8 +115,6 @@
                                                             VacancyService, ActivityTypeService, ActivityService,
                                                             CompanyService, DepartmentService, ContractTypeService,
                                                             VacancyUserService, StatusService, StatusTypeService) {
-
-        //TODO reorganize controller, setup owner
         //Add candidate variables
         var modalType = row.modalName;
         $scope.candidate = row.data;
@@ -146,10 +152,9 @@
                 return;
             }
 
-            var departmentsCollectionPromise = DepartmentService.fetchRelatedDepartments(selectedCompanies);
-            departmentsCollectionPromise.then(function(result) {
+            DepartmentService.fetchRelatedDepartments(selectedCompanies).then(function(result) {
                 $scope.departmentsCollection = result.data;
-            })
+            });
         };
 
         $scope.fetchRelatedVacancies = function(selectedDepartments) {
@@ -159,10 +164,9 @@
                 return;
             }
 
-            var vacanciesCollectionPromise = VacancyService.fetchRelatedVacancies(selectedDepartments);
-            vacanciesCollectionPromise.then(function(result) {
+            VacancyService.fetchRelatedVacancies(selectedDepartments).then(function(result) {
                 $scope.vacancyCollection = result.data;
-            })
+            });
         };
 
         switch(modalType) {
@@ -179,13 +183,6 @@
                 break;
             case 'addToVacancyModal':
 
-                VacancyService.fetchAll()
-                    .success(function(data) {
-                        $scope.vacancyCollection = data || {};
-                    })
-                    .error(function(data){
-                        alert("Unable to fetch vacancies ("+data+").");
-                    });
                 break;
             case 'logActivityModal':
                 $scope.activity = {};
@@ -261,19 +258,9 @@
                 owner: {id: $scope.candidate.owner.id}
             };
 
-            /*TODO urozmaicic prompt, by sprawdzal vacancy.vacancyUserList status === accepted
-                i znalezc bardziej odpowiednie miejsce na ten komunikat, ewnetualnie dorobic obsluge, tak aby wychodzil z funkcji, jesli rezygnujemy
-                ------------------------------------------------------------------------------
-            var numberOfTakenVacancies = vacanciesToAddList.vacancy.vacancyUserList.length || 0;
-            console.log(numberOfTakenVacancies);
-            if ( numberOfTakenVacancies >= vacancy.numberOfVacancies ) {
-                alert("The vacancy you've chosen has enough candidates accepted for the job\n Do you want to add another one?");
-            }*/
-
             VacancyUserService.createRow(vacanciesToAddList)
                 .success(function(data){
-                    //TODO Add success behavior (update row)
-                    //angular.copy(data, $scope.row);
+                    alert("Candidate successfully added to vacancy");
                     $modalInstance.close();
                 })
                 .error(function(data,status){

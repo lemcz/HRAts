@@ -2,6 +2,7 @@ package HRAts.controller;
 
 import HRAts.model.Vacancy;
 import HRAts.service.VacancyService;
+import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class VacancyController {
 
         Vacancy savedVacancy = vacancyService.save(vacancy);
 
-        return new ResponseEntity<Vacancy>(savedVacancy, HttpStatus.OK);
+        return new ResponseEntity<>(savedVacancy, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/perDepartments", headers={"type=list"}, method = RequestMethod.POST, produces = "application/json")
@@ -78,9 +79,9 @@ public class VacancyController {
     public ResponseEntity<?> updateVacancy(@PathVariable("id") int vacancyId,
                                            @RequestBody Vacancy vacancy) {
         if (vacancyId != vacancy.getId()){
-            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new GenericResponse(-1, "Bad Request"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Vacancy>(vacancyService.save(vacancy), HttpStatus.OK);
+        return new ResponseEntity<>(vacancyService.save(vacancy), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json")

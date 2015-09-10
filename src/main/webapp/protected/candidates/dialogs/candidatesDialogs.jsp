@@ -21,7 +21,7 @@
                     <label class="control-label"><spring:message code="user.name"/></label>
                 </div>
                 <div class="col-md-4">
-                    <label class="control-label sr-only">* <spring:message code="user.name"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="user.name"/></label>
                     <input type="text"
                            class="form-control"
                            required
@@ -31,72 +31,80 @@
                            placeholder="<spring:message code='user.name'/>"/>
                 </div>
                 <div class="col-md-4">
-                    <label class="control-label sr-only">* <spring:message code="user.middleName"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="user.middleName"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.middleName"
-                           name="name"
+                           name="middleName"
                            placeholder="<spring:message code='user.middleName'/>"/>
                 </div>
                 <div class="col-md-4">
-                    <label class="control-label sr-only">* <spring:message code="user.lastName"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="user.lastName"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.lastName"
-                           name="name"
+                           name="lastName"
                            placeholder="<spring:message code='user.lastName'/>"/>
                 </div>
                 <div class="col-md-12">
                     <label class="control-label"><spring:message code="contact"/></label>
                 </div>
                 <div class="col-md-6">
-                    <label class="control-label sr-only">* <spring:message code="address"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="address"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.candidateInformation.address"
-                           name="name"
+                           name="address"
                            placeholder="<spring:message code='address'/>"/>
-                    <label class="control-label sr-only">* <spring:message code="city"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="city"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.candidateInformation.city"
-                           name="name"
+                           name="city"
                            placeholder="<spring:message code='city'/>"/>
-                    <label class="control-label sr-only">* <spring:message code="country"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="state"/></label>
+                    <input type="text"
+                           class="form-control"
+                           required
+                           autofocus
+                           ng-model="newCandidate.candidateInformation.state"
+                           name="state"
+                           placeholder="<spring:message code='state'/>"/>
+                    <label class="control-label sr-only"><spring:message code="country"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.candidateInformation.country"
-                           name="name"
+                           name="country"
                            placeholder="<spring:message code='country'/>"/>
                 </div>
                 <div class="col-md-6">
-                    <label class="control-label sr-only">* <spring:message code="zipCode"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="zipCode"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
-                           ng-model="newCandidate.candidateInformation.zipCode"
+                           ng-model="newCandidate.candidateInformation.zipcode"
                            name="name"
                            placeholder="<spring:message code='zipCode'/>"/>
-                    <label class="control-label sr-only">* <spring:message code="phoneNumber"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="phoneNumber"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.phoneNumber"
-                           name="name"
+                           name="phoneNumber"
                            placeholder="<spring:message code='phoneNumber'/>"/>
-                    <label class="control-label sr-only">* <spring:message code="email"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="email"/></label>
                     <input type="email"
                            class="form-control"
                            required
@@ -117,7 +125,7 @@
                 </div>
                 <label class="control-label col-md-12">Job Preferences Info</label>
                 <div class="col-md-6">
-                    <label class="control-label sr-only">* <spring:message code="financialReqNetto"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="sample.financialReqNetto"/></label>
                     <input type="number"
                            class="form-control"
                            required
@@ -126,7 +134,7 @@
                            name="financialReqNetto"
                            placeholder="<spring:message code='sample.financialReqNetto'/>"/>
 
-                    <label class="control-label sr-only">* <spring:message code="financialReqBrutto"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="sample.financialReqBrutto"/></label>
                     <input type="number"
                            class="form-control"
                            required
@@ -136,14 +144,14 @@
                            placeholder="<spring:message code='sample.financialReqBrutto'/>"/>
                 </div>
                 <div class="col-md-6">
-                    <label class="control-label sr-only"><spring:message code="sample.startDate"/></label>
+                    <label class="control-label sr-only"><spring:message code="startDate"/></label>
                     <input type="date"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCandidate.candidateInformation.startDate"
                            name="startDate"
-                           placeholder="<spring:message code='sample.startDate'/>"/>
+                           placeholder="<spring:message code='startDate'/>"/>
                 </div>
                 <div class="col-md-6">
                     <ui-select ng-model="querySelection.selectedContractType"
@@ -263,7 +271,7 @@
                        ng-model="candidate.id"
                        name="id"
                        value="{{candidate.id}}"/>
-                <label>* <spring:message code="candidates.name"/>:</label>
+                <label><spring:message code="candidates.name"/></label>
                 <input type="text"
                        class="form-control"
                        autofocus
@@ -357,7 +365,7 @@
             <span class="sr-only">Close</span>
         </button>
         <h4 class="modal-title" id="addToVacancyModalLabel">
-            <spring:message code="addToVacancy"/>
+            <spring:message code="vacancies.addTo"/>
         </h4>
     </div>
     <form name="addToVacancyForm" role="form" novalidate ng-submit="addToVacancy(row, vacancy);">
@@ -457,7 +465,7 @@
                        name="id"
                        value="{{candidate.id}}"/>
                 <div class="col-md-6">
-                    <label><spring:message code="candidates.vacancy"/></label>
+                    <label><spring:message code="vacancy"/></label>
                     <ui-select ng-model="activity.vacancy"
                                theme="bootstrap"
                                reset-search-input="false"
@@ -473,7 +481,7 @@
                     </ui-select>
                 </div>
                 <div class="col-md-6">
-                <label><spring:message code="candidates.activityType"/></label>
+                <label><spring:message code="activity.type"/></label>
                     <ui-select ng-model="activity.activityType"
                                theme="bootstrap"
                                reset-search-input="false"
@@ -501,9 +509,6 @@
                 <div class="col-md-12" ng-show="activity.vacancy && activity.activityType">
                     <label class=""><spring:message code="logStatusChange"/></label>
                     <switch id="statusSwitch" name="enabled" ng-model="statusSwitch" class="green" on="On" off="Off"></switch>
-                    <%--TODO prototype here, if doing mail sending, this probably will be edited--%>
-                    <%--<label class=""><spring:message code="sendMail"/></label>
-                    <switch id="sendMailSwitch" name="enabled" ng-model="sendMailSwitch" class="green" on="On" off="Off"></switch>--%>
                     <div ng-show="statusSwitch">
                         <ui-select ng-model="querySelection.selectedStatusType"
                                    required

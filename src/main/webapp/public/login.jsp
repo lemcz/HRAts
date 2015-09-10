@@ -47,11 +47,6 @@
                                    placeholder="Password"
                                    required/>
                     </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" value="remember-me"/><spring:message code="login.remember"/>
-                        </label>
-                    </div>
                     <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="loginForm.$invalid"><spring:message code="login.signIn" /></button>
                 </form>
                 <a href="<c:url value='/register'/>">Sign up</a> or

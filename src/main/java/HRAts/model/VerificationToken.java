@@ -30,8 +30,7 @@ public class VerificationToken implements Serializable {
 
     public VerificationToken(User user) {
         super();
-        String token = UUID.randomUUID().toString();
-        this.token = token;
+        this.token = UUID.randomUUID().toString();
         this.user = user;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
         this.verified = false;
@@ -45,10 +44,7 @@ public class VerificationToken implements Serializable {
     }
 
     public boolean isExpired() {
-        if (this.getExpiryDate().before(new Date())){
-            return true;
-        }
-        return false;
+        return this.getExpiryDate().before(new Date());
     }
 
     public int getId() {

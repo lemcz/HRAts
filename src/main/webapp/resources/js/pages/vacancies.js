@@ -4,6 +4,8 @@
 
     hratsApp.controller('VacancyController', function($scope, $modal, VacancyService){
 
+        $scope.owner = { id: $('#userId').val() };
+
         $scope.pageConfiguration = { dataCollectionName: 'vacanciesCollection' };
         $scope.pageConfiguration.columnDefs = VacancyService.getColumnDefs();
 
@@ -20,6 +22,8 @@
 
     hratsApp.controller('VacancyDetailsController', function($scope, $modal, VacancyService, GridService, ContactService) {
         var vacancyId = $('#pathId').val();
+
+        $scope.vacancyData = {};
 
         VacancyService.fetchById(vacancyId)
             .success(function(data) {
@@ -81,7 +85,6 @@
 
         CandidateService.fetchAllByVacancyId(vacancyId)
             .success(function (data) {
-                console.log(data);
                 $scope.candidatesGridOptions.data = data || [];
             })
             .error(function (status, data) {
@@ -97,7 +100,7 @@
         $scope.removeRow = function(vacancy) {
             VacancyService.removeRow(vacancy.id)
                 .success(function(){
-                    var lookupString = '/protected/companies/';
+                    var lookupString = '/protected/vacancies/';
                     var baseUrl = $location.absUrl();
                     var trimIndex = baseUrl.indexOf(lookupString);
                     baseUrl = baseUrl.substr(0,trimIndex+lookupString.length);
@@ -113,14 +116,31 @@
         };
     });
 
-    hratsApp.controller('ModalInstanceController', function($log, $scope, $modalInstance, row, VacancyService, CompanyService, DepartmentService){
+    hratsApp.controller('ModalInstanceController', function($log, $scope, $modalInstance, row,
+                                                            VacancyService, VacancyUserService, CandidateService,
+                                                            CompanyService, DepartmentService){
 
-        //TODO organize vacancies modals - make them function properly
         //Add vacancy variables
-        $scope.newVacancy = angular.copy(row.data) || {};
+        $scope.newVacancy = row.data || {};
 
         $scope.newVacancy.startDate = new Date();
         $scope.newVacancy.numberOfVacancies = 1;
+
+        var modalType = row.modalName;
+
+        switch(modalType) {
+            case 'addToVacancyModal':
+                $scope.candidatesCollection = [];
+                CandidateService.fetchAllNotAssignedToVacancy($scope.newVacancy.id)
+                    .success(function(data) {
+                        $scope.candidatesCollection = data || [];
+                    })
+                    .error(function(data){
+                        alert("Unable to fetch vacancies ("+data+").");
+                    });
+                break;
+            default: break;
+        }
 
         CompanyService.fetchAll()
             .success(function (data){
@@ -162,6 +182,24 @@
             VacancyService.updateRow(vacancy)
                 .success(function(data){
                     angular.copy(data, $scope.vacancy);
+                    $modalInstance.close();
+                })
+                .error(function(data,status){
+                    alert("Unable to update record ("+status+").");
+                })
+        };
+
+        $scope.addToVacancy = function(row, vacancy) {
+
+            var vacanciesToAddList =  {
+                vacancy: {id: row.id },
+                candidates: $scope.querySelection.selectedCandidates[0],
+                owner: {id: $('#userId').val()}
+            };
+
+            VacancyUserService.createRow(vacanciesToAddList)
+                .success(function(data){
+                    alert("Candidate successfully added to vacancy");
                     $modalInstance.close();
                 })
                 .error(function(data,status){

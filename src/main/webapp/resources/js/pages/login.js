@@ -9,18 +9,27 @@
 
     hratsApp.controller('ResetController', function($scope, $http, $location){
 
-        var baseUrl = 'http://localhost:8080/HRAts/protected/users';
-        $scope.user = {};
-
         function get(name){
             if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
                 return decodeURIComponent(name[1]);
         }
 
+        var id = get("id");
+        var token = get("token");
+
+        if (!!id && !!token) {
+            $scope.tokenIdAvailable = true;
+        }
+
+        var baseUrl = $location.absUrl();
+        var usersBaseUrl = baseUrl.substr(0, baseUrl.search('passwordReset'))+'protected/users';
+
+        $scope.user = {};
+
         $scope.sendResetToken = function (user) {
             if (user.email == null) {return;}
 
-            $http.post(baseUrl+"/resetPassword?email="+user.email, user)
+            $http.post(usersBaseUrl+"/resetPassword?email="+user.email, user)
                 .success(function(data, status) {
                     alert(data.data);
                 })
@@ -31,15 +40,14 @@
 
         $scope.changePassword = function(user) {
 
-            var id = get("id");
-            var token = get("token");
+
 
             if (user.password !== user.repeatPassword) {
                 alert ("Passwords do not match");
                 return;
             }
 
-            $http.post(baseUrl+'/passwordReset'+'?id='+id+'&token='+token, user)
+            $http.post(usersBaseUrl+'/passwordReset'+'?id='+id+'&token='+token, user)
                 .success(function(data) {
                     alert("User's password changed successfully");
                 }
@@ -50,6 +58,4 @@
             );
         }
     });
-
-    angular.module('login', ['ngMessages']);
 })(angular);

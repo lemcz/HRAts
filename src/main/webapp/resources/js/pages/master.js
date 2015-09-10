@@ -89,7 +89,7 @@
             replace: true,
             template: editorTemplate,
             scope: {
-                value: "=clickToEdit",
+                value: "=clickToEdit"
             },
             link: function (scope, element, attrs) {
                 scope.view = {

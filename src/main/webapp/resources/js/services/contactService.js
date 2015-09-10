@@ -47,8 +47,6 @@
                     { name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'contacts\')">{{COL_FIELD}}</a></div>', width:100 },
                     { name:'middleName', width:100 },
                     { name:'lastName', width:100 },
-                    { name:'departmentList[0].company.name', width:100},
-                    { name:'departmentList[0].name', width:100},
                     { name:'email', width:100, cellTemplate: '<div class="ui-grid-cell-contents"><a href="mailto:{{ COL_FIELD }}">{{ COL_FIELD }}</a></div>'},
                     { name:'phoneNumber', displayName: 'Phone', width:200},
                     { name:'note', width:300 },

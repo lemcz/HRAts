@@ -3,6 +3,7 @@ package HRAts.controller;
 import HRAts.service.ActivityTypeService;
 import HRAts.service.ContractTypeService;
 import HRAts.service.StatusTypeService;
+import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,7 +35,7 @@ public class LookupController {
             case "status":
                 return new ResponseEntity<>(statusTypeService.findAll(), HttpStatus.OK);
             default:
-                return new ResponseEntity<>("[\"Bad request\"]", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new GenericResponse(-1, "Bad request"), HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -1,9 +1,13 @@
 package HRAts.controller;
 
-import HRAts.model.*;
+import HRAts.model.Activity;
+import HRAts.model.Status;
+import HRAts.model.VacancyUser;
 import HRAts.service.ActivityService;
 import HRAts.service.StatusService;
 import HRAts.service.VacancyUserService;
+import HRAts.utils.ActivityStatusContext;
+import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

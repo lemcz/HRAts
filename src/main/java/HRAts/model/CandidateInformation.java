@@ -17,6 +17,7 @@ public class CandidateInformation implements Serializable{
     private String address;
     private String city;
     private String country;
+    private String state;
     private String zipCode;
     private String financialReqNetto;
     private String financialReqBrutto;
@@ -31,15 +32,11 @@ public class CandidateInformation implements Serializable{
     @JoinTable(name = "candidate_skill", joinColumns = @JoinColumn(name="candidate_information_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skillList;
 
-/*    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private User userId;*/
-
     public CandidateInformation() {}
 
     public CandidateInformation(String address, String city, String country, String zipCode, String financialReqNetto,
-                                String financialReqBrutto, Date datePrevJobTermination, Date startDate, ContractTypeLkp contractType, List<Skill> skillList/*, User userId*/) {
+                                String financialReqBrutto, Date datePrevJobTermination, Date startDate, String state,
+                                ContractTypeLkp contractType, List<Skill> skillList) {
         super();
         this.address = address;
         this.city = city;
@@ -48,12 +45,10 @@ public class CandidateInformation implements Serializable{
         this.financialReqNetto = financialReqNetto;
         this.financialReqBrutto = financialReqBrutto;
         this.datePrevJobTermination = datePrevJobTermination;
+        this.state = state;
         this.startDate = startDate;
         this.contractType = contractType;
         this.skillList = skillList;
-/*
-        this.userId = userId;
-*/
     }
 
     public Date getStartDate() {
@@ -144,11 +139,11 @@ public class CandidateInformation implements Serializable{
         this.skillList = skillList;
     }
 
-/*    public User getUserId() {
-        return userId;
+    public String getState() {
+        return state;
     }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
-    }*/
+    public void setState(String state) {
+        this.state = state;
+    }
 }

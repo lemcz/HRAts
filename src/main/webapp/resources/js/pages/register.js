@@ -7,7 +7,7 @@
         $scope.newUser = {};
 
         $scope.newUser.enabled = false;
-        $scope.newUser.userRole = "ROLE_ADMIN"; //TODO add ROLE_USER functionality
+        $scope.newUser.userRole = "ROLE_ADMIN";
 
         $scope.createUser = function (newUser) {
 

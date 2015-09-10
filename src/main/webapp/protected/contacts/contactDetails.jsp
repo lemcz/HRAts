@@ -60,6 +60,8 @@
                     <div class="field"><strong>Phone</strong>
                         <div click-to-edit="contactData.phoneNumber"></div>
                     </div>
+                </div>
+                <div class="col-md-4">
                     <div class="field"><strong>Date created</strong>
                         <div class="col-md-12">
                             {{ contactData.dateEntered | date}}
@@ -76,7 +78,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-6">
                     <strong>Note</strong>
                         <textarea rows="4"
                                   cols="50"
@@ -87,19 +91,23 @@
                                   name="note"
                                   placeholder="<spring:message code='note'/> "></textarea>
                 </div>
+                <div class="col-md-6">
+                    <div class="col-md-12"><strong><spring:message code='file.attached'/>&nbsp;<spring:message code='files'/></strong></div>
+                    <div class="col-md-4" ng-repeat="file in contactData.contactAttachmentList"><a href="{{contactData.id}}/{{file.name}}">{{file.name}}</a></div>
+                </div>
             </div>
         </form>
         <br><br>
         <div ng-controller="DetailsGridsController">
         <h2 class="page-header">
             <p>
-                <spring:message code='relatedVacancies'/>
+                <spring:message code='related'/>&nbsp;<spring:message code='vacancies.header'/>
             </p>
         </h2>
             <div class="grid" id="vacanciesGrid" ui-grid="vacanciesGridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping></div>
             <h2 class="page-header">
                 <p>
-                    <spring:message code='relatedActivites'/>
+                    <spring:message code='related'/>&nbsp;<spring:message code='activities.header'/>
                 </p>
             </h2>
             <div class="grid" id="activitiesGrid" ui-grid="activitiesGridOptions" ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping></div>

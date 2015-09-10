@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <Context>
-	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
 
     <Resource
             factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
@@ -24,3 +24,4 @@
             url="jdbc:postgresql://localhost:5432/hrapp" />
 
 </Context>
+

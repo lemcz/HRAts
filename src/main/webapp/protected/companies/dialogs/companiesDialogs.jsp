@@ -74,14 +74,14 @@
                            ng-model="newCompany.phoneNumber"
                            name="name"
                            placeholder="<spring:message code='phoneNumber'/>"/>
-                    <label class="control-label sr-only">* <spring:message code="companies.website"/>:</label>
+                    <label class="control-label sr-only"><spring:message code="website"/></label>
                     <input type="text"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newCompany.website"
                            name="name"
-                           placeholder="<spring:message code='companies.website'/>"/>
+                           placeholder="<spring:message code='website.placeholder'/>"/>
                 </div>
                 <div class="form-group col-sm-12 col-md-12">
                     <label class="control-label"><spring:message code="note"/></label>
@@ -89,7 +89,7 @@
                               cols="50"
                               class="form-control"
                               required
-                              ng-model="newContact.note"
+                              ng-model="newCompany.note"
                               name="note"
                               placeholder="<spring:message code='note'/> "></textarea>
                 </div>

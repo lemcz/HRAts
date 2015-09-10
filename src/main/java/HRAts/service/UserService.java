@@ -150,4 +150,8 @@ public class UserService {
         password = encoder.encode(password);
         return password;
     }
+
+    public Iterable<User> findCandidatesNotAssignedToVacancyId(int vacancyId) {
+        return userRepository.findCandidatesByVacancyUserVacancy_IdIsNot(vacancyId);
+    }
 }

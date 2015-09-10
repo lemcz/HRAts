@@ -1,9 +1,13 @@
 package HRAts.controller;
 
-import HRAts.model.*;
+import HRAts.model.Attachment;
+import HRAts.model.Department;
+import HRAts.model.Role;
+import HRAts.model.User;
 import HRAts.service.AttachmentService;
 import HRAts.service.DepartmentService;
 import HRAts.service.UserService;
+import HRAts.utils.GenericResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

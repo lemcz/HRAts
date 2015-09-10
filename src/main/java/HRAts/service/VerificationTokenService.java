@@ -1,9 +1,9 @@
 package HRAts.service;
 
-import HRAts.model.GenericResponse;
 import HRAts.model.User;
 import HRAts.model.VerificationToken;
 import HRAts.repository.VerificationTokenRepository;
+import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

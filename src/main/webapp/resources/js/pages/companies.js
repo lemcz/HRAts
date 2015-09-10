@@ -141,7 +141,6 @@
             DepartmentService.createMultiple(departmentList)
                 .success(function(){
                     alert("Departments added successfully");
-                    //TODO dorobic update company do ktorej zostaly dodane departamenty
                     $modalInstance.close();
                 })
                 .error(function(data,status){
@@ -158,8 +157,7 @@
 
         //Add company variables
         $scope.newCompany = angular.copy(row.data) || {};
-        $scope.newCompany.owner = {};
-        $scope.newCompany.owner.id = $scope.owner;
+        $scope.newCompany.owner = { id: $scope.owner };
 
         $scope.loadSectors = function() {
             return SectorService.fetchAllByName();
@@ -208,11 +206,6 @@
                 })
         };
 
-
-        //TODO poprawic te funkcje (zunifikowac ownera, tak zeby zawsze byl przechowywany jako jedna zmienna i sprawdzic czy rzeczywiscie dodaje depratment do company)
-        //pomyslec nad opcja manager per department przy okazji dodawania nowych departamentow. trzeba by zmienic sposob dodawania
-        //(nie po tagach, tylko oddzielne input fieldy, automatycznie generowane per department?)
-
         $scope.addDepartment = function(company, departmentList) {
 
             for (var i = 0; i < $scope.departmentList.length; i++) {
@@ -222,7 +215,6 @@
 
             DepartmentService.createMultiple(departmentList)
                 .success(function(){
-                    //TODO dorobic update company do ktorej zostaly dodane departamenty
                     $modalInstance.close();
                 })
                 .error(function(data,status){

@@ -1,4 +1,4 @@
-package HRAts.model;
+package HRAts.utils;
 
 import java.io.Serializable;
 

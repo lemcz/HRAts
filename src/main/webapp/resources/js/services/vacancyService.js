@@ -65,10 +65,9 @@
                     {name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'vacancies\')">{{COL_FIELD}}</a></div>', width:100 },
                     {name: 'department.company.name', displayName: 'Company', width: 100},
                     {name: 'department.name', width: 100},
-                    {name: 'about', width: 300},
+                    {name: 'note', width: 300},
                     {name: 'dateEntered', cellFilter: 'date', width: 150},
-                    {name: 'dateModified', cellFilter: 'date', width: 150},
-                    {name: 'owner.email', displayName: 'Owner', width: 150}
+                    {name: 'dateModified', cellFilter: 'date', width: 150}
                 ];
             },
 

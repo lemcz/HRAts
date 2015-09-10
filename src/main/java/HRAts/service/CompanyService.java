@@ -1,9 +1,9 @@
 package HRAts.service;
 
-import HRAts.constants.ActivityTypeEnum;
 import HRAts.model.*;
 import HRAts.repository.CompanyRepository;
 import HRAts.repository.SectorRepository;
+import HRAts.utils.ActivityTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -64,16 +64,9 @@ public class CompanyService implements Serializable{
 
         //Log activity
         Activity activityLog = new Activity();
-        //todo add owner of activity
-        //activityLog.setOwner(company.getOwner());
-        activityLog.setNote("New company added to the repository");
-
+        activityLog.setNote("New company added to the repository: "+savedCompany.getName()+" with id: "+savedCompany.getId());
         ActivityTypeLkp activityLogType = activityTypeService.findByName(ActivityTypeEnum.OTHER.toString());
-
         activityLog.setActivityType(activityLogType);
-
-        //todo set company for the activity
-        //activityLog.setCompany(savedCompany);
 
         activityService.save(activityLog);
 
@@ -83,7 +76,6 @@ public class CompanyService implements Serializable{
     @Transactional
     public Company update(Company company) {
 
-        //TODO add update logic
         Company savedCompany = companyRepository.save(company);
 
         return savedCompany;

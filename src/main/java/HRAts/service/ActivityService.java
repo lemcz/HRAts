@@ -1,10 +1,10 @@
 package HRAts.service;
 
-import HRAts.constants.ActivityTypeEnum;
 import HRAts.model.Activity;
 import HRAts.model.ActivityTypeLkp;
 import HRAts.model.User;
 import HRAts.repository.ActivityRepository;
+import HRAts.utils.ActivityTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;

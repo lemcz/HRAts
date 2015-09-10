@@ -28,7 +28,6 @@ public class User implements Serializable{
     private String lastName;
     private String phoneNumber;
     private String note;
-    //@Column(columnDefinition = "boolean default true")
     private boolean enabled;
     private String password;
     @Column(name="date_entered", nullable = false)
@@ -52,7 +51,6 @@ public class User implements Serializable{
     private List<VacancyUser> vacancyUserOwnerList;
 
     @OneToMany(mappedBy = "manager", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference("department-manager")
     private List<Department> departmentList;
 
     @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

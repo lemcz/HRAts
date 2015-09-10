@@ -60,7 +60,7 @@ public class Activity {
         return dateEntered;
     }
 
-    public void setDateEntered(Date dateEntered) {
+    private void setDateEntered(Date dateEntered) {
         this.dateEntered = dateEntered;
     }
 

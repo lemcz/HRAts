@@ -66,12 +66,4 @@
         <put-attribute name="footer" value=""/>
         <put-attribute name="body" value="/public/passwordReset.jsp"/>
     </definition>
-
-    <!-- TODO Error page
-    <definition name="customErrorPage" template="/public/customErrorPage.jsp">
-        <put-attribute name="scriptBundle" value="/public/template/scriptBundle.jsp"/>
-        <put-attribute name="header" value=""/>
-        <put-attribute name="footer" value=""/>
-        <put-attribute name="body" value="/public/customErrorPage.jsp"/>
-    </definition> -->
 </tiles-definitions>

@@ -1,10 +1,10 @@
 package HRAts.controller;
 
 import HRAts.model.Department;
-import HRAts.model.GenericResponse;
 import HRAts.model.Role;
 import HRAts.model.User;
 import HRAts.service.UserService;
+import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +48,11 @@ public class CandidateController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public User getCandidateById(@PathVariable int id){
         return userService.findById(id);
+    }
+
+    @RequestMapping(value = "/notInVacancy/{id}", method = RequestMethod.GET, produces = "application/json")
+    public Iterable<User> getCandidatesNotInVacancy(@PathVariable int id){
+        return userService.findCandidatesNotAssignedToVacancyId(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")

@@ -42,7 +42,7 @@
     <!-- Session timeout config -->
     <session-config>
         <!-- in minutes -->
-        <session-timeout>60</session-timeout>
+        <session-timeout>10</session-timeout>
     </session-config>
 
     <!-- Encoding helper filter -->
@@ -71,19 +71,4 @@
 			<trim-directive-whitespaces>true</trim-directive-whitespaces>
 		</jsp-property-group>
 	</jsp-config>
-
-    <!-- TODO Error pages definition
-    <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
-        <location>/error</location>
-    </error-page>
-    
-    <error-page>
-        <error-code>404</error-code>
-        <location>/error</location>
-    </error-page>
-
-    <error-page>
-        <location>/error</location>
-    </error-page>-->
 </web-app>

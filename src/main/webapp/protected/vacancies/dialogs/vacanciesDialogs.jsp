@@ -37,7 +37,7 @@
                               cols="50"
                               class="form-control"
                               required
-                              ng-model="newCandidate.note"
+                              ng-model="newVacancy.note"
                               name="note"
                               placeholder="<spring:message code='note'/>"></textarea>
                 </div>
@@ -84,16 +84,23 @@
                                name="numberOfVacancies"
                                placeholder="<spring:message code='sample.number'/> "/>
                     </div>
+                    <div class=" col-md-6">
+                        <label><spring:message code="vacancies.salary"/></label>
+                        <input type="number"
+                               class="form-control"
+                               ng-model="newVacancy.salary"
+                               name="salary"
+                               placeholder="<spring:message code='sample.number'/> "/>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <label class="control-label"><spring:message code="sample.startDate"/></label>
+                    <label class="control-label"><spring:message code="startDate"/></label>
                     <input type="date"
                            class="form-control"
                            required
                            autofocus
                            ng-model="newVacancy.startDate"
-                           name="startDate"
-                           placeholder="<spring:message code='sample.startDate'/>"/>
+                           name="startDate"/>
                 </div>
                 <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
                 <div class = "form-group col-md-6">
@@ -247,4 +254,60 @@
           ng-show="errorIllegalAccess">
         <spring:message code="request.illegal.access"/>
     </span>
+</script>
+
+<script type="text/ng-template" id="addToVacancyModal">
+    <div class="modal-header">
+        <button type="button" class="close"
+                data-dismiss="modal"
+                ng-click="cancel()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="addToVacancyModalLabel">
+            <spring:message code="addToVacancy"/>
+        </h4>
+    </div>
+    <form name="addToVacancyForm" role="form" novalidate ng-submit="addToVacancy(row, vacancy);">
+        <div class="modal-body">
+            <fieldset class="form">
+                <div class="form-group">
+                    <input type="hidden"
+                           required
+                           ng-model="vacancy.id"
+                           name="id"
+                           value="{{vacancy.id}}"/>
+                    <label class="control-label col-md-12"><spring:message code="assign.relations"/></label>
+                    <div class="col-md-12">
+                        <ui-select multiple
+                                   ng-model="querySelection.selectedCandidates"
+                                   theme="bootstrap" >
+                            <ui-select-match placeholder="Select candidates">{{$item.name}}</ui-select-match>
+                            <ui-select-choices group-by="someGroupFn" repeat="candidate in candidatesCollection | propsFilter: {name: $select.search, id: $select.search, email: $select.search}">
+                                <div ng-bind-html="candidate.name | highlight: $select.search"></div>
+                                <small>
+                                    id: {{candidate.id}}
+                                    last name: <span ng-bind-html="''+candidate.lastName | highlight: $select.search"></span>
+                                    e-mail: {{candidate.email}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default"
+                    type="button"
+                    data-dismiss="modal"
+                    ng-click="cancel()"
+                    aria-hidden="true">
+                <spring:message code="cancel"/>
+            </button>
+            <input type="submit"
+                   class="btn btn-primary"
+                   ng-disabled="addToVacancyForm.$invalid"
+                   value='<spring:message code="add"/>'/>
+        </div>
+    </form>
 </script>

@@ -7,12 +7,12 @@
     <div ng-controller="SettingsController" ng-cloak>
         <h1 class="page-header">
             <p class="text-center">
-                <spring:message code='settings.header'/>
+                <spring:message code='header.settings'/>
             </p>
         </h1>
         <h2 class="page-header">
             <p>
-                <spring:message code="generalInfo"/>
+                <spring:message code="basicInformation"/>
             </p>
         </h2>
         <div class="col-md-10 col-md-offset-1">
@@ -54,7 +54,7 @@
         </div>
         <h2 class="page-header">
             <p>
-                <spring:message code="password.change"/>
+                <spring:message code="user.changePassword"/>
             </p>
         </h2>
         <div class="col-md-4 col-md-offset-1">
@@ -64,29 +64,29 @@
                   autocomplete="off"
                   ng-submit="changePassword(user);">
                 <div class="form-group">
-                    <label class="control-label"><spring:message code="currentPassword"/></label>
+                    <label class="control-label"><spring:message code="user.currentPassword"/></label>
                     <input type="password"
                            class="form-control"
                            required
                            ng-model="user.oldPassword"
                            name="password"
-                           placeholder="<spring:message code='password'/>"/>
-                    <label class="control-label"><spring:message code="password"/></label>
+                           placeholder="<spring:message code='user.password'/>"/>
+                    <label class="control-label"><spring:message code="user.password"/></label>
                     <input type="password"
                            class="form-control"
                            required
                            ng-model="user.password"
                            name="password"
-                           placeholder="<spring:message code='password'/>"/>
-                    <label class="control-label"><spring:message code="repeatPassword"/></label>
+                           placeholder="<spring:message code='user.password'/>"/>
+                    <label class="control-label"><spring:message code="user.repeatPassword"/></label>
                     <input type="password"
                            class="form-control"
                            required
                            ng-model="user.repeatPassword"
                            name="password"
-                           placeholder="<spring:message code='repeatPassword'/>"/>
+                           placeholder="<spring:message code='user.repeatPassword'/>"/>
                 </div>
-                <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="changePasswordForm.$invalid"><spring:message code="changePassword" /></button>
+                <button type="submit" name="submit" class="btn btn-lg btn-primary btn-block" ng-disabled="changePasswordForm.$invalid"><spring:message code="user.changePassword" /></button>
             </form>
         </div>
     </div>

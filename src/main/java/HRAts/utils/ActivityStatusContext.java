@@ -1,4 +1,7 @@
-package HRAts.model;
+package HRAts.utils;
+
+import HRAts.model.Activity;
+import HRAts.model.Status;
 
 public class ActivityStatusContext {
 

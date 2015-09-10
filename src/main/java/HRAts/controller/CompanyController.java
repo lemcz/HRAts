@@ -2,8 +2,8 @@ package HRAts.controller;
 
 import HRAts.model.Company;
 import HRAts.model.Department;
-import HRAts.model.GenericResponse;
 import HRAts.service.CompanyService;
+import HRAts.utils.GenericResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -66,13 +66,10 @@ public class DepartmentService {
         Department savedDepartment = departmentRepository.save(department);
 
         //Log activity
-        //todo set department for the activity, might be better organised tho
-        //activityLog.setDepartment(savedDepartment);
         String savedDepartmentName = savedDepartment.getName();
         String savedDepartmentCompanyName = savedDepartment.getCompany().getName();
         User departmentOwner = savedDepartment.getOwner();
         String savedDepartmentOwner = userService.findById(departmentOwner.getId()).getEmail();
-        System.out.println("OWNERS EMAIL : " +savedDepartmentOwner);
         String logString = savedDepartmentOwner+" added "+savedDepartmentName+" to company "+ savedDepartmentCompanyName;
         activityService.logUserActivity(logString, savedDepartment.getOwner());
 
@@ -81,9 +78,7 @@ public class DepartmentService {
 
     @Transactional
     public Department update(Department department) {
-        //TODO add update logic
-        Department updatedDepartment = departmentRepository.save(department);
-        return updatedDepartment;
+        return departmentRepository.save(department);
     }
 
     @Secured("ROLE_ADMIN")
