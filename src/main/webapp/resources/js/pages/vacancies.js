@@ -125,11 +125,13 @@
 
         $scope.newVacancy.startDate = new Date();
         $scope.newVacancy.numberOfVacancies = 1;
+        $scope.newVacancy.owner = $scope.owner;
 
         var modalType = row.modalName;
 
         switch(modalType) {
             case 'addToVacancyModal':
+                $scope.querySelection = { selectedCandidates: [] };
                 $scope.candidatesCollection = [];
                 CandidateService.fetchAllNotAssignedToVacancy($scope.newVacancy.id)
                     .success(function(data) {
@@ -141,6 +143,14 @@
                 break;
             default: break;
         }
+
+        $scope.removeFromArray = function(array, value) {
+            var index = array.indexOf(value);
+            if(index !== -1){
+                array.splice(index, 1);
+            }
+            return array;
+        };
 
         CompanyService.fetchAll()
             .success(function (data){
@@ -165,17 +175,20 @@
             return company.departmentList;
         };
 
-        $scope.createVacancy = function(){
+        $scope.createVacancy = function(files){
             $log.info($scope.newVacancy);
-            VacancyService.createRow($scope.newVacancy)
+
+            var req = VacancyService.setupReqData($scope.newVacancy, files);
+            $log.info(req);
+
+            VacancyService.sendCustomRequest('', req)
                 .success(function(data){
                     $scope.vacanciesCollection.push(data);
+                    $modalInstance.close();
                 })
                 .error(function(data,status){
                     alert("Unable to create record ("+status+").");
                 });
-
-            $modalInstance.close();
         };
 
         $scope.updateVacancy = function(vacancy) {
@@ -189,17 +202,25 @@
                 })
         };
 
-        $scope.addToVacancy = function(row, vacancy) {
+        $scope.addToVacancy = function(vacancy) {
 
-            var vacanciesToAddList =  {
-                vacancy: {id: row.id },
-                candidates: $scope.querySelection.selectedCandidates[0],
-                owner: {id: $('#userId').val()}
-            };
+            var vacanciesToAddList =  [];
+            $log.info($scope.querySelection.selectedCandidates);
 
-            VacancyUserService.createRow(vacanciesToAddList)
+            for (var i = 0; i < $scope.querySelection.selectedCandidates.length; i++ ){
+                var vacancyUser = {
+                    vacancy: {id: vacancy.id },
+                    candidate: $scope.querySelection.selectedCandidates[i],
+                    owner: {id: $('#userId').val()}
+                };
+                vacanciesToAddList.push(vacancyUser);
+            }
+
+            $log.info(vacanciesToAddList);
+
+            VacancyUserService.createMultiple(vacanciesToAddList)
                 .success(function(data){
-                    alert("Candidate successfully added to vacancy");
+                    alert("Candidates successfully added to vacancy");
                     $modalInstance.close();
                 })
                 .error(function(data,status){
@@ -210,10 +231,7 @@
         $scope.removeRow = function(vacancy) {
             VacancyService.removeRow(vacancy.id)
                 .success(function(){
-                    var index = $scope.vacanciesCollection.indexOf(vacancy);
-                    if(index !== -1){
-                        $scope.vacanciesCollection.splice(index, 1);
-                    }
+                    $scope.vacanciesCollection = removeFromArray($scope.vacanciesCollection, vacancy);
                     $modalInstance.close();
                 })
                 .error(function(data,status){

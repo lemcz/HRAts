@@ -6,7 +6,9 @@ import HRAts.model.Role;
 import HRAts.model.User;
 import HRAts.service.AttachmentService;
 import HRAts.service.DepartmentService;
+import HRAts.utils.FileUpload;
 import HRAts.service.UserService;
+import HRAts.utils.EntityTypeEnum;
 import HRAts.utils.GenericResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,36 +87,8 @@ public class ContactController {
     ResponseEntity<?> uploadContactWithFiles(@RequestPart("data") User contact,
                                              @RequestPart(value = "file", required = false) MultipartFile[] files) throws IOException  {
 
-        List<Attachment> contactAttachmentList = new ArrayList<>();
-
         Role role = Role.ROLE_MANAGER;
         contact.setRole(role);
-
-        String message = "";
-        for (int i = 0; i < files.length; i++) {
-            MultipartFile file = files[i];
-            String name = file.getOriginalFilename();
-            try {
-                // Creating the directory to store file
-                File usersDirectory = createUsersDirectory("ContactsFiles", contact.getEmail());
-
-                // Create the file on server
-                File serverFile = createFileOnServer(file, usersDirectory, name);
-
-                message = message + "You successfully uploaded file = "  + name + "</br>";
-
-                Attachment currentFile = new Attachment();
-                currentFile.setName(name);
-                currentFile.setFilePath(serverFile.getAbsolutePath());
-                currentFile.setOwner(contact.getOwner());
-                currentFile.setContact(contact);
-
-                contactAttachmentList.add(currentFile);
-            } catch (Exception e) {
-                return new ResponseEntity<>(new GenericResponse(-1, "You failed to upload " + name + " => " + e.getMessage()), HttpStatus.BAD_REQUEST);
-            }
-            contact.setContactAttachmentList(contactAttachmentList);
-        }
 
         List<Department> departmentList = new ArrayList<>();
 
@@ -127,6 +101,24 @@ public class ContactController {
         contact.setDepartmentList(departmentList);
 
         User savedContact = userService.save(contact);
+
+        if (files != null) {
+            FileUpload fileUpload = new FileUpload();
+            List<Attachment> contactAttachmentList = new ArrayList<>();
+
+            List<Attachment> uploadedFilesList = fileUpload.uploadFiles(files, EntityTypeEnum.CONTACT, savedContact.getId());
+
+            for (Attachment currentFile : uploadedFilesList) {
+                currentFile.setOwner(savedContact.getOwner());
+                currentFile.setUser(savedContact);
+
+                contactAttachmentList.add(currentFile);
+            }
+
+            savedContact.setAttachmentList(contactAttachmentList);
+
+            savedContact = userService.save(savedContact);
+        }
 
         return new ResponseEntity<>(savedContact, HttpStatus.OK);
     }
@@ -166,27 +158,5 @@ public class ContactController {
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody void deleteContact(@PathVariable("id") int contactId) {
         userService.delete(contactId);
-    }
-
-    private File createFileOnServer(MultipartFile file, File usersDirectory, String name) throws IOException {
-        byte[] bytes = file.getBytes();
-        File serverFile = new File(usersDirectory.getAbsolutePath() + File.separator + name);
-        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-        stream.write(bytes);
-        stream.close();
-
-        logger.info("Server File Location = " + serverFile.getAbsolutePath());
-        return serverFile;
-    }
-
-    private File createUsersDirectory(String attachmentCategory, String usersIdDirectory) {
-
-        String rootPath = System.getProperty("catalina.home");
-        File dir = new File(rootPath + File.separator + "UploadedFiles" + File.separator + attachmentCategory + File.separator + usersIdDirectory);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        return dir;
     }
 }

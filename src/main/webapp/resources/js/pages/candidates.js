@@ -129,6 +129,14 @@
         $scope.contractsCollection = [];
         $scope.vacancyCollection = [];
 
+        $scope.removeFromArray = function(array, value) {
+            var index = array.indexOf(value);
+            if(index !== -1){
+                array.splice(index, 1);
+            }
+            return array;
+        };
+
         CompanyService.fetchAll()
             .success(function (data) {
                 $scope.companiesCollection = data || [];
@@ -218,7 +226,7 @@
                 break;
         }
 
-        $scope.createCandidate = function(){
+        $scope.createCandidate = function(files){
 
             $scope.newCandidate.candidateInformation.contractType = $scope.querySelection.selectedContractType || {};
             var selectedVacancies = [];
@@ -229,7 +237,10 @@
                 selectedVacancies.push(vacancyToAdd);
             }
             $scope.newCandidate.vacancyUserCandidateList = selectedVacancies;
-            CandidateService.createRow($scope.newCandidate)
+
+            var req = CandidateService.setupReqData($scope.newCandidate, files);
+
+            CandidateService.sendCustomRequest('', req)
                 .success(function(data){
                     $scope.candidatesCollection.push(data.data);
                     $modalInstance.close();
@@ -293,10 +304,7 @@
         $scope.removeRow = function(row) {
             CandidateService.removeRow(row.id)
                 .success(function(){
-                    var index = $scope.candidatesCollection.indexOf(row);
-                    if(index !== -1){
-                        $scope.candidatesCollection.splice(index, 1);
-                    }
+                    $scope.candidatesCollection = removeFromArray($scope.candidatesCollection, row);
                     $modalInstance.close();
                 })
                 .error(function(data,status){

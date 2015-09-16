@@ -31,12 +31,12 @@ public class AttachmentService {
 
     @Transactional(readOnly = true)
     public Attachment findByCandidateId(int candidateId) {
-        return attachmentRepository.findByCandidate_Id(candidateId);
+        return attachmentRepository.findByUser_Id(candidateId);
     }
 
     @Transactional(readOnly = true)
     public Attachment findByContactId(int contactId) {
-        return attachmentRepository.findByContact_Id(contactId);
+        return attachmentRepository.findByUser_Id(contactId);
     }
 
     @Transactional(readOnly = true)
@@ -52,7 +52,7 @@ public class AttachmentService {
     @Transactional(readOnly = true)
     @Secured("ROLE_USER")
     public Attachment findByContactIdAndName(int contactId, String fileName) {
-        return attachmentRepository.findByContact_IdAndName(contactId, fileName);
+        return attachmentRepository.findByUser_IdAndName(contactId, fileName);
     }
 
     @Transactional

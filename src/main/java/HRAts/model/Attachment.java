@@ -33,11 +33,6 @@ public class Attachment implements Serializable{
     private Date dateEntered;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JsonBackReference("attachment-candidate")
-    @JoinColumn(name = "candidate_id", nullable = true, updatable = false)
-    private User candidate;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JsonBackReference("attachment-company")
     @JoinColumn(name = "company_id", nullable = true, updatable = false)
     private Company company;
@@ -48,9 +43,9 @@ public class Attachment implements Serializable{
     private Vacancy vacancy;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JsonBackReference("attachment-contact")
-    @JoinColumn(name = "contact_id", nullable = true, updatable = false)
-    private User contact;
+    @JsonBackReference("attachment-user")
+    @JoinColumn(name = "user_id", nullable = true, updatable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonBackReference("attachment-owner")
@@ -59,16 +54,15 @@ public class Attachment implements Serializable{
 
     public Attachment(){}
 
-    public Attachment(String name, String filePath, List<MultipartFile> file, Date dateEntered, User candidate, Company company, Vacancy vacancy, User contact, User owner){
+    public Attachment(String name, String filePath, List<MultipartFile> file, Date dateEntered, Company company, Vacancy vacancy, User user, User owner){
         super();
         this.name = name;
         this.filePath = filePath;
         this.file = file;
         this.dateEntered = dateEntered;
-        this.candidate = candidate;
         this.company = company;
         this.vacancy = vacancy;
-        this.contact = contact;
+        this.user = user;
         this.owner = owner;
     }
 
@@ -101,14 +95,6 @@ public class Attachment implements Serializable{
         this.id = id;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
     public Company getCompany() {
         return company;
     }
@@ -125,22 +111,6 @@ public class Attachment implements Serializable{
         this.vacancy = vacancy;
     }
 
-    public User getContact() {
-        return contact;
-    }
-
-    public void setContact(User contact) {
-        this.contact = contact;
-    }
-
-    public User getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(User candidate) {
-        this.candidate = candidate;
-    }
-
     public List<MultipartFile> getFile() {
         return file;
     }
@@ -155,5 +125,21 @@ public class Attachment implements Serializable{
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

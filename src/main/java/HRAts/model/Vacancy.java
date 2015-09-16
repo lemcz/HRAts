@@ -50,10 +50,15 @@ public class Vacancy implements Serializable {
     @OneToMany(mappedBy = "vacancy", fetch = FetchType.EAGER)
     private List<Activity> activityList;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private User owner;
+
     public Vacancy(){}
 
     public Vacancy(String name, int numberOfVacancies, String description, String note, int salary, Date dateEntered,
-                   Date dateModified, List<VacancyUser> vacancyUserList, Department department, List<Attachment> attachmentList, List<Activity> activityList ){
+                   Date dateModified, Department department, User owner,
+                   List<VacancyUser> vacancyUserList, List<Attachment> attachmentList, List<Activity> activityList ){
         super();
         this.name = name;
         this.numberOfVacancies = numberOfVacancies;
@@ -66,6 +71,7 @@ public class Vacancy implements Serializable {
         this.department = department;
         this.attachmentList = attachmentList;
         this.activityList = activityList;
+        this.owner = owner;
     }
 
     @PrePersist
@@ -183,5 +189,13 @@ public class Vacancy implements Serializable {
 
     public void setActivityList(List<Activity> activityList) {
         this.activityList = activityList;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

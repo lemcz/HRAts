@@ -41,7 +41,7 @@
                title="Add To Vacancy"
                class="btn btn-default"
                data-toggle="modal">
-                <span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;Add&nbsp;To&nbsp;Vacancy
+                <span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;Assign&nbsp;Candidates
             </a>
             <a href=""
                ng-click="openModal('deleteVacancyModal', row)"

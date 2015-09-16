@@ -47,6 +47,11 @@
                 return $http.get(baseUrl+'?search=candidate&id='+ candidateId);
             },
 
+            sendCustomRequest: function(endPoint, requestData) {
+                requestData.url = baseUrl + endPoint;
+                return $http(requestData);
+            },
+
             createRow: function (vacancyData) {
                 return $http.post(baseUrl, vacancyData);
             },
@@ -63,9 +68,13 @@
                 return [
                     {name: 'id', width: 50},
                     {name:'name', cellTemplate: '<div class="ui-grid-cell-contents"><a ng-click="grid.appScope.redirect(row.entity,\'vacancies\')">{{COL_FIELD}}</a></div>', width:100 },
-                    {name: 'department.company.name', displayName: 'Company', width: 100},
                     {name: 'department.name', width: 100},
+                    {name: 'department.company.name', displayName: 'Company', width: 100},
                     {name: 'note', width: 300},
+                    {name: 'numberOfVacancies', width: 100},
+                    {name: 'vacancyUserList.length', displayName: 'Assigned candidates', width: 100},
+                    {name: 'salary', width: 100},
+                    {name: 'startDate', cellFilter: 'date', width: 150},
                     {name: 'dateEntered', cellFilter: 'date', width: 150},
                     {name: 'dateModified', cellFilter: 'date', width: 150}
                 ];

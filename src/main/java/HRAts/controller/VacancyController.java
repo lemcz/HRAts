@@ -1,14 +1,19 @@
 package HRAts.controller;
 
+import HRAts.model.Attachment;
 import HRAts.model.Vacancy;
 import HRAts.service.VacancyService;
+import HRAts.utils.EntityTypeEnum;
+import HRAts.utils.FileUpload;
 import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +54,29 @@ public class VacancyController {
         return vacancyService.findById(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody ResponseEntity createVacancy(@RequestBody Vacancy vacancy){
+    @RequestMapping(method = RequestMethod.POST, consumes = {"application/json", "multipart/mixed", "multipart/form-data"}, produces = "application/json")
+    public @ResponseBody ResponseEntity createVacancy(@RequestPart("data") Vacancy vacancy,
+                                                      @RequestPart(value = "file", required = false) MultipartFile[] files) throws IOException {
 
         Vacancy savedVacancy = vacancyService.save(vacancy);
+
+        if (files != null) {
+            FileUpload fileUpload = new FileUpload();
+            List<Attachment> contactAttachmentList = new ArrayList<>();
+
+            List<Attachment> uploadedFilesList = fileUpload.uploadFiles(files, EntityTypeEnum.VACANCY, savedVacancy.getId());
+
+            for (Attachment currentFile : uploadedFilesList) {
+                currentFile.setVacancy(savedVacancy);
+                currentFile.setOwner(savedVacancy.getOwner());
+
+                contactAttachmentList.add(currentFile);
+            }
+
+            savedVacancy.setAttachmentList(contactAttachmentList);
+
+            savedVacancy = vacancyService.save(savedVacancy);
+        }
 
         return new ResponseEntity<>(savedVacancy, HttpStatus.OK);
     }

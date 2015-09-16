@@ -28,6 +28,7 @@
                 requestData.url = baseUrl + endPoint;
                 return $http(requestData);
             },
+
             createRow: function(contactData){
                 var temporaryAppend = "uploadContactAndFiles";
                 return $http.post(baseUrl + temporaryAppend, contactData);

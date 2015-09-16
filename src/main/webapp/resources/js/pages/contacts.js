@@ -167,7 +167,7 @@
         };
     });
 
-    hratsApp.controller('ModalInstanceController', function($scope, $modalInstance, $timeout, row, Upload,
+    hratsApp.controller('ModalInstanceController', function($scope, $log, $modalInstance, $timeout, row, Upload,
                                                             ContactService, VacancyService, CompanyService,
                                                             DepartmentService, ActivityService, ActivityTypeService){
         VacancyService.fetchAll()
@@ -238,9 +238,6 @@
 
             ContactService.sendCustomRequest('', req)
                 .success(function (data) {
-                    $timeout(function() {
-                        alert('file: ' + files.name + ', Response: ' + JSON.stringify(data) + '\n');
-                    });
                     $scope.contactsCollection.push(data);
                     $modalInstance.close();
                 })

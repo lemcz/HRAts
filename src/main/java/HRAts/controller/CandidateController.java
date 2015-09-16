@@ -1,16 +1,21 @@
 package HRAts.controller;
 
+import HRAts.model.Attachment;
 import HRAts.model.Department;
 import HRAts.model.Role;
 import HRAts.model.User;
 import HRAts.service.UserService;
+import HRAts.utils.EntityTypeEnum;
+import HRAts.utils.FileUpload;
 import HRAts.utils.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +61,8 @@ public class CandidateController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody ResponseEntity createCandidate(@RequestBody final User candidate){
+    public @ResponseBody ResponseEntity createCandidate(@RequestPart("data") User candidate,
+                                                        @RequestPart(value = "file", required = false) MultipartFile[] files) throws IOException {
 
         List<User> contactList = new ArrayList<>();
 
@@ -71,6 +76,25 @@ public class CandidateController {
 
         try {
             User savedUser = userService.save(candidate);
+
+            if (files != null) {
+                FileUpload fileUpload = new FileUpload();
+                List<Attachment> contactAttachmentList = new ArrayList<>();
+
+                List<Attachment> uploadedFilesList = fileUpload.uploadFiles(files, EntityTypeEnum.CONTACT, savedUser.getId());
+
+                for (Attachment currentFile : uploadedFilesList) {
+                    currentFile.setOwner(savedUser.getOwner());
+                    currentFile.setUser(savedUser);
+
+                    contactAttachmentList.add(currentFile);
+                }
+
+                savedUser.setAttachmentList(contactAttachmentList);
+
+                savedUser = userService.save(savedUser);
+            }
+
             return new ResponseEntity<>(new GenericResponse(0, savedUser), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new GenericResponse(-2, e), HttpStatus.BAD_REQUEST);

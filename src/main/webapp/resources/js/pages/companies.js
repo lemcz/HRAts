@@ -166,19 +166,21 @@
         //Edit/delete company variables
         $scope.company = row.data;
 
-        $scope.createCompany = function(){
+        $scope.createCompany = function(files){
             for (var i = 0; i < $scope.newCompany.departmentList.length; i++) {
                 $scope.newCompany.departmentList[i].owner = {id: $scope.newCompany.owner.id};
             }
-            CompanyService.createRow($scope.newCompany)
+
+            var req = CompanyService.setupReqData($scope.newCompany, files);
+
+            CompanyService.sendCustomRequest('', req)
                 .success(function(data){
-                    $scope.companiesCollection.push(data);
+                    $scope.companiesCollection.push(data.data);
+                    $modalInstance.close();
                 })
                 .error(function(data,status){
                     alert("Unable to create record ("+status+").");
                 });
-
-            $modalInstance.close();
         };
 
         $scope.updateCompany = function(company) {

@@ -1,26 +1,35 @@
 (function(angular) {
     var hratsApp = angular.module('HRAts');
 
-    var baseUrl = 'http://localhost:8080/HRAts';
 
     hratsApp.service('VacancyUserService', function ($http) {
 
+        var baseUrl = 'http://localhost:8080/HRAts';
+
         var urlExtension = '/protected/vacancyUser/';
 
-        this.fetchAll = function () {
-            return $http.get(baseUrl + urlExtension);
-        };
+        return {
 
-        this.fetchById = function (activityId) {
-            return $http.get(baseUrl + urlExtension + activityId)
-        };
+            fetchAll: function () {
+                return $http.get(baseUrl + urlExtension);
+            },
 
-        this.createRow = function (activityData) {
-            return $http.post(baseUrl + urlExtension, activityData);
-        };
+            fetchById: function (vacancyUserId) {
+                return $http.get(baseUrl + urlExtension + vacancyUserId)
+            },
 
-        this.removeRow = function (activityId) {
-            return $http.delete(activityId);
-        };
+            createRow: function (vacancyUserData) {
+                return $http.post(baseUrl + urlExtension, vacancyUserData);
+            },
+
+            createMultiple: function (vacancyUserList) {
+                return $http.post(baseUrl + urlExtension + 'list', vacancyUserList);
+            },
+
+            removeRow: function (vacancyUserId) {
+                return $http.delete(vacancyUserId);
+            }
+        }
+
     });
 })(angular);

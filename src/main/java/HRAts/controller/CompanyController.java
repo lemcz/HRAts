@@ -1,8 +1,12 @@
 package HRAts.controller;
 
+import HRAts.model.Attachment;
 import HRAts.model.Company;
 import HRAts.model.Department;
+import HRAts.model.Vacancy;
 import HRAts.service.CompanyService;
+import HRAts.utils.EntityTypeEnum;
+import HRAts.utils.FileUpload;
 import HRAts.utils.GenericResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -44,13 +51,31 @@ public class CompanyController {
         return companyService.findById(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public @ResponseBody ResponseEntity createCompany(@RequestBody Company company){
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody ResponseEntity createCompany(@RequestPart("data") Company company,
+                                                      @RequestPart(value = "file", required = false) MultipartFile[] files) throws IOException{
 
         Company savedCompany = companyService.save(company);
 
-        return new ResponseEntity<>(savedCompany, HttpStatus.OK);
+        if (files != null) {
+            FileUpload fileUpload = new FileUpload();
+            List<Attachment> contactAttachmentList = new ArrayList<>();
+
+            List<Attachment> uploadedFilesList = fileUpload.uploadFiles(files, EntityTypeEnum.VACANCY, savedCompany.getId());
+
+            for (Attachment currentFile : uploadedFilesList) {
+                currentFile.setCompany(savedCompany);
+                currentFile.setOwner(savedCompany.getDepartmentList().get(0).getOwner());
+
+                contactAttachmentList.add(currentFile);
+            }
+
+            savedCompany.setAttachmentList(contactAttachmentList);
+
+            savedCompany = companyService.save(savedCompany);
+        }
+
+        return new ResponseEntity<>(new GenericResponse(0, savedCompany), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")

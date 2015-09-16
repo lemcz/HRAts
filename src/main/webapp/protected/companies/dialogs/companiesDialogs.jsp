@@ -14,7 +14,7 @@
             <spring:message code="create"/>&nbsp;<spring:message code="company"/>
         </h4>
     </div>
-    <form name="newCompanyForm" role="form" novalidate ng-submit="createCompany();">
+    <form name="newCompanyForm" role="form" novalidate ng-submit="createCompany(files);">
         <div class="modal-body">
             <fieldset class="form">
                 <div class="form-group col-md-12">
@@ -93,19 +93,22 @@
                               name="note"
                               placeholder="<spring:message code='note'/> "></textarea>
                 </div>
-            <div class="form-group col-md-6">
-                <label>Sectors</label>
-                <tags-input ng-model="newCompany.sectorList"
-                            display-property="name">
-                    <auto-complete source="loadSectors($query)"></auto-complete>
-                </tags-input>
-            </div>
-            <div class="form-group col-md-6">
-                <label>Departments</label>
-                <tags-input ng-model="newCompany.departmentList"
-                            display-property="name">
-                </tags-input>
-            </div>
+                <div class="form-group col-md-6">
+                    <label>Sectors</label>
+                    <tags-input ng-model="newCompany.sectorList"
+                                display-property="name">
+                        <auto-complete source="loadSectors($query)"></auto-complete>
+                    </tags-input>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Departments</label>
+                    <tags-input ng-model="newCompany.departmentList"
+                                display-property="name"
+                                min-tags="1">
+                    </tags-input>
+                </div>
+            </fieldset>
+            <fieldset>
                 <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
                 <div class = "form-group col-md-6">
                     <div class="well well-lg text-center" ngf-drop ngf-select ng-model="files" ngf-multiple="true" ngf-keep="true" ngf-keep-distinct="true">Select Files Or Drop Them Here</div>

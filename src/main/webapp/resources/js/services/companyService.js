@@ -16,6 +16,11 @@
                 return $http.get(baseUrl + companyId)
             },
 
+            sendCustomRequest: function(endPoint, requestData) {
+                requestData.url = baseUrl + endPoint;
+                return $http(requestData);
+            },
+
             createRow : function(companyData){
                 return $http.post(baseUrl, companyData);
             },

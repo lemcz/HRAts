@@ -37,7 +37,7 @@ public class Company implements Serializable{
     @OneToMany(mappedBy = "company", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> departmentList;
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Attachment> attachmentList;
 
     @ManyToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)

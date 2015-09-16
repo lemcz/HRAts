@@ -9,14 +9,12 @@ public interface AttachmentRepository extends CrudRepository<Attachment, Integer
 
     Attachment findByOwner_Id(@Param("id") int id);
 
-    Attachment findByCandidate_Id(@Param("id") int id);
-
-    Attachment findByContact_Id(@Param("id") int id);
+    Attachment findByUser_Id(@Param("id") int id);
 
     Attachment findByCompany_Id(@Param("id") int id);
 
     Attachment findByVacancy_Id(@Param("id") int id);
 
-    Attachment findByContact_IdAndName(@Param("id") int id,
-                                       @Param("fileName") String filePath);
+    Attachment findByUser_IdAndName(@Param("id") int id,
+                                    @Param("fileName") String filePath);
 }

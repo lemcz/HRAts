@@ -14,7 +14,7 @@
             <spring:message code="create"/>&nbsp;<spring:message code="vacancy"/>
         </h4>
     </div>
-    <form name="newVacancyForm" role="form" novalidate ng-submit="createVacancy();">
+    <form name="newVacancyForm" class="form" role="form" novalidate ng-submit="createVacancy(files);">
         <div class="modal-body">
             <fieldset class="form">
                 <div class="form-group col-md-12">
@@ -102,20 +102,23 @@
                            ng-model="newVacancy.startDate"
                            name="startDate"/>
                 </div>
+            </fieldset>
+            <fieldset class="form">
                 <label class="control-label col-md-12"><spring:message code="file.attach"/></label>
                 <div class = "form-group col-md-6">
                     <div class="well well-lg text-center" ngf-drop ngf-select ng-model="files" ngf-multiple="true" ngf-keep="true" ngf-keep-distinct="true">Select Files Or Drop Them Here</div>
                 </div>
                 <div class="col-md-6">
+                    Files:
                     <ul>
                         <li ng-repeat="f in files" >{{f.name}}
-                    <span class="glyphicon glyphicon-minus"
-                          ng-click="removeFromArray(files, f)"
-                          role="button"
-                          title="<spring:message code="delete"/>&nbsp;<spring:message code="contact"/>"
-                          class="btn btn-default"
-                          data-toggle="modal">
-                   </span>
+                <span class="glyphicon glyphicon-minus"
+                      ng-click="removeFromArray(files, f)"
+                      role="button"
+                      title="<spring:message code="delete"/>&nbsp;<spring:message code="contact"/>"
+                      class="btn btn-default"
+                      data-toggle="modal">
+               </span>
                         </li>
                     </ul>
                 </div>
@@ -268,7 +271,7 @@
             <spring:message code="addToVacancy"/>
         </h4>
     </div>
-    <form name="addToVacancyForm" role="form" novalidate ng-submit="addToVacancy(row, vacancy);">
+    <form name="addToVacancyForm" role="form" novalidate ng-submit="addToVacancy(vacancy);">
         <div class="modal-body">
             <fieldset class="form">
                 <div class="form-group">

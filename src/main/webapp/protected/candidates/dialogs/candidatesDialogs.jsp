@@ -14,7 +14,7 @@
             <spring:message code="create"/>&nbsp;<spring:message code="candidate"/>
         </h4>
     </div>
-    <form name="newCandidateForm" role="form" novalidate ng-submit="createCandidate();">
+    <form name="newCandidateForm" role="form" novalidate ng-submit="createCandidate(files);">
         <div class="modal-body">
             <fieldset class="form">
                 <div class="col-md-12">

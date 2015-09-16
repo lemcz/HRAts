@@ -53,31 +53,23 @@ public class User implements Serializable{
     @OneToMany(mappedBy = "manager", targetEntity = Department.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Department> departmentList;
 
-    @OneToMany(mappedBy = "candidate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference("attachment-candidate")
-    private List<Attachment> candidateAttachmentList;
-
-    @OneToMany(mappedBy = "contact", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference("attachment-contact")
-    private List<Attachment> contactAttachmentList;
-
-    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference("attachment-owner")
-    private List<Attachment> ownerAttachmentList;
-
-    @ManyToOne
-    private User owner;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference("attachment-user")
+    private List<Attachment> attachmentList;
 
     @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<User> contactList;
+
+    @ManyToOne
+    private User owner;
 
     public User () {}
 
     public User(String email, String name, String middleName, String lastName, String phoneNumber,
                 String note, boolean enabled, String password, Date dateEntered, Date dateModified, Role role,
                 CandidateInformation candidateInformation, List<VacancyUser> vacancyUserCandidateList,
-                List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, List<Attachment> candidateAttachmentList, List<Attachment> contactAttachmentList, List<Attachment> ownerAttachmentList, User owner, List<User> contactList ) {
+                List<VacancyUser> vacancyUserOwnerList, List<Department> departmentList, List<Attachment> attachmentList, User owner, List<User> contactList ) {
         this.email = email;
         this.name = name;
         this.middleName = middleName;
@@ -93,9 +85,7 @@ public class User implements Serializable{
         this.vacancyUserCandidateList = vacancyUserCandidateList;
         this.vacancyUserOwnerList = vacancyUserOwnerList;
         this.departmentList = departmentList;
-        this.candidateAttachmentList = candidateAttachmentList;
-        this.contactAttachmentList = contactAttachmentList;
-        this.ownerAttachmentList = ownerAttachmentList;
+        this.attachmentList = attachmentList;
         this.owner = owner;
         this.contactList = contactList;
     }
@@ -261,27 +251,11 @@ public class User implements Serializable{
         this.dateModified = dateModified;
     }
 
-    public List<Attachment> getOwnerAttachmentList() {
-        return ownerAttachmentList;
+    public List<Attachment> getAttachmentList() {
+        return attachmentList;
     }
 
-    public void setOwnerAttachmentList(List<Attachment> ownerAttachmentList) {
-        this.ownerAttachmentList = ownerAttachmentList;
-    }
-
-    public List<Attachment> getCandidateAttachmentList() {
-        return candidateAttachmentList;
-    }
-
-    public void setCandidateAttachmentList(List<Attachment> candidateAttachmentList) {
-        this.candidateAttachmentList = candidateAttachmentList;
-    }
-
-    public List<Attachment> getContactAttachmentList() {
-        return contactAttachmentList;
-    }
-
-    public void setContactAttachmentList(List<Attachment> contactAttachmentList) {
-        this.contactAttachmentList = contactAttachmentList;
+    public void setAttachmentList(List<Attachment> attachmentList) {
+        this.attachmentList = attachmentList;
     }
 }

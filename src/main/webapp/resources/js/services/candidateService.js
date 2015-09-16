@@ -24,6 +24,11 @@
                 return $http.get(baseUrl + candidateId)
             },
 
+            sendCustomRequest: function(endPoint, requestData) {
+                requestData.url = baseUrl + endPoint;
+                return $http(requestData);
+            },
+
             createRow: function(candidateData){
                 return $http.post(baseUrl, candidateData);
             },

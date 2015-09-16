@@ -53,7 +53,7 @@ public class VacancyService {
     public Vacancy save(Vacancy vacancy) {
         String activityNote = "New vacancy added to the repository";
 
-        activityService.logUserActivity(activityNote, vacancy.getDepartment().getOwner());
+        activityService.logUserActivity(activityNote, vacancy.getOwner());
 
         return vacancyRepository.save(vacancy);
     }
